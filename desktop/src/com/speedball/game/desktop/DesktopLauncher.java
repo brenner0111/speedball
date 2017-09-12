@@ -7,6 +7,9 @@ import com.speedball.game.SpeedBall;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = "Speedball";
+		config.height = 720;
+		config.width = 1080;
 		new LwjglApplication(new SpeedBall(), config);
 	}
 }
