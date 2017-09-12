@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * Testing committing to Git with Eclipse
+ * @author Calvin Yarboro
+ *
+ */
 public class SpeedBall extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
