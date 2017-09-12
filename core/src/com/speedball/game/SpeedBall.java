@@ -15,22 +15,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  */
 public class SpeedBall extends ApplicationAdapter {
-	private static final int MAX_X = 1080;
-	private static final int MAX_Y = 720;
+	private static final int MAX_X = 1000;
+	private static final int MAX_Y = 645;
 	SpriteBatch batch;
 	Texture img;
 	float playerSpeed = 100.0f;
 	private Sprite player;
+	private Sprite background;
 	float playerX;
 	float playerY;
-	String file = "shotgun/idle/survivor-idle_shotgun_0.png";
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		FileHandle playerFileHandle = Gdx.files.internal(file);
-		Texture playerTexture = new Texture(playerFileHandle);
-		player = new Sprite(playerTexture);
+		createPlayerSprite();
+		createBackgroundSprite();
 		playerX = 0;
 		playerY = 0;
 	}
@@ -39,17 +38,16 @@ public class SpeedBall extends ApplicationAdapter {
 	// Player moves faster when moving diagonally
 	public void render () {
 		System.out.println(playerInBounds((int)playerX, (int)playerY));
-		if (playerInBounds((int)playerX, (int)playerY)) {
-			this.playerMovement();
-		}
-		else {
-			repositionPlayer((int)playerX,(int)playerY);
-		}
+		
+		checkValidPlayer();
+		
 	    Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		System.out.println("playerX" + playerX);
 		System.out.println("playerY" + playerX);
+		
 		batch.begin();
+		batch.draw(background, 0, 0, 1080, 720);
 		batch.draw(player, (int)playerX, (int)playerY, 80, 53);
 		batch.end();
 	}
@@ -59,11 +57,25 @@ public class SpeedBall extends ApplicationAdapter {
 		batch.dispose();
 		img.dispose();
 	}
+	/**
+	 * Begin utility functions
+	 * TODO: Possibly move to separate utility class
+	 */
+	private void createPlayerSprite() {
+		FileHandle playerFileHandle = Gdx.files.internal("shotgun/idle/survivor-idle_shotgun_0.png");
+		Texture playerTexture = new Texture(playerFileHandle);
+		player = new Sprite(playerTexture);
+	}
+	private void createBackgroundSprite() {
+		FileHandle backgroundFileHandle = Gdx.files.internal("grass.png");
+		Texture backgroundTexture = new Texture(backgroundFileHandle);
+		background = new Sprite(backgroundTexture);
+	}
 	/*
 	 * Function that determines the player's x and y position.
 	 * Player Inputs = WASD keys
 	 */
-	public void playerMovement() {
+	public void movePlayer() {
 		if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
 			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
 			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
@@ -100,7 +112,7 @@ public class SpeedBall extends ApplicationAdapter {
 		return false;
 	}
 	// Function used to reposition player if out of bounds
-	private void repositionPlayer(int x, int y) {
+	private void resetPlayerAtBound(int x, int y) {
 		if (x - MAX_X > 0 && y - MAX_Y > 0) {
 			playerX = MAX_X;
 			playerY = MAX_Y;
@@ -128,6 +140,14 @@ public class SpeedBall extends ApplicationAdapter {
 		}
 		else if (y <= 0) {
 			playerY = 0;
+		}
+	}
+	private void checkValidPlayer() {
+		if (playerInBounds((int)playerX, (int)playerY)) {
+			movePlayer();
+		}
+		else {
+			resetPlayerAtBound((int)playerX,(int)playerY);
 		}
 	}
 }
