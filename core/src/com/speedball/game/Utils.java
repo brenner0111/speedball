@@ -28,60 +28,19 @@ public class Utils {
 	 */
 	
 	protected float movePlayerX(float playerX, float playerSpeed) {
-		/*if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}
-		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}
-		else if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}
-		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}*/
+		
 		if(Gdx.input.isKeyPressed(Keys.A)) {
 			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.D)) {
 	    	playerX += Gdx.graphics.getDeltaTime() * playerSpeed;
 		}
-		/*else if(Gdx.input.isKeyPressed(Keys.W)) {
-	    		playerY += Gdx.graphics.getDeltaTime() * playerSpeed;
-		}
-		else if(Gdx.input.isKeyPressed(Keys.S)) {
-	    		playerY -= Gdx.graphics.getDeltaTime() * playerSpeed;
-		}*/
+		
 		return playerX;
 	}
 	
 	protected float movePlayerY(float playerY, float playerSpeed) {
-		/*if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}
-		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}
-		else if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}
-		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}*/
-		/*if(Gdx.input.isKeyPressed(Keys.A)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed;
-		}
-		else if(Gdx.input.isKeyPressed(Keys.D)) {
-	    	playerX += Gdx.graphics.getDeltaTime() * playerSpeed;
-		}*/
+		
 		if(Gdx.input.isKeyPressed(Keys.W)) {
 	    	playerY += Gdx.graphics.getDeltaTime() * playerSpeed;
 		}
@@ -100,59 +59,18 @@ public class Utils {
 	
 	// Function used to reposition player if out of bounds
 	protected float resetPlayerAtXBound(int x, int MAX_X) {
-		/*if (x - MAX_X > 0 && y - MAX_Y > 0) {
-			playerX = MAX_X;
-			playerY = MAX_Y;
-		}
-		else if (x <= 0 && y - MAX_Y > 0) {
-			playerX = 0;
-			playerY = MAX_Y;
-		}
-		else if (x - MAX_X > 0 && y <= 0) {
-			playerX = MAX_X;
-			playerY = 0;
-		}
-		else if (x <= 0 && y <= 0) {
-			playerX = 0;
-			playerY = 0;
-		}*/
+		
 		if (x - MAX_X > 0) {
 			return MAX_X;
 		}
 		else if (x <= 0) {
 			return 0;
 		}
-		/*else if (y - MAX_Y > 0) {
-			playerY = MAX_Y;
-		}
-		else if (y <= 0) {
-			playerY = 0;
-		}*/
+		
 		return x;
 	}
 	protected float resetPlayerAtYBound(int y, int MAX_Y) {
-		/*if (x - MAX_X > 0 && y - MAX_Y > 0) {
-			playerX = MAX_X;
-			playerY = MAX_Y;
-		}
-		else if (x <= 0 && y - MAX_Y > 0) {
-			playerX = 0;
-			playerY = MAX_Y;
-		}
-		else if (x - MAX_X > 0 && y <= 0) {
-			playerX = MAX_X;
-			playerY = 0;
-		}
-		else if (x <= 0 && y <= 0) {
-			playerX = 0;
-			playerY = 0;
-		}*/
-		/*if (x - MAX_X > 0) {
-			return MAX_X;
-		}
-		else if (x <= 0) {
-			return 0;
-		}*/
+		
 		if (y - MAX_Y > 0) {
 			return MAX_Y;
 		}
@@ -170,6 +88,22 @@ public class Utils {
 	
 	protected int getPlayerCenter(int coordinate, int offSet) {
 		return coordinate + offSet;
+	}
+	
+	protected float getPlayerGunCoord(float coordinate, float offSet, boolean isX) {
+	    //return coordniate of the tip of the gun barrel
+	    if (isX) {
+	        return coordinate + offSet;
+	    }
+	    else {
+	        return coordinate + offSet;
+	    }
+	}
+	
+	protected Sprite fireGun(float x, float y) {
+	    FileHandle paintBallHandle = Gdx.files.internal("redPaintball.png");
+	    Texture backgroundTexture = new Texture(paintBallHandle);
+	    return new Sprite(backgroundTexture);
 	}
 	
 	protected float getMouseAngle(int playerX, int playerY, int offSetX, int offSetY) {
@@ -194,8 +128,8 @@ public class Utils {
 	protected Sprite rotateSprite(float rotation, Sprite player, int offSetX, int offSetY) {
 		player.setOrigin(offSetX, offSetY);
 		player.setRotation(rotation);
-		System.out.println("ROTATION: " + rotation + ";" + "OriginX: " + player.getOriginX() + ";" + "OriginY: " + player.getOriginY() + ";" + "GetRotation: " + player.getRotation());
-		System.out.println("Mouse X: " + Gdx.input.getX() + " Mouse Y: " + Gdx.input.getY());
+		//System.out.println("ROTATION: " + rotation + ";" + "OriginX: " + player.getOriginX() + ";" + "OriginY: " + player.getOriginY() + ";" + "GetRotation: " + player.getRotation());
+		//System.out.println("Mouse X: " + Gdx.input.getX() + " Mouse Y: " + Gdx.input.getY());
 		return player;
 	}
 }
