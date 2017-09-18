@@ -20,11 +20,13 @@ public class SpeedBall extends ApplicationAdapter {
 	private static final int PLAYER_HEIGHT = 52;
 	private static final int PLAYER_CENTER_WIDTH = PLAYER_WIDTH / 2;
 	private static final int PLAYER_CENTER_HEIGHT = PLAYER_HEIGHT / 2;
+	private static final float WALK_SPEED = 150.0f;
+	private static final float SPRINT_SPEED = 230.0f;
 	
 	Utils utils = new Utils();
 	SpriteBatch batch;
 	Texture img;
-	float playerSpeed = 200.0f;
+	float playerSpeed;
 	private Sprite player;
 	private Sprite background;
 	float playerX;
@@ -43,7 +45,7 @@ public class SpeedBall extends ApplicationAdapter {
 	// Player moves faster when moving diagonally
 	public void render () {
 		//checks to make sure player is in bounds, and calls movePlayer
-		checkAndMovePlayer((int)playerX, (int)playerY, MAX_X, MAX_Y, playerSpeed);
+		checkAndMovePlayer((int)playerX, (int)playerY, MAX_X, MAX_Y);
 		
 	    Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -58,7 +60,7 @@ public class SpeedBall extends ApplicationAdapter {
 		batch.end();
 		
 		//test prints
-		utils.test();
+		test();
 	}
 	
 	@Override
@@ -67,15 +69,25 @@ public class SpeedBall extends ApplicationAdapter {
 		img.dispose();
 	}
 	
-	private void checkAndMovePlayer(int x, int y, int maxX, int maxY, float playerSpeed) {
+	private void checkAndMovePlayer(int x, int y, int maxX, int maxY) {
+		playerSpeed = utils.setPlayerSpeed(SPRINT_SPEED, WALK_SPEED);
 		if (utils.playerInBounds(x, y, maxX, maxY)) {
-			playerX =utils.movePlayerX(x, playerSpeed);
-			playerY = utils.movePlayerY(y, playerSpeed);
+			float[] playerXY = utils.movePlayer(x, y, playerSpeed);
+			playerX = playerXY[0];
+			playerY = playerXY[1];
+//			playerX = utils.movePlayerX(x, playerSpeed);
+//			playerY = utils.movePlayerY(y, playerSpeed);
 		}
 		else {
 			playerX = utils.resetPlayerAtXBound(x, maxX);
 			playerY = utils.resetPlayerAtYBound(y, maxY);
 		}
 	}
+	
+	//Print statements to run in loops
+	protected void test() {
+		//System.out.println("playerSpeed: " + playerSpeed);
+	}
+	
 	
 }
