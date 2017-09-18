@@ -27,34 +27,40 @@ public class Utils {
 	 * Player Inputs = WASD keys
 	 */
 	protected float[] movePlayer(float playerX, float playerY, float playerSpeed) {
-		float[] array = new float[2]; 
+		float[] array = new float[2];
+		float dt = Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
+			playerX -= dt * playerSpeed/2;
+			playerY += dt * playerSpeed/2;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
+			playerX += dt * playerSpeed;
+			playerY += dt * playerSpeed/2;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
+			playerX -= dt * playerSpeed/2;
+			playerY -= dt * playerSpeed/2;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
+			playerX += dt * playerSpeed/2;
+			playerY -= dt * playerSpeed/2;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.W)) {
-	    	playerY += Gdx.graphics.getDeltaTime() * playerSpeed;
+	    	playerY += dt * playerSpeed;
 		}
+		/*
+		 * ISSUE: Not sure why but halving playerSpeed when subtracting the value makes player move same
+		 * speed forwards and backwards
+		 * But sprinting no longer works when halving playerSpeed
+		 */
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
-	    	playerY -= Gdx.graphics.getDeltaTime() * playerSpeed;
+	    	playerY -= dt * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.A)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed;
+			playerX -= dt * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.D)) {
-	    	playerX += Gdx.graphics.getDeltaTime() * playerSpeed;
+	    	playerX += dt * playerSpeed;
 		}
 		array[0] = playerX;
 		array[1] = playerY;
