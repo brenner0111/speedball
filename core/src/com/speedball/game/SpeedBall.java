@@ -14,14 +14,14 @@ import com.speedball.game.Utils;
  *
  */
 public class SpeedBall extends ApplicationAdapter {
-	private static final int MAX_X = 1000;
-	private static final int MAX_Y = 645;
+	private static final float MAX_X = 1000f;
+	private static final float MAX_Y = 645f;
 	private static final int PLAYER_WIDTH = 80;
 	private static final int PLAYER_HEIGHT = 52;
 	private static final int PLAYER_CENTER_WIDTH = PLAYER_WIDTH / 2;
 	private static final int PLAYER_CENTER_HEIGHT = PLAYER_HEIGHT / 2;
 	private static final float WALK_SPEED = 150.0f;
-	private static final float SPRINT_SPEED = 230.0f;
+	private static final float SPRINT_SPEED = 200.0f;
 	
 	Utils utils = new Utils();
 	SpriteBatch batch;
@@ -37,15 +37,15 @@ public class SpeedBall extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		player = utils.createPlayerSprite();
 		background = utils.createBackgroundSprite();
-		playerX = 0;
-		playerY = 0;
+		playerX = 0.0f;
+		playerY = 0.0f;
 	}
 
 	@Override
 	// Player moves faster when moving diagonally
 	public void render () {
 		//checks to make sure player is in bounds, and calls movePlayer
-		checkAndMovePlayer((int)playerX, (int)playerY, MAX_X, MAX_Y);
+		checkAndMovePlayer(playerX, playerY, MAX_X, MAX_Y);
 		
 	    Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -69,14 +69,12 @@ public class SpeedBall extends ApplicationAdapter {
 		img.dispose();
 	}
 	
-	private void checkAndMovePlayer(int x, int y, int maxX, int maxY) {
+	private void checkAndMovePlayer(float x, float y, float maxX, float maxY) {
 		playerSpeed = utils.setPlayerSpeed(SPRINT_SPEED, WALK_SPEED);
 		if (utils.playerInBounds(x, y, maxX, maxY)) {
 			float[] playerXY = utils.movePlayer(x, y, playerSpeed);
 			playerX = playerXY[0];
 			playerY = playerXY[1];
-//			playerX = utils.movePlayerX(x, playerSpeed);
-//			playerY = utils.movePlayerY(y, playerSpeed);
 		}
 		else {
 			playerX = utils.resetPlayerAtXBound(x, maxX);

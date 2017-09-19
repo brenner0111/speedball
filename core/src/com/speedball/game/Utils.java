@@ -29,38 +29,34 @@ public class Utils {
 	protected float[] movePlayer(float playerX, float playerY, float playerSpeed) {
 		float[] array = new float[2];
 		float dt = Gdx.graphics.getDeltaTime();
+		float halfPlayerSpeed = (playerSpeed * 0.7f);
 		if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX -= dt * playerSpeed/2;
-			playerY += dt * playerSpeed/2;
+			playerX -= dt * halfPlayerSpeed;
+			playerY += dt * halfPlayerSpeed;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX += dt * playerSpeed;
-			playerY += dt * playerSpeed/2;
+			playerX += dt * halfPlayerSpeed;
+			playerY += dt * halfPlayerSpeed;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX -= dt * playerSpeed/2;
-			playerY -= dt * playerSpeed/2;
+			playerX -= dt * halfPlayerSpeed;
+			playerY -= dt * halfPlayerSpeed;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX += dt * playerSpeed/2;
-			playerY -= dt * playerSpeed/2;
+			playerX += dt * halfPlayerSpeed;
+			playerY -= dt * halfPlayerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.W)) {
-	    	playerY += dt * playerSpeed;
+	    		playerY += dt * playerSpeed;
 		}
-		/*
-		 * ISSUE: Not sure why but halving playerSpeed when subtracting the value makes player move same
-		 * speed forwards and backwards
-		 * But sprinting no longer works when halving playerSpeed
-		 */
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
-	    	playerY -= dt * playerSpeed;
+			playerY -= dt * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.A)) {
 			playerX -= dt * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.D)) {
-	    	playerX += dt * playerSpeed;
+			playerX += dt * playerSpeed;
 		}
 		array[0] = playerX;
 		array[1] = playerY;
@@ -71,7 +67,7 @@ public class Utils {
 		return array;
 	}
 	
-	protected boolean playerInBounds(int x, int y, int MAX_X, int MAX_Y) {
+	protected boolean playerInBounds(float x, float y, float MAX_X, float MAX_Y) {
 		if (x >= 0 && x <= MAX_X && y >= 0 && y <= MAX_Y) {
 			return true;
 		}
@@ -79,7 +75,7 @@ public class Utils {
 	}
 	
 	// Function used to reposition player if out of bounds
-	protected float resetPlayerAtXBound(int x, int MAX_X) {
+	protected float resetPlayerAtXBound(float x, float MAX_X) {
 		if (x - MAX_X > 0) {
 			return MAX_X;
 		}
@@ -88,7 +84,7 @@ public class Utils {
 		}
 		return x;
 	}
-	protected float resetPlayerAtYBound(int y, int MAX_Y) {
+	protected float resetPlayerAtYBound(float y, float MAX_Y) {
 		if (y - MAX_Y > 0) {
 			return MAX_Y;
 		}
