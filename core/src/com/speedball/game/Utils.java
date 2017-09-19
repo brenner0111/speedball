@@ -26,6 +26,7 @@ public class Utils {
 	 * Function that determines the player's x and y position.
 	 * Player Inputs = WASD keys
 	 */
+
 	protected float[] movePlayer(float playerX, float playerY, float playerSpeed) {
 		float[] array = new float[2];
 		float dt = Gdx.graphics.getDeltaTime();
@@ -60,10 +61,6 @@ public class Utils {
 		}
 		array[0] = playerX;
 		array[1] = playerY;
-		System.out.println("------------UTILS-------------");
-		System.out.println("playerSpeed: " + playerSpeed);
-		System.out.println("playerX Utils: " + playerX);
-		System.out.println("playerY Utils: " + playerY);
 		return array;
 	}
 	
@@ -84,6 +81,7 @@ public class Utils {
 		}
 		return x;
 	}
+  
 	protected float resetPlayerAtYBound(float y, float MAX_Y) {
 		if (y - MAX_Y > 0) {
 			return MAX_Y;
@@ -97,6 +95,7 @@ public class Utils {
 	protected int getPlayerCenter(int coordinate, int offSet) {
 		return coordinate + offSet;
 	}
+	
 	
 	protected float getMouseAngle(int playerX, int playerY, int offSetX, int offSetY) {
 		int xCenter = getPlayerCenter((int)playerX, offSetX);
