@@ -1,14 +1,14 @@
 package com.speedball.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.speedball.game.Utils;
 
 /**
  * Testing committing to Git with Eclipse
@@ -22,16 +22,19 @@ public class SpeedBall extends ApplicationAdapter {
 	private static final int PLAYER_HEIGHT = 52;
 	private static final int PLAYER_CENTER_WIDTH = PLAYER_WIDTH / 2;
 	private static final int PLAYER_CENTER_HEIGHT = PLAYER_HEIGHT / 2;
-	private static final int PLAYER_GUN_HEIGHT = 10;
+	private static final int PLAYER_GUN_HEIGHT = 9;
 	private static final int PLAYER_GUN_WIDTH = 70;
 	
+	
 	Utils utils = new Utils();
+	GunUtils gunUtils = new GunUtils();
 	SpriteBatch batch;
 	Texture img;
 	float playerSpeed = 200.0f;
 	private Sprite player;
 	private Sprite background;
-	private Sprite paintball;
+	private ArrayList<Sprite> paintballs;
+	private int paintballCounter;
 	float playerX;
 	float playerY;
 	float gunX;
@@ -42,6 +45,8 @@ public class SpeedBall extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		player = utils.createPlayerSprite();
 		background = utils.createBackgroundSprite();
+		paintballCounter = -1;
+		paintballs = new ArrayList<Sprite>();
 		playerX = 0;
 		playerY = 0;
 	}
@@ -59,21 +64,22 @@ public class SpeedBall extends ApplicationAdapter {
 		batch.begin();
 		background.setBounds(0, 0, 1080, 720);
 		background.draw(batch);
+		gunUtils.drawPaintballs(batch, paintballs);
 		player.setBounds((int)playerX, (int)playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
 		float angle = utils.getMouseAngle((int)playerX, (int)playerY, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
 		player = utils.rotateSprite(angle, player, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
 		player.draw(batch);
 		if(checkAndFireGun()) {
-		    paintball.setBounds(gunX, gunY, 10, 10);
-		    paintball.draw(batch);
+			
+			paintballs.get(paintballCounter).setBounds(gunX, gunY, 10, 10);
+			paintballs.set(paintballCounter, utils.rotateSprite(angle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT));
+			paintballs.get(paintballCounter).draw(batch);
 		}
 		System.out.println("GunX: " + gunX + " GunY: " + gunY);
 		System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
 		
 		batch.end();
 		
-		//test prints
-		utils.test();
 	}
 	
 	@Override
@@ -84,9 +90,10 @@ public class SpeedBall extends ApplicationAdapter {
 	
 	private boolean checkAndFireGun() {
 	    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-	        gunX = utils.getPlayerGunCoord(playerX, PLAYER_GUN_WIDTH, true);
-	        gunY = utils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);
-	        paintball = utils.fireGun(gunX, gunY);
+	        gunX = gunUtils.getPlayerGunCoord(playerX, PLAYER_GUN_WIDTH, true);
+	        gunY = gunUtils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);
+	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY));
+	        paintballCounter++;
 	        return true;
 	    }
 	   return false;

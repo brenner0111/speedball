@@ -80,31 +80,10 @@ public class Utils {
 		return y;
 	}
 	
-	
-	//Print statements to run in loops
-	protected void test() {
-
-	}
-	
 	protected int getPlayerCenter(int coordinate, int offSet) {
 		return coordinate + offSet;
 	}
 	
-	protected float getPlayerGunCoord(float coordinate, float offSet, boolean isX) {
-	    //return coordniate of the tip of the gun barrel
-	    if (isX) {
-	        return coordinate + offSet;
-	    }
-	    else {
-	        return coordinate + offSet;
-	    }
-	}
-	
-	protected Sprite fireGun(float x, float y) {
-	    FileHandle paintBallHandle = Gdx.files.internal("redPaintball.png");
-	    Texture backgroundTexture = new Texture(paintBallHandle);
-	    return new Sprite(backgroundTexture);
-	}
 	
 	protected float getMouseAngle(int playerX, int playerY, int offSetX, int offSetY) {
 		int xCenter = getPlayerCenter((int)playerX, offSetX);
@@ -128,8 +107,6 @@ public class Utils {
 	protected Sprite rotateSprite(float rotation, Sprite player, int offSetX, int offSetY) {
 		player.setOrigin(offSetX, offSetY);
 		player.setRotation(rotation);
-		//System.out.println("ROTATION: " + rotation + ";" + "OriginX: " + player.getOriginX() + ";" + "OriginY: " + player.getOriginY() + ";" + "GetRotation: " + player.getRotation());
-		//System.out.println("Mouse X: " + Gdx.input.getX() + " Mouse Y: " + Gdx.input.getY());
 		return player;
 	}
 }
