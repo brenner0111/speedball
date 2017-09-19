@@ -16,21 +16,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  */
 public class SpeedBall extends ApplicationAdapter {
-	private static final int MAX_X = 1000;
-	private static final int MAX_Y = 645;
+	private static final float MAX_X = 1000f;
+	private static final float MAX_Y = 645f;
 	private static final int PLAYER_WIDTH = 80;
 	private static final int PLAYER_HEIGHT = 52;
 	private static final int PLAYER_CENTER_WIDTH = PLAYER_WIDTH / 2;
 	private static final int PLAYER_CENTER_HEIGHT = PLAYER_HEIGHT / 2;
 	private static final int PLAYER_GUN_HEIGHT = 9;
 	private static final int PLAYER_GUN_WIDTH = 70;
-	
-	
+	private static final float WALK_SPEED = 150.0f;
+	private static final float SPRINT_SPEED = 200.0f;
 	Utils utils = new Utils();
 	GunUtils gunUtils = new GunUtils();
 	SpriteBatch batch;
 	Texture img;
-	float playerSpeed = 200.0f;
+	float playerSpeed;
 	private Sprite player;
 	private Sprite background;
 	private ArrayList<Sprite> paintballs;
@@ -47,18 +47,20 @@ public class SpeedBall extends ApplicationAdapter {
 		background = utils.createBackgroundSprite();
 		paintballCounter = -1;
 		paintballs = new ArrayList<Sprite>();
-		playerX = 0;
-		playerY = 0;
+		playerX = 0.0f;
+		playerY = 0.0f;
+
 	}
 
 	@Override
 	// Player moves faster when moving diagonally
 	public void render () {
 		//checks to make sure player is in bounds, and calls movePlayer
-		checkAndMovePlayer((int)playerX, (int)playerY, MAX_X, MAX_Y, playerSpeed);
+		checkAndMovePlayer(playerX, playerY, MAX_X, MAX_Y);
 		
 		
-	    Gdx.gl.glClearColor(1, 0, 0, 1);
+		
+	        Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	
 		batch.begin();
@@ -77,9 +79,7 @@ public class SpeedBall extends ApplicationAdapter {
 		}
 		System.out.println("GunX: " + gunX + " GunY: " + gunY);
 		System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
-		
 		batch.end();
-		
 	}
 	
 	@Override
@@ -99,16 +99,23 @@ public class SpeedBall extends ApplicationAdapter {
 	   return false;
 	    
 	}
-	
-	private void checkAndMovePlayer(int x, int y, int maxX, int maxY, float playerSpeed) {
+
+	private void checkAndMovePlayer(float x, float y, float maxX, float maxY) {
+		playerSpeed = utils.setPlayerSpeed(SPRINT_SPEED, WALK_SPEED);
 		if (utils.playerInBounds(x, y, maxX, maxY)) {
-			playerX = utils.movePlayerX(x, playerSpeed);
-			playerY = utils.movePlayerY(y, playerSpeed);
+			float[] playerXY = utils.movePlayer(x, y, playerSpeed);
+			playerX = playerXY[0];
+			playerY = playerXY[1];
 		}
 		else {
 			playerX = utils.resetPlayerAtXBound(x, maxX);
 			playerY = utils.resetPlayerAtYBound(y, maxY);
 		}
+	}
+	
+	//Print statements to run in loops
+	protected void test() {
+		//System.out.println("playerSpeed: " + playerSpeed);
 	}
 	
 }
