@@ -26,72 +26,48 @@ public class Utils {
 	 * Function that determines the player's x and y position.
 	 * Player Inputs = WASD keys
 	 */
-	
-	protected float movePlayerX(float playerX, float playerSpeed) {
-		/*if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
+	protected float[] movePlayer(float playerX, float playerY, float playerSpeed) {
+		float[] array = new float[2];
+		float dt = Gdx.graphics.getDeltaTime();
+		float halfPlayerSpeed = (playerSpeed * 0.7f);
+		if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
+			playerX -= dt * halfPlayerSpeed;
+			playerY += dt * halfPlayerSpeed;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
+			playerX += dt * halfPlayerSpeed;
+			playerY += dt * halfPlayerSpeed;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
+			playerX -= dt * halfPlayerSpeed;
+			playerY -= dt * halfPlayerSpeed;
 		}
 		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}*/
-		if(Gdx.input.isKeyPressed(Keys.A)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed;
+			playerX += dt * halfPlayerSpeed;
+			playerY -= dt * halfPlayerSpeed;
 		}
-		else if(Gdx.input.isKeyPressed(Keys.D)) {
-	    	playerX += Gdx.graphics.getDeltaTime() * playerSpeed;
-		}
-		/*else if(Gdx.input.isKeyPressed(Keys.W)) {
-	    		playerY += Gdx.graphics.getDeltaTime() * playerSpeed;
+		else if(Gdx.input.isKeyPressed(Keys.W)) {
+	    		playerY += dt * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
-	    		playerY -= Gdx.graphics.getDeltaTime() * playerSpeed;
-		}*/
-		return playerX;
-	}
-	
-	protected float movePlayerY(float playerY, float playerSpeed) {
-		/*if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
+			playerY -= dt * playerSpeed;
 		}
-		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.W)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}
-		else if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}
-		else if (Gdx.input.isKeyPressed(Keys.D) && Gdx.input.isKeyPressed(Keys.S)) {
-			playerX += Gdx.graphics.getDeltaTime() * playerSpeed/2;
-			playerY -= Gdx.graphics.getDeltaTime() * playerSpeed/2;
-		}*/
-		/*if(Gdx.input.isKeyPressed(Keys.A)) {
-			playerX -= Gdx.graphics.getDeltaTime() * playerSpeed;
+		else if(Gdx.input.isKeyPressed(Keys.A)) {
+			playerX -= dt * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.D)) {
-	    	playerX += Gdx.graphics.getDeltaTime() * playerSpeed;
-		}*/
-		if(Gdx.input.isKeyPressed(Keys.W)) {
-	    	playerY += Gdx.graphics.getDeltaTime() * playerSpeed;
+			playerX += dt * playerSpeed;
 		}
-		else if(Gdx.input.isKeyPressed(Keys.S)) {
-	    	playerY -= Gdx.graphics.getDeltaTime() * playerSpeed;
-		}
-		return playerY;
+		array[0] = playerX;
+		array[1] = playerY;
+		System.out.println("------------UTILS-------------");
+		System.out.println("playerSpeed: " + playerSpeed);
+		System.out.println("playerX Utils: " + playerX);
+		System.out.println("playerY Utils: " + playerY);
+		return array;
 	}
 	
-	protected boolean playerInBounds(int x, int y, int MAX_X, int MAX_Y) {
+	protected boolean playerInBounds(float x, float y, float MAX_X, float MAX_Y) {
 		if (x >= 0 && x <= MAX_X && y >= 0 && y <= MAX_Y) {
 			return true;
 		}
@@ -99,60 +75,16 @@ public class Utils {
 	}
 	
 	// Function used to reposition player if out of bounds
-	protected float resetPlayerAtXBound(int x, int MAX_X) {
-		/*if (x - MAX_X > 0 && y - MAX_Y > 0) {
-			playerX = MAX_X;
-			playerY = MAX_Y;
-		}
-		else if (x <= 0 && y - MAX_Y > 0) {
-			playerX = 0;
-			playerY = MAX_Y;
-		}
-		else if (x - MAX_X > 0 && y <= 0) {
-			playerX = MAX_X;
-			playerY = 0;
-		}
-		else if (x <= 0 && y <= 0) {
-			playerX = 0;
-			playerY = 0;
-		}*/
+	protected float resetPlayerAtXBound(float x, float MAX_X) {
 		if (x - MAX_X > 0) {
 			return MAX_X;
 		}
 		else if (x <= 0) {
 			return 0;
 		}
-		/*else if (y - MAX_Y > 0) {
-			playerY = MAX_Y;
-		}
-		else if (y <= 0) {
-			playerY = 0;
-		}*/
 		return x;
 	}
-	protected float resetPlayerAtYBound(int y, int MAX_Y) {
-		/*if (x - MAX_X > 0 && y - MAX_Y > 0) {
-			playerX = MAX_X;
-			playerY = MAX_Y;
-		}
-		else if (x <= 0 && y - MAX_Y > 0) {
-			playerX = 0;
-			playerY = MAX_Y;
-		}
-		else if (x - MAX_X > 0 && y <= 0) {
-			playerX = MAX_X;
-			playerY = 0;
-		}
-		else if (x <= 0 && y <= 0) {
-			playerX = 0;
-			playerY = 0;
-		}*/
-		/*if (x - MAX_X > 0) {
-			return MAX_X;
-		}
-		else if (x <= 0) {
-			return 0;
-		}*/
+	protected float resetPlayerAtYBound(float y, float MAX_Y) {
 		if (y - MAX_Y > 0) {
 			return MAX_Y;
 		}
@@ -160,12 +92,6 @@ public class Utils {
 			return 0;
 		}
 		return y;
-	}
-	
-	
-	//Print statements to run in loops
-	protected void test() {
-
 	}
 	
 	protected int getPlayerCenter(int coordinate, int offSet) {
@@ -190,12 +116,22 @@ public class Utils {
 		
 		return (float)degrees;
 	} 
+	protected boolean isPlayerSprinting() {
+		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+			return true;
+		}
+		return false;
+	}
+	protected float setPlayerSpeed(float sprint, float walk) {
+		if (isPlayerSprinting()) {
+			return sprint;
+		}
+		return walk;
+	}
 	
 	protected Sprite rotateSprite(float rotation, Sprite player, int offSetX, int offSetY) {
 		player.setOrigin(offSetX, offSetY);
 		player.setRotation(rotation);
-		System.out.println("ROTATION: " + rotation + ";" + "OriginX: " + player.getOriginX() + ";" + "OriginY: " + player.getOriginY() + ";" + "GetRotation: " + player.getRotation());
-		System.out.println("Mouse X: " + Gdx.input.getX() + " Mouse Y: " + Gdx.input.getY());
 		return player;
 	}
 }
