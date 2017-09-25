@@ -78,8 +78,8 @@ public class SpeedBall extends ApplicationAdapter {
 			paintballs.set(paintballCounter, (PaintballSprite) utils.rotateSprite(angle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT));
 			paintballs.get(paintballCounter).draw(batch);
 		}
-		System.out.println("GunX: " + gunX + " GunY: " + gunY);
-		System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
+//		System.out.println("GunX: " + gunX + " GunY: " + gunY);
+//		System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
 		test();
 		batch.end();
 	}
@@ -96,9 +96,13 @@ public class SpeedBall extends ApplicationAdapter {
 	        gunX = gunUtils.getPlayerGunCoord(playerX, PLAYER_GUN_WIDTH, true);
 	        gunY = gunUtils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);
 	        float mouseX = Gdx.input.getX();
-	        float mouseY = Gdx.input.getY();
+	        float mouseY = Math.abs(720 - Gdx.input.getY());
+	        System.out.println("Gun X & Y: " + gunX + " " + gunY);
+	        System.out.println("Mouse X & Y: " + mouseX + " " + mouseY);
 	        float slope = (mouseY - gunY) / (mouseX - gunX);
-	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY, slope));
+	        int quadrant = gunUtils.checkQuadrant(gunX, gunY, mouseX, mouseY);
+	        System.out.println("Slope: " + slope);
+	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY, slope, quadrant));
 	        paintballCounter++;
 	        return true;
 	    }
@@ -121,11 +125,11 @@ public class SpeedBall extends ApplicationAdapter {
 	
 	//Print statements to run in loops
 	protected void test() {
-		System.out.println("paintballs AL: " + paintballs);
-		System.out.println("paintballs AL Length:" + paintballs.size());
-		if (paintballs.size() != 0) {
-			System.out.println("collided: " + paintballs.get(0).getCollided());
-		}
+//		System.out.println("paintballs AL: " + paintballs);
+//		System.out.println("paintballs AL Length:" + paintballs.size());
+//		if (paintballs.size() != 0) {
+//			System.out.println("collided: " + paintballs.get(0).getCollided());
+//		}
 	}
 	
 }
