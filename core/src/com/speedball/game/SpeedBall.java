@@ -78,8 +78,8 @@ public class SpeedBall extends ApplicationAdapter {
 			paintballs.set(paintballCounter, (PaintballSprite) utils.rotateSprite(angle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT));
 			paintballs.get(paintballCounter).draw(batch);
 		}
-		System.out.println("GunX: " + gunX + " GunY: " + gunY);
-		System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
+		//System.out.println("GunX: " + gunX + " GunY: " + gunY);
+		//System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
 		test();
 		batch.end();
 	}
@@ -97,6 +97,7 @@ public class SpeedBall extends ApplicationAdapter {
 	        gunY = gunUtils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);
 	        float mouseX = Gdx.input.getX();
 	        float mouseY = Gdx.input.getY();
+	        System.out.println("MouseX: " + mouseX + " MouseY: " + mouseY);
 	        float slope = (mouseY - gunY) / (mouseX - gunX);
 	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY, slope));
 	        paintballCounter++;
