@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
  */
 public class PaintballSprite extends Sprite  {
 	private boolean collided;
-	public PaintballSprite(Texture backgroundTexture) {
+	private float slope;
+	public PaintballSprite(Texture backgroundTexture, float slope) {
 		super(backgroundTexture);
+		this.setSlope(slope);
 		this.collided = false;
 	}
 	public boolean getCollided() {
@@ -17,5 +19,11 @@ public class PaintballSprite extends Sprite  {
 	}
 	public void setCollided(boolean value) {
 		this.collided = value;
+	}
+	public float getSlope() {
+		return slope;
+	}
+	public void setSlope(float slope) {
+		this.slope = slope;
 	}
 }

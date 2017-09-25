@@ -26,6 +26,7 @@ public class SpeedBall extends ApplicationAdapter {
 	private static final int PLAYER_GUN_WIDTH = 70;
 	private static final float WALK_SPEED = 150.0f;
 	private static final float SPRINT_SPEED = 200.0f;
+	private static final float PAINTBALL_SPEED = 1.0f;
 
 	
 	Utils utils = new Utils();
@@ -60,14 +61,13 @@ public class SpeedBall extends ApplicationAdapter {
 		//checks to make sure player is in bounds, and calls movePlayer
 		checkAndMovePlayer(playerX, playerY, MAX_X, MAX_Y);
 		
-		
 	    Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	
 		batch.begin();
 		background.setBounds(0, 0, 1080, 720);
 		background.draw(batch);
-		gunUtils.drawPaintballs(batch, paintballs);
+		gunUtils.drawPaintballs(batch, paintballs, PAINTBALL_SPEED);
 		player.setBounds((int)playerX, (int)playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
 		float angle = utils.getMouseAngle((int)playerX, (int)playerY, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
 		player = utils.rotateSprite(angle, player, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
@@ -95,7 +95,10 @@ public class SpeedBall extends ApplicationAdapter {
 	    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 	        gunX = gunUtils.getPlayerGunCoord(playerX, PLAYER_GUN_WIDTH, true);
 	        gunY = gunUtils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);
-	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY));
+	        float mouseX = Gdx.input.getX();
+	        float mouseY = Gdx.input.getY();
+	        float slope = (mouseY - gunY) / (mouseX - gunX);
+	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY, slope));
 	        paintballCounter++;
 	        return true;
 	    }
