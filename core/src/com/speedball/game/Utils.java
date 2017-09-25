@@ -128,9 +128,9 @@ public class Utils {
 		return walk;
 	}
 	
-	protected Sprite rotateSprite(float rotation, Sprite player, int offSetX, int offSetY) {
-		player.setOrigin(offSetX, offSetY);
-		player.setRotation(rotation);
-		return player;
+	protected Sprite rotateSprite(float rotation, Sprite sprite, int offSetX, int offSetY) {
+		sprite.setOrigin(offSetX, offSetY);
+		sprite.setRotation(rotation);
+		return sprite;
 	}
 }

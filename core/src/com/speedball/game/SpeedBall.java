@@ -35,7 +35,7 @@ public class SpeedBall extends ApplicationAdapter {
 	float playerSpeed;
 	private Sprite player;
 	private Sprite background;
-	private ArrayList<Sprite> paintballs;
+	private ArrayList<PaintballSprite> paintballs;
 	private int paintballCounter;
 	float playerX;
 	float playerY;
@@ -48,7 +48,7 @@ public class SpeedBall extends ApplicationAdapter {
 		player = utils.createPlayerSprite();
 		background = utils.createBackgroundSprite();
 		paintballCounter = -1;
-		paintballs = new ArrayList<Sprite>();
+		paintballs = new ArrayList<PaintballSprite>();
 		playerX = 0.0f;
 		playerY = 0.0f;
 
@@ -75,12 +75,12 @@ public class SpeedBall extends ApplicationAdapter {
 		if(checkAndFireGun()) {
 			
 			paintballs.get(paintballCounter).setBounds(gunX, gunY, 10, 10);
-			paintballs.set(paintballCounter, utils.rotateSprite(angle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT));
+			paintballs.set(paintballCounter, (PaintballSprite) utils.rotateSprite(angle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT));
 			paintballs.get(paintballCounter).draw(batch);
 		}
 		System.out.println("GunX: " + gunX + " GunY: " + gunY);
 		System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
-		
+		test();
 		batch.end();
 	}
 	
@@ -118,7 +118,11 @@ public class SpeedBall extends ApplicationAdapter {
 	
 	//Print statements to run in loops
 	protected void test() {
-		//System.out.println("playerSpeed: " + playerSpeed);
+		System.out.println("paintballs AL: " + paintballs);
+		System.out.println("paintballs AL Length:" + paintballs.size());
+		if (paintballs.size() != 0) {
+			System.out.println("collided: " + paintballs.get(0).getCollided());
+		}
 	}
 	
 }

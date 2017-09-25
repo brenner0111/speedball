@@ -5,18 +5,18 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+//import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GunUtils {
 
-	protected Sprite createPaintballSprite(float x, float y) {
+	protected PaintballSprite createPaintballSprite(float x, float y) {
 	    FileHandle paintBallHandle = Gdx.files.internal("redPaintball.png");
 	    Texture backgroundTexture = new Texture(paintBallHandle);
-	    return new Sprite(backgroundTexture);
+	    return new PaintballSprite(backgroundTexture);
 	}
 	protected float getPlayerGunCoord(float coordinate, float offSet, boolean isX) {
-	    //return coordniate of the tip of the gun barrel
+	    //return coordinate of the tip of the gun barrel
 	    if (isX) {
 	        return coordinate + offSet;
 	    }
@@ -25,8 +25,8 @@ public class GunUtils {
 	    }
 	}
 	
-	protected void drawPaintballs(SpriteBatch b, ArrayList<Sprite> paintballs) {
-		for (Sprite paintball : paintballs) {
+	protected void drawPaintballs(SpriteBatch b, ArrayList<PaintballSprite> paintballs) {
+		for (PaintballSprite paintball : paintballs) {
 			paintball.draw(b);
 		}
 	}
