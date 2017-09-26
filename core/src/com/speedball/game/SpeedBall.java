@@ -27,6 +27,8 @@ public class SpeedBall extends ApplicationAdapter {
 	private static final float WALK_SPEED = 150.0f;
 	private static final float SPRINT_SPEED = 200.0f;
 	private static final float PAINTBALL_SPEED = 1.0f;
+	private static final float INIT_X = 0.0f;
+	private static final float INIT_Y = 0.0f;
 
 	
 	Utils utils = new Utils();
@@ -50,8 +52,8 @@ public class SpeedBall extends ApplicationAdapter {
 		background = utils.createBackgroundSprite();
 		paintballCounter = -1;
 		paintballs = new ArrayList<PaintballSprite>();
-		playerX = 0.0f;
-		playerY = 0.0f;
+		playerX = INIT_X;
+		playerY = INIT_Y;
 
 	}
 
@@ -70,8 +72,9 @@ public class SpeedBall extends ApplicationAdapter {
 		gunUtils.drawPaintballs(batch, paintballs, PAINTBALL_SPEED);
 		player.setBounds((int)playerX, (int)playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
 		float angle = utils.getMouseAngle((int)playerX, (int)playerY, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
-		player = utils.rotateSprite(angle, player, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
-		System.out.println("PlayerX: " + playerX + " PlayerY: " + playerY);
+		if (playerX != INIT_X || playerY != INIT_Y) {
+			player = utils.rotateSprite(angle, player, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
+		}
 		player.draw(batch);
 		if(checkAndFireGun()) {
 			
@@ -79,8 +82,6 @@ public class SpeedBall extends ApplicationAdapter {
 			paintballs.set(paintballCounter, (PaintballSprite) utils.rotateSprite(angle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT));
 			paintballs.get(paintballCounter).draw(batch);
 		}
-//		System.out.println("GunX: " + gunX + " GunY: " + gunY);
-//		System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
 
 		test();
 		batch.end();
@@ -99,11 +100,8 @@ public class SpeedBall extends ApplicationAdapter {
 	        gunY = gunUtils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);
 	        float mouseX = Gdx.input.getX();
 	        float mouseY = Math.abs(720 - Gdx.input.getY());
-	        System.out.println("Gun X & Y: " + gunX + " " + gunY);
-	        System.out.println("Mouse X & Y: " + mouseX + " " + mouseY);
 	        float slope = (mouseY - gunY) / (mouseX - gunX);
 	        int quadrant = gunUtils.checkQuadrant(gunX, gunY, mouseX, mouseY);
-	        System.out.println("Slope: " + slope);
 	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY, slope, quadrant));
 	        paintballCounter++;
 	        return true;
