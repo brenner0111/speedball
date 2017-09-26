@@ -71,6 +71,7 @@ public class SpeedBall extends ApplicationAdapter {
 		player.setBounds((int)playerX, (int)playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
 		float angle = utils.getMouseAngle((int)playerX, (int)playerY, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
 		player = utils.rotateSprite(angle, player, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
+		System.out.println("PlayerX: " + playerX + " PlayerY: " + playerY);
 		player.draw(batch);
 		if(checkAndFireGun()) {
 			
