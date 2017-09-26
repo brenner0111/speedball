@@ -26,6 +26,9 @@ public class SpeedBall extends ApplicationAdapter {
 	private static final int PLAYER_GUN_WIDTH = 70;
 	private static final float WALK_SPEED = 150.0f;
 	private static final float SPRINT_SPEED = 200.0f;
+	private static final float PAINTBALL_SPEED = 1.0f;
+	private static final float INIT_X = 0.0f;
+	private static final float INIT_Y = 0.0f;
 	Utils utils = new Utils();
 	GunUtils gunUtils = new GunUtils();
 	SpriteBatch batch;
@@ -33,7 +36,7 @@ public class SpeedBall extends ApplicationAdapter {
 	float playerSpeed;
 	private Sprite player;
 	private Sprite background;
-	private ArrayList<Sprite> paintballs;
+	private ArrayList<PaintballSprite> paintballs;
 	private int paintballCounter;
 	float playerX;
 	float playerY;
@@ -46,19 +49,18 @@ public class SpeedBall extends ApplicationAdapter {
 		player = utils.createPlayerSprite();
 		background = utils.createBackgroundSprite();
 		paintballCounter = -1;
-		paintballs = new ArrayList<Sprite>();
-		playerX = 0.0f;
-		playerY = 0.0f;
+		paintballs = new ArrayList<PaintballSprite>();
+		playerX = INIT_X;
+		playerY = INIT_Y;
 
 	}
 
 	@Override
 	// Player moves faster when moving diagonally
 	public void render () {
+	    
 		//checks to make sure player is in bounds, and calls movePlayer
 		checkAndMovePlayer(playerX, playerY, MAX_X, MAX_Y);
-		
-		
 		
 	        Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -66,19 +68,41 @@ public class SpeedBall extends ApplicationAdapter {
 		batch.begin();
 		background.setBounds(0, 0, 1080, 720);
 		background.draw(batch);
-		gunUtils.drawPaintballs(batch, paintballs);
+		gunUtils.drawPaintballs(batch, paintballs, PAINTBALL_SPEED);
 		player.setBounds((int)playerX, (int)playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
 		float angle = utils.getMouseAngle((int)playerX, (int)playerY, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
-		player = utils.rotateSprite(angle, player, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
+		//testing if updating player x and y with roation will help fix rotation for the gun 
+		/*float a_ = PLAYER_CENTER_WIDTH;
+        float b_ = PLAYER_CENTER_HEIGHT;
+        float playerRadius = (float) Math.sqrt(Math.pow(a_, 2) + Math.pow(b_, 2));
+        float playerRotatedX = (PLAYER_CENTER_WIDTH + playerX) + (playerRadius * (float)Math.cos(Math.toRadians(angle)));
+        float playerRotatedY = (PLAYER_CENTER_HEIGHT + playerY) + (playerRadius * (float)Math.sin(Math.toRadians(angle)));
+
+        System.out.println("Player Rotated X: " + playerRotatedX + " Player Rotated Y: " + playerRotatedY);
+		System.out.println("playerRadius: " + playerRadius);*/
+		
+		if (playerX != INIT_X || playerY != INIT_Y) {
+		    
+			player = utils.rotateSprite(angle, player, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT);
+		}
 		player.draw(batch);
 		if(checkAndFireGun()) {
-			
-			paintballs.get(paintballCounter).setBounds(gunX, gunY, 10, 10);
-			paintballs.set(paintballCounter, utils.rotateSprite(angle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT));
+		    //float gunRadius = PLAYER_GUN_WIDTH - PLAYER_CENTER_WIDTH;
+		    float b = PLAYER_GUN_WIDTH - PLAYER_CENTER_WIDTH;
+		    float a = PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT;
+		    float gunRadius = (float) Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+			float x =  (PLAYER_CENTER_WIDTH + playerX) + (gunRadius * (float)Math.cos(Math.toRadians(angle)));
+			float y = (PLAYER_CENTER_HEIGHT + playerY) + (gunRadius * (float)Math.sin(Math.toRadians(angle)));
+			/*float x =  (PLAYER_CENTER_WIDTH + playerRotatedX) + (gunRadius * (float)Math.cos(Math.toRadians(angle)));
+            float y = (PLAYER_CENTER_HEIGHT + playerRotatedY) + (gunRadius * (float)Math.sin(Math.toRadians(angle)));*/
+			float diff = PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT;
+			y = y - diff;
+			paintballs.get(paintballCounter).setBounds(x, y, 10, 10);
+			//paintballs.set(paintballCounter, (PaintballSprite) utils.rotateSprite(angle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT));
 			paintballs.get(paintballCounter).draw(batch);
 		}
-		System.out.println("GunX: " + gunX + " GunY: " + gunY);
-		System.out.println("PlayerX " + playerX + " PlayerY" + playerY);
+
+		test();
 		batch.end();
 	}
 	
@@ -92,7 +116,11 @@ public class SpeedBall extends ApplicationAdapter {
 	    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 	        gunX = gunUtils.getPlayerGunCoord(playerX, PLAYER_GUN_WIDTH, true);
 	        gunY = gunUtils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);
-	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY));
+	        float mouseX = Gdx.input.getX();
+	        float mouseY = Math.abs(720 - Gdx.input.getY());
+	        float slope = (mouseY - gunY) / (mouseX - gunX);
+	        int quadrant = gunUtils.checkQuadrant(gunX, gunY, mouseX, mouseY);
+	        paintballs.add(gunUtils.createPaintballSprite(gunX, gunY, slope, quadrant));
 	        paintballCounter++;
 	        return true;
 	    }
@@ -115,7 +143,11 @@ public class SpeedBall extends ApplicationAdapter {
 	
 	//Print statements to run in loops
 	protected void test() {
-		//System.out.println("playerSpeed: " + playerSpeed);
+//		System.out.println("paintballs AL: " + paintballs);
+//		System.out.println("paintballs AL Length:" + paintballs.size());
+//		if (paintballs.size() != 0) {
+//			System.out.println("collided: " + paintballs.get(0).getCollided());
+//		}
 	}
 	
 }
