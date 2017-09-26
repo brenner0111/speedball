@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GunUtils {
+    
+    private static final float PBALL_DIST_CAP = 10.0f;
 
 	protected PaintballSprite createPaintballSprite(float x, float y, float slope, int quadrant) {
 	    FileHandle paintBallHandle = Gdx.files.internal("redPaintball.png");
@@ -38,23 +40,36 @@ public class GunUtils {
 	 */
 	protected void updatePaintballXY(PaintballSprite paintball, float paintballSpeed, int quadrant) {
 		float slope = Math.abs(paintball.getSlope());
+		float r = (float)Math.sqrt(1 + Math.pow(slope, 2));
+		float x = 0.0f;
+		float y = 0.0f;
+		
 		if (quadrant == 1) {
-			paintball.setX(paintball.getX() + paintballSpeed);
-			paintball.setY(paintball.getY() + paintballSpeed * slope);
+		    x = paintball.getX() + (PBALL_DIST_CAP/r);
+		    y = paintball.getY() + ((PBALL_DIST_CAP*slope)/r);
+		    paintball.setX(x);
+            paintball.setY(y);
 		}
 		else if (quadrant == 2) {
-			paintball.setX(paintball.getX() - paintballSpeed);
-			paintball.setY(paintball.getY() + paintballSpeed * slope);
+		    x = paintball.getX() - (PBALL_DIST_CAP/r);
+		    y = paintball.getY() + ((PBALL_DIST_CAP*slope)/r);
+		    paintball.setX(x);
+            paintball.setY(y);
 		}
 		else if (quadrant == 3) {
-			paintball.setX(paintball.getX() - paintballSpeed);
-			paintball.setY(paintball.getY() - paintballSpeed * slope);
+		    x = paintball.getX() - (PBALL_DIST_CAP/r);
+	        y = paintball.getY() - ((PBALL_DIST_CAP*slope)/r);
+		    paintball.setX(x);
+            paintball.setY(y);
 		}
 		else {
-			paintball.setX(paintball.getX() + paintballSpeed);
-			paintball.setY(paintball.getY() - paintballSpeed * slope);
+		    x = paintball.getX() + (PBALL_DIST_CAP/r);
+		    y = paintball.getY() - ((PBALL_DIST_CAP*slope)/r);
+		    paintball.setX(x);
+            paintball.setY(y);
 		}
 	}
+	
 	protected int checkQuadrant(float gunX, float gunY, float mouseX, float mouseY) {
 		if (mouseX < gunX && mouseY < gunY) {
 			return 3;

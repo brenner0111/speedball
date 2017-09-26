@@ -15,6 +15,7 @@ public class Utils {
 	protected Sprite createPlayerSprite() {
 		FileHandle playerFileHandle = Gdx.files.internal("shotgun/idle/survivor-idle_shotgun_0.png");
 		//FileHandle playerFileHandle = Gdx.files.internal("red-rectangle-md.png");
+	    //FileHandle playerFileHandle = Gdx.files.internal("survivor-idle_shotgun_test.png");
 		Texture playerTexture = new Texture(playerFileHandle);
 		return new Sprite(playerTexture);
 	}
@@ -134,4 +135,5 @@ public class Utils {
 		sprite.setRotation(rotation);
 		return sprite;
 	}
+	
 }
