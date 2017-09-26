@@ -14,6 +14,7 @@ public class Utils {
 	
 	protected Sprite createPlayerSprite() {
 		FileHandle playerFileHandle = Gdx.files.internal("shotgun/idle/survivor-idle_shotgun_0.png");
+		//FileHandle playerFileHandle = Gdx.files.internal("red-rectangle-md.png");
 		Texture playerTexture = new Texture(playerFileHandle);
 		return new Sprite(playerTexture);
 	}
