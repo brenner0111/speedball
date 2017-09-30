@@ -48,9 +48,11 @@ public class SpeedBall extends ApplicationAdapter {
 	private float gunX;
 	private float gunY;
 	private float mouseAngle;
+
 	private Cursor customCursor;
 	private Texture cursor;
 	
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -63,6 +65,7 @@ public class SpeedBall extends ApplicationAdapter {
 		cursor = new Texture("crossHair.PNG");
 		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
 		Gdx.graphics.setCursor(customCursor);
+
 	}
 
 	@Override
