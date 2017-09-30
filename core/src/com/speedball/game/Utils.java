@@ -15,7 +15,7 @@ public class Utils {
 	protected Sprite createPlayerSprite() {
 		//FileHandle playerFileHandle = Gdx.files.internal("shotgun/idle/survivor-idle_shotgun_0.png");
 		//FileHandle playerFileHandle = Gdx.files.internal("red-rectangle-md.png");
-	    FileHandle playerFileHandle = Gdx.files.internal("survivor-idle_shotgun_test.png");
+	    FileHandle playerFileHandle = Gdx.files.internal("playerNewSize.png");
 		Texture playerTexture = new Texture(playerFileHandle);
 		return new Sprite(playerTexture);
 	}
@@ -97,7 +97,6 @@ public class Utils {
 		return coordinate + offSet;
 	}
 	
-	
 	protected float getMouseAngle(float playerX, float playerY, float offSetX, float offSetY) {
 		float xCenter = getPlayerCenter(playerX, offSetX);
 		float yCenter = getPlayerCenter(playerY, offSetY);
@@ -130,9 +129,6 @@ public class Utils {
 	}
 	
 	protected Sprite rotateSprite(float angle, Sprite sprite, float offSetX, float offSetY, float playerX, float playerY) {
-		
-		
-
 		sprite.setOrigin(offSetX, offSetY);
 		sprite.setRotation(angle);
 		return sprite;

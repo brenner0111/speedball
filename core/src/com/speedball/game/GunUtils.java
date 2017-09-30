@@ -88,19 +88,7 @@ public class GunUtils {
 			
 		}
 	}
-	
-//	protected int checkQuadrant(float gunX, float gunY, float mouseX, float mouseY) {
-//		if (mouseX < gunX && mouseY < gunY) {
-//			return 3;
-//		}
-//		else if (mouseX < gunX && mouseY > gunY) {
-//			return 2;
-//		}
-//		else if (mouseX > gunX && mouseY < gunY) {
-//			return 4;
-//		}
-//		return 1;
-//	}
+
 	protected int checkQuadrant(float angle) {
 		if (angle > 0.0f && angle < 90.0f) {
 			return 1;
@@ -147,27 +135,12 @@ public class GunUtils {
 		
 		return (float)degrees;
 	} 
-//	protected float getSlope(float gunX, float gunY, float mouseX, float mouseY) {
-//		 float slope = (mouseY - gunY) / (mouseX - gunX);
-//		 return slope;
-//	}
-//	protected PaintballSprite rotatePaintball(float rotation, PaintballSprite sprite, float offSetX, float offSetY, float gunX, float gunY, float originX, float originY) {
-//		sprite.setOrigin(offSetX, offSetY);
-//		float newGunX = calcGunX(gunX, gunY, rotation, originX, originY);
-//		float newGunY = calcGunY(gunX, gunY, rotation, originX, originY);
-//		sprite.setRotatedX(newGunX);
-//		sprite.setRotatedY(newGunY);
-//		sprite.setRotation(rotation);
-//		return sprite;
-//	}
-//	protected float calcGunX(float gunX, float gunY, float rotation, float originX, float originY) {
-//		float newGunX = ((float)Math.cos(Math.toRadians(rotation)) * (gunX- originX) - ((float)Math.sin(Math.toRadians(rotation)) * (gunY - originY)));
-//		newGunX = newGunX + originX;
-//		return newGunX;
-//	}
-//	protected float calcGunY(float gunX, float gunY, float rotation, float originX, float originY) {
-//		float newGunY = ((float)Math.sin(Math.toRadians(rotation)) * (gunX- originX) + ((float)Math.cos(Math.toRadians(rotation)) * (gunY - originY)));
-//		newGunY = newGunY + originY;
-//		return newGunY;
-//	}
+	
+	protected float[] updateRealGunXY(float angle, float centerX, float centerY, float gunRadius) {
+	    float[] coords = new float[2];
+	    coords[0] = centerX + (float)(gunRadius * Math.cos(Math.toRadians(angle)));
+        coords[1] = centerY + (float)(gunRadius * Math.sin(Math.toRadians(angle)));
+	    return coords;
+	}
+
 }
