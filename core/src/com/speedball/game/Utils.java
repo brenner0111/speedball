@@ -11,9 +11,11 @@ public class Utils {
 	 * Begin utility functions
 	 * TODO: Possibly move to separate utility class
 	 */
-	
+
 	protected Sprite createPlayerSprite() {
-		FileHandle playerFileHandle = Gdx.files.internal("shotgun/idle/survivor-idle_shotgun_0.png");
+		//FileHandle playerFileHandle = Gdx.files.internal("shotgun/idle/survivor-idle_shotgun_0.png");
+		//FileHandle playerFileHandle = Gdx.files.internal("red-rectangle-md.png");
+	    FileHandle playerFileHandle = Gdx.files.internal("playerNewSize.png");
 		Texture playerTexture = new Texture(playerFileHandle);
 		return new Sprite(playerTexture);
 	}
@@ -26,7 +28,6 @@ public class Utils {
 	 * Function that determines the player's x and y position.
 	 * Player Inputs = WASD keys
 	 */
-
 	protected float[] movePlayer(float playerX, float playerY, float playerSpeed) {
 		float[] array = new float[2];
 		float dt = Gdx.graphics.getDeltaTime();
@@ -92,18 +93,17 @@ public class Utils {
 		return y;
 	}
 	
-	protected int getPlayerCenter(int coordinate, int offSet) {
+	protected float getPlayerCenter(float coordinate, float offSet) {
 		return coordinate + offSet;
 	}
 	
-	
-	protected float getMouseAngle(int playerX, int playerY, int offSetX, int offSetY) {
-		int xCenter = getPlayerCenter((int)playerX, offSetX);
-		int yCenter = getPlayerCenter((int)playerY, offSetY);
-		int xCursor = Gdx.input.getX();
-		int yCursor = Math.abs(720 - Gdx.input.getY());
-		int deltaX = xCursor - xCenter;
-		int deltaY = yCenter - yCursor;
+	protected float getMouseAngle(float playerX, float playerY, float offSetX, float offSetY) {
+		float xCenter = getPlayerCenter(playerX, offSetX);
+		float yCenter = getPlayerCenter(playerY, offSetY);
+		float xCursor = Gdx.input.getX();
+		float yCursor = Math.abs(720 - Gdx.input.getY());
+		float deltaX = xCursor - xCenter;
+		float deltaY = yCenter - yCursor;
 		double theta_radians = Math.atan2(deltaY, deltaX);
 		double degrees = Math.toDegrees(theta_radians);
 		if (degrees < 0) {
@@ -128,9 +128,28 @@ public class Utils {
 		return walk;
 	}
 	
-	protected Sprite rotateSprite(float rotation, Sprite player, int offSetX, int offSetY) {
-		player.setOrigin(offSetX, offSetY);
-		player.setRotation(rotation);
-		return player;
+	protected Sprite rotateSprite(float angle, Sprite sprite, float offSetX, float offSetY, float playerX, float playerY) {
+		sprite.setOrigin(offSetX, offSetY);
+		sprite.setRotation(angle);
+		return sprite;
+	}
+	
+	protected float updatePlayerX(float playerX, float playerY, float angle, float originX, float radius) {
+		//return playerX + originX + (radius * (float) Math.sin(Math.toRadians(angle)));
+		float s = (float)Math.sin(Math.toRadians(angle));
+		float c = (float)Math.cos(Math.toRadians(angle));
+		playerX -= originX;
+		float newX = (playerX * c) - (playerY * s) + originX;
+		return newX;
+		
+	}
+	protected float updatePlayerY(float playerX, float playerY, float angle, float originY, float radius) {
+		//return playerY + originY + (radius * (float) Math.cos(Math.toRadians(angle)));
+		float s = (float)Math.sin(Math.toRadians(angle));
+		float c = (float)Math.cos(Math.toRadians(angle));
+		playerY -= originY;
+		float newY = (playerX * s) + (playerY * c) + originY;
+		return newY;
+		
 	}
 }
