@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -47,6 +49,10 @@ public class SpeedBall extends ApplicationAdapter {
 	private float gunY;
 	private float mouseAngle;
 
+	private Cursor customCursor;
+	private Texture cursor;
+	
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -56,6 +62,10 @@ public class SpeedBall extends ApplicationAdapter {
 		paintballs = new ArrayList<PaintballSprite>();
 		playerX = INIT_X;
 		playerY = INIT_Y;
+		cursor = new Texture("crossHair.PNG");
+		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
+		Gdx.graphics.setCursor(customCursor);
+
 	}
 
 	@Override
