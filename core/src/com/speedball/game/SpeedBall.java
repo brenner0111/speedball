@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -108,8 +107,9 @@ public class SpeedBall extends ApplicationAdapter {
 	    checkAndMovePlayer(playerX, playerY, MAX_X, MAX_Y);
 	}
 	private boolean checkAndFireGun(float angle) {
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            //sets gun position before roation
+		// If screen was just touched or left click was pushed on desktop
+		if (Gdx.input.justTouched()) {
+            //sets gun position before rotation
             gunX = gunUtils.getPlayerGunCoord(playerX, PLAYER_GUN_WIDTH, true);
             gunY = gunUtils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);
             //Get the current center of the player
