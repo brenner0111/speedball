@@ -126,8 +126,9 @@ public class SpeedBall extends ApplicationAdapter {
             int quadrant = gunUtils.checkQuadrant(angle);
             //Add the paintball into the ArrayList with it's current state
             paintballs.add(gunUtils.createPaintballSprite(gunX, gunY, slope, quadrant));
-            /*System.out.println("ANGLE: " + angle + " SLOPE: " + slope + " realgunX: " + coords[0] + " realgunY: " + coords[1] + 
-                " fakeGunX: "+ gunX + " fakeGunY: " + gunY + " playerX: " + playerX + " playerY:" + playerY + " Quadrant: " + quadrant);*/
+            System.out.println("ANGLE: " + angle + " SLOPE: " + slope + " realgunX: " + coords[0] + " realgunY: " + coords[1] + 
+                " fakeGunX: "+ gunX + " fakeGunY: " + gunY + " playerX: " + playerX + " playerY:" + playerY + " Quadrant: " + quadrant +
+                " MouseXY: (" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")");
             paintballCounter++;
             return true;
         }
