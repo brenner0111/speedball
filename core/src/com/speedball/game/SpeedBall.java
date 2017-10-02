@@ -4,12 +4,16 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Testing committing to Git with Eclipse
@@ -51,12 +55,31 @@ public class SpeedBall extends ApplicationAdapter {
 	private Cursor customCursor;
 	private Texture cursor;
 	
+	private OrthographicCamera camera;
+	private final float GAME_WORLD_WIDTH = 100;
+	private final float GAME_WORLD_HEIGHT = 50;
+	
+	Viewport viewport;
+	
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		player = utils.createPlayerSprite();
 		background = utils.createBackgroundSprite();
+		background.setPosition(0, 0);
+		background.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
+		
+		float aspectRatio = (float)Gdx.graphics.getHeight()/ (float)Gdx.graphics.getWidth();
+		
+		camera = new OrthographicCamera();
+		viewport =  new ExtendViewport(GAME_WORLD_WIDTH * aspectRatio, GAME_WORLD_HEIGHT, camera);
+		viewport.apply();
+		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
+		
+		//Gdx.input.setInputProcessor(this);
+		
+		
 		paintballCounter = -1;
 		paintballs = new ArrayList<PaintballSprite>();
 		playerX = INIT_X;
@@ -65,6 +88,12 @@ public class SpeedBall extends ApplicationAdapter {
 		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
 		Gdx.graphics.setCursor(customCursor);
 
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+	    viewport.update(width, height);
+	    camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
 	}
 
 	@Override
@@ -108,7 +137,7 @@ public class SpeedBall extends ApplicationAdapter {
 	}
 	private boolean checkAndFireGun(float angle) {
 		// If screen was just touched or left click was pushed on desktop
-		if (Gdx.input.justTouched()) {
+		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             //sets gun position before rotation
             gunX = gunUtils.getPlayerGunCoord(playerX, PLAYER_GUN_WIDTH, true);
             gunY = gunUtils.getPlayerGunCoord(playerY, PLAYER_GUN_HEIGHT, false);

@@ -13,16 +13,10 @@ public class Utils {
 	 */
 
 	protected Sprite createPlayerSprite() {
-		//FileHandle playerFileHandle = Gdx.files.internal("shotgun/idle/survivor-idle_shotgun_0.png");
-		//FileHandle playerFileHandle = Gdx.files.internal("red-rectangle-md.png");
-	    FileHandle playerFileHandle = Gdx.files.internal("playerNewSize.png");
-		Texture playerTexture = new Texture(playerFileHandle);
-		return new Sprite(playerTexture);
+		return new Sprite(new Texture(Gdx.files.internal("playerNewSize.png")));
 	}
 	protected Sprite createBackgroundSprite() {
-		FileHandle backgroundFileHandle = Gdx.files.internal("grass.png");
-		Texture backgroundTexture = new Texture(backgroundFileHandle);
-		return new Sprite(backgroundTexture);
+		return new Sprite(new Texture(Gdx.files.internal("grass.png")));
 	}
 	/*
 	 * Function that determines the player's x and y position.
