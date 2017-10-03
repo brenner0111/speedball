@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GunUtils {
     
-    private static final float PBALL_DIST_CAP = 10.0f;
+    private static final float PBALL_DIST_CAP = 25.0f;
 
 	protected PaintballSprite createPaintballSprite(float x, float y, float slope, int quadrant) {
 	    FileHandle paintBallHandle = Gdx.files.internal("redPaintball.png");
@@ -119,22 +119,6 @@ public class GunUtils {
 		}
 		
 	}
-	protected float getMouseAngle(float gunX, float gunY) {
-		int xCursor = Gdx.input.getX();
-		int yCursor = Math.abs(720 - Gdx.input.getY());
-		float deltaX = xCursor - gunX;
-		float deltaY = gunY - yCursor;
-		double theta_radians = Math.atan2(deltaY, deltaX);
-		double degrees = Math.toDegrees(theta_radians);
-		if (degrees < 0) {
-			return (float)Math.abs(degrees);
-		}
-		else if (degrees > 0) {
-			return (float)(360 - degrees);
-		}
-		
-		return (float)degrees;
-	} 
 	
 	protected float[] updateRealGunXY(float angle, float centerX, float centerY, float gunRadius) {
 	    float[] coords = new float[2];
