@@ -2,9 +2,10 @@ package com.speedball.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector3;
 
 public class Utils {
 	/**
@@ -13,16 +14,10 @@ public class Utils {
 	 */
 
 	protected Sprite createPlayerSprite() {
-		//FileHandle playerFileHandle = Gdx.files.internal("shotgun/idle/survivor-idle_shotgun_0.png");
-		//FileHandle playerFileHandle = Gdx.files.internal("red-rectangle-md.png");
-	    FileHandle playerFileHandle = Gdx.files.internal("playerNewSize.png");
-		Texture playerTexture = new Texture(playerFileHandle);
-		return new Sprite(playerTexture);
+		return new Sprite(new Texture(Gdx.files.internal("playerNewSize.png")));
 	}
 	protected Sprite createBackgroundSprite() {
-		FileHandle backgroundFileHandle = Gdx.files.internal("grass.png");
-		Texture backgroundTexture = new Texture(backgroundFileHandle);
-		return new Sprite(backgroundTexture);
+		return new Sprite(new Texture(Gdx.files.internal("grassBetter.png")));
 	}
 	/*
 	 * Function that determines the player's x and y position.
@@ -97,13 +92,14 @@ public class Utils {
 		return coordinate + offSet;
 	}
 	
-	protected float getMouseAngle(float playerX, float playerY, float offSetX, float offSetY) {
+	protected float getMouseAngle(float playerX, float playerY, float offSetX, float offSetY, Camera camera) {
 		float xCenter = getPlayerCenter(playerX, offSetX);
 		float yCenter = getPlayerCenter(playerY, offSetY);
 		float xCursor = Gdx.input.getX();
-		float yCursor = Math.abs(720 - Gdx.input.getY());
-		float deltaX = xCursor - xCenter;
-		float deltaY = yCenter - yCursor;
+		Vector3 tmpCoords = new Vector3(xCursor,Gdx.input.getY(), 0);
+        camera.unproject(tmpCoords);
+		float deltaX = tmpCoords.x - xCenter;
+		float deltaY = yCenter - tmpCoords.y;
 		double theta_radians = Math.atan2(deltaY, deltaX);
 		double degrees = Math.toDegrees(theta_radians);
 		if (degrees < 0) {
