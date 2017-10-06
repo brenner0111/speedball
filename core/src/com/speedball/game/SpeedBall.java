@@ -82,8 +82,8 @@ public class SpeedBall extends ApplicationAdapter {
 		paintballs = new ArrayList<PaintballSprite>();
 		playerX = INIT_X;
 		playerY = INIT_Y;
-		cursor = new Texture("crossHair.PNG");
-		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
+		cursor = new Texture("misc/crossHair.PNG");
+		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
 		Gdx.graphics.setCursor(customCursor);
 
 	}

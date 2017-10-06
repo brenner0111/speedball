@@ -14,10 +14,10 @@ public class Utils {
 	 */
 
 	protected Sprite createPlayerSprite() {
-		return new Sprite(new Texture(Gdx.files.internal("playerNewSize.png")));
+		return new Sprite(new Texture(Gdx.files.internal("player/playerNewSize.png")));
 	}
 	protected Sprite createBackgroundSprite() {
-		return new Sprite(new Texture(Gdx.files.internal("grassBetter.png")));
+		return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
 	}
 	/*
 	 * Function that determines the player's x and y position.

@@ -13,7 +13,7 @@ public class GunUtils {
     private static final float PBALL_DIST_CAP = 25.0f;
 
 	protected PaintballSprite createPaintballSprite(float x, float y, float slope, int quadrant) {
-	    FileHandle paintBallHandle = Gdx.files.internal("redPaintball.png");
+	    FileHandle paintBallHandle = Gdx.files.internal("paintballs/redPaintball.png");
 	    Texture backgroundTexture = new Texture(paintBallHandle);
 	    return new PaintballSprite(backgroundTexture, slope, quadrant);
 	}
