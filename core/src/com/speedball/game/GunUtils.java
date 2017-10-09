@@ -16,6 +16,7 @@ public class GunUtils {
 	    FileHandle paintBallHandle = Gdx.files.internal("paintballs/redPaintball.png");
 	    Texture backgroundTexture = new Texture(paintBallHandle);
 	    return new PaintballSprite(backgroundTexture, slope, quadrant);
+	    
 	}
 	protected float getPlayerGunCoord(float coordinate, float offSet, boolean isX) {
 	    //return coordinate of the tip of the gun barrel

@@ -17,7 +17,8 @@ public class Utils {
 		return new Sprite(new Texture(Gdx.files.internal("player/playerNewSize.png")));
 	}
 	protected Sprite createBackgroundSprite() {
-		return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
+		//return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
+		return new Sprite(new Texture(Gdx.files.internal("pbfield/paintballFieldOne.png")));
 	}
 	/*
 	 * Function that determines the player's x and y position.

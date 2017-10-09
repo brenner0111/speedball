@@ -22,14 +22,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *
  */
 public class SpeedBall extends ApplicationAdapter {
-	private static final float MAX_X = 1000f;
-	private static final float MAX_Y = 645f;
-	private static final float PLAYER_WIDTH = 48.0f;
-	private static final float PLAYER_HEIGHT = 35.04f;
+	private static final float MAX_X = 1045f;
+	private static final float MAX_Y = 690f;
+	private static final float PLAYER_WIDTH = 36.0f;
+	private static final float PLAYER_HEIGHT = 26.28f;
 	private static final float PLAYER_CENTER_WIDTH = PLAYER_WIDTH / 2;
 	private static final float PLAYER_CENTER_HEIGHT = PLAYER_HEIGHT / 2;
-	private static final float PLAYER_GUN_HEIGHT = PLAYER_CENTER_HEIGHT - 3;
-	private static final float PLAYER_GUN_WIDTH = 45;
+	private static final float PLAYER_GUN_HEIGHT = PLAYER_CENTER_HEIGHT - 2;
+	private static final float PLAYER_GUN_WIDTH = 34;
 	private static final float WALK_SPEED = 150.0f;
 	private static final float SPRINT_SPEED = 200.0f;
 	private static final float PAINTBALL_SPEED = 1.0f;
@@ -39,6 +39,7 @@ public class SpeedBall extends ApplicationAdapter {
 	
 	private Utils utils = new Utils();
 	private GunUtils gunUtils = new GunUtils();
+	//private Bunker bunker = new Bunker();
 	
 	private SpriteBatch batch;
 	private Texture img;
@@ -85,6 +86,8 @@ public class SpeedBall extends ApplicationAdapter {
 		cursor = new Texture("misc/crossHair.PNG");
 		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
 		Gdx.graphics.setCursor(customCursor);
+		
+		//bunker.createBunkers();
 
 	}
 	
@@ -118,6 +121,7 @@ public class SpeedBall extends ApplicationAdapter {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
         background.draw(batch);
+        //bunker.drawBunkers(batch);
         gunUtils.drawPaintballs(batch, paintballs, PAINTBALL_SPEED);
         player.setBounds(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
         mouseAngle = utils.getMouseAngle(playerX, playerY, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT, camera);
@@ -127,7 +131,7 @@ public class SpeedBall extends ApplicationAdapter {
 	}
 	private void updateGameState() {
 	    if(checkAndFireGun(mouseAngle)) {
-            paintballs.get(paintballCounter).setBounds(gunX, gunY, 6, 6);
+            paintballs.get(paintballCounter).setBounds(gunX, gunY, 4, 4);
             paintballs.set(paintballCounter, (PaintballSprite) utils.rotateSprite(mouseAngle, paintballs.get(paintballCounter), PLAYER_CENTER_WIDTH - PLAYER_GUN_WIDTH, PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT, playerX, playerY));
             paintballs.get(paintballCounter).draw(batch);
         }
@@ -136,6 +140,7 @@ public class SpeedBall extends ApplicationAdapter {
 	}
 	private boolean checkAndFireGun(float angle) {
 		// If screen was just touched or left click was pushed on desktop
+	    // Gdx.input.isButtonPressed(Input.Buttons.LEFT)
 		if (Gdx.input.justTouched()) {
             //sets gun position before rotation
             gunX = gunUtils.getPlayerGunCoord(playerX, PLAYER_GUN_WIDTH, true);
