@@ -39,7 +39,7 @@ public class SpeedBall extends ApplicationAdapter {
 	
 	private Utils utils = new Utils();
 	private GunUtils gunUtils = new GunUtils();
-	//private Bunker bunker = new Bunker();
+	private Bunker bunker = new Bunker();
 	
 	private SpriteBatch batch;
 	private Texture img;
@@ -87,7 +87,7 @@ public class SpeedBall extends ApplicationAdapter {
 		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
 		Gdx.graphics.setCursor(customCursor);
 		
-		//bunker.createBunkers();
+		bunker.createBunkers();
 
 	}
 	
@@ -121,7 +121,7 @@ public class SpeedBall extends ApplicationAdapter {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
         background.draw(batch);
-        //bunker.drawBunkers(batch);
+        bunker.drawBunkers(batch);
         gunUtils.drawPaintballs(batch, paintballs, PAINTBALL_SPEED);
         player.setBounds(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
         mouseAngle = utils.getMouseAngle(playerX, playerY, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT, camera);
