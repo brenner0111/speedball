@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Bunker
 {
@@ -22,19 +21,18 @@ public class Bunker
 //    private static final FileHandle X = Gdx.files.internal("bunkers/x.png");
 //    private static final FileHandle DEAD_BOX = Gdx.files.internal("bunkers/deadbox.png");
     
-    private ArrayList<Sprite> bunkers = new ArrayList<Sprite>();
+    private ArrayList<BunkerSprite> bunkers = new ArrayList<BunkerSprite>();
     
-    
-    
-    protected void createBunkerSprite(FileHandle file, float x, float y, float width, float height) {
-        Sprite bunker = new Sprite(new Texture(file));
+    protected void createBunkerSprite(FileHandle file, float x, float y, float width, float height, float[] vertices) {
+        BunkerSprite bunker = new BunkerSprite(new Texture(file), vertices);
         bunker.setBounds(x, y, width, height);
         bunkers.add(bunker);
     }
 
     protected void drawBunkers(Batch b) {
-        for (int i = 0; i < bunkers.size(); i++)
-            bunkers.get(i).draw(b);
+        for (int i = 0; i < bunkers.size(); i++) {
+        	bunkers.get(i).draw(b);
+        }
     }
     
     protected void createBunkers() {
@@ -45,16 +43,18 @@ public class Bunker
 //        createSnake();
 //        createSquareBunkers();
 //        createX();
-//        createDeadBox();
+        createDeadBox();
         
     }
     protected void createLargeLeftDoritos() {
     	FileHandle doritoLargeLeft = Gdx.files.internal("bunkers/doritoLargeLeft.png");
-    	createBunkerSprite(doritoLargeLeft, 955.0f, 340.0f, 32.8f, 30.4f);
+    	float[] vertices1 = {955.687f, 354.69f, 983.81f, 341.238f, 983.81f, 369.557f};
+    	createBunkerSprite(doritoLargeLeft, 955.0f, 348.31863f, 32.8f, 30.4f, vertices1);
     }
     protected void createLargeRightDoritos() {
     	FileHandle doritoLargeRight = Gdx.files.internal("bunkers/doritoLargeRight.png");
-    	createBunkerSprite(doritoLargeRight, 93.93f, 348.31863f, 32.8f, 30.4f);
+    	float[] vertices1 = {93.93f, 354.69f, 124.875f, 363.1858f, 93.93f, 377.345f};
+    	createBunkerSprite(doritoLargeRight, 93.93f, 348.31863f, 32.8f, 30.4f, vertices1);
     	
     }
     protected void createLargeDoritos() {
@@ -86,7 +86,11 @@ public class Bunker
         
     }
     protected void createDeadBox() {
-        
+    	FileHandle deadBox = Gdx.files.internal("misc/deadbox.png");
+    	float[] vertices1 = {19.125f, 313.628f, 46.687f, 313.628f, 46.687f, 405.664f, 19.125f, 405.664f};
+        float[] vertices2 = {1031.625f, 313.628f, 1059.188f, 313.628f, 1059.188f, 405.664f, 1031.625f, 405.664f};
+        createBunkerSprite(deadBox, 19.125f, 303.628f, 40f, 112f, vertices1);
+        createBunkerSprite(deadBox, 1020.625f, 303.628f, 40f, 112f, vertices2);
     }
     
     
