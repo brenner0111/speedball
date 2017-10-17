@@ -14,7 +14,7 @@ public class PaintballSprite extends Sprite  {
 	private float slope;
 	private int quadrant;
 	private ArrayList<Float> vertices = new ArrayList<Float>(); //counter-clockwise list of vertices on bunker;
-	private SpriteUtils spriteUtils;
+	private Utils utils = new Utils();
 
 	public PaintballSprite(Texture backgroundTexture, float slope, int quadrant) {
 		super(backgroundTexture);
@@ -41,7 +41,7 @@ public class PaintballSprite extends Sprite  {
 		this.quadrant = quadrant;
 	}
 	public float[] getVerticesArray() {
-		return spriteUtils.convertArrayList(vertices);
+		return utils.convertArrayList(vertices);
 	}
 	public void setVertices(ArrayList<Float> vertices) {
 		this.vertices = vertices;

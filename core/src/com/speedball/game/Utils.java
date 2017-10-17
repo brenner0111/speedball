@@ -1,5 +1,7 @@
 package com.speedball.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
@@ -17,8 +19,8 @@ public class Utils {
 		return new Sprite(new Texture(Gdx.files.internal("player/playerNewSize.png")));
 	}
 	protected Sprite createBackgroundSprite() {
-		//return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
-		return new Sprite(new Texture(Gdx.files.internal("pbfield/paintballFieldOne.png")));
+		return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
+		//return new Sprite(new Texture(Gdx.files.internal("pbfield/paintballFieldOne.png")));
 	}
 	/*
 	 * Function that determines the player's x and y position.
@@ -149,4 +151,20 @@ public class Utils {
 		return newY;
 		
 	}
+	protected float[] convertArrayList(ArrayList<Float> vertices) { 
+        float[] floatArray = new float[vertices.size()];
+        int i = 0;
+
+        for (Float f : vertices) {
+            floatArray[i++] = (f != null ? f : Float.NaN);
+        }
+        return floatArray;
+    }
+    protected ArrayList<Float> convertArray(float[] array) { 
+        ArrayList<Float> vertices = new ArrayList<Float>();
+        for (int i = 0; i < array.length; i++) {
+            vertices.add(array[i]);
+        }
+        return vertices;
+    }
 }
