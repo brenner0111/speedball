@@ -12,11 +12,11 @@ import com.badlogic.gdx.graphics.Texture;
 public class BunkerSprite extends Sprite  {
 	private boolean collided;
 	private ArrayList<Float> vertices = new ArrayList<Float>(); //counter-clockwise list of vertices on bunker;
-	private SpriteUtils spriteUtils = new SpriteUtils();
+	private Utils utils = new Utils();
 
 	public BunkerSprite(Texture backgroundTexture, float[] vertices) {
 		super(backgroundTexture);
-		this.setVertices(spriteUtils.convertArray(vertices));
+		this.setVertices(utils.convertArray(vertices));
 		this.collided = false;
 	}
 	public boolean getCollided() {
@@ -26,7 +26,7 @@ public class BunkerSprite extends Sprite  {
 		this.collided = value;
 	}
 	public float[] getVerticesArray() {
-		return spriteUtils.convertArrayList(vertices);
+		return utils.convertArrayList(vertices);
 	}
 	public void setVertices(ArrayList<Float> vertices) {
 		this.vertices = vertices;

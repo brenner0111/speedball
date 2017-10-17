@@ -87,6 +87,7 @@ public class SpeedBall extends ApplicationAdapter {
 		Gdx.graphics.setCursor(customCursor);
 		
 		bunker.createBunkers();
+		
 
 	}
 	
@@ -121,7 +122,7 @@ public class SpeedBall extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
         background.draw(batch);
         bunker.drawBunkers(batch);
-        gunUtils.drawPaintballs(batch, paintballs, PAINTBALL_SPEED);
+        paintballCounter = gunUtils.drawPaintballs(batch, paintballs, PAINTBALL_SPEED, paintballCounter, bunker.getCollidableBunkers());
         player.setBounds(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
         mouseAngle = utils.getMouseAngle(playerX, playerY, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT, camera);
         player = utils.rotateSprite(mouseAngle, player, PLAYER_CENTER_WIDTH, PLAYER_CENTER_HEIGHT, playerX, playerY);
@@ -181,4 +182,10 @@ public class SpeedBall extends ApplicationAdapter {
 			playerY = utils.resetPlayerAtYBound(y, maxY);
 		}
 	}
+//	private void drawPolygons(ShapeRenderer sr) {
+//		ArrayList<BunkerSprite> collidableBunkers = bunker.getCollidableBunkers();
+//		for (BunkerSprite bs: collidableBunkers) {
+//			sr.polygon(bs.getVerticesArray());
+//		}
+//	}
 }

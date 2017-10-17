@@ -1,12 +1,16 @@
 package com.speedball.game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 //import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 
 public class GunUtils {
     
@@ -28,11 +32,23 @@ public class GunUtils {
 	    }
 	}
 	
-	protected void drawPaintballs(SpriteBatch b, ArrayList<PaintballSprite> paintballs, float paintballSpeed) {
-		for (PaintballSprite paintball : paintballs) {
-			updatePaintballXY(paintball, paintballSpeed, paintball.getQuadrant());
-			paintball.draw(b);
+	protected int drawPaintballs(SpriteBatch b, ArrayList<PaintballSprite> paintballs, float paintballSpeed, int paintballCounter, ArrayList<BunkerSprite> bunkers) {
+		for (Iterator<PaintballSprite> iterator = paintballs.iterator(); iterator.hasNext();) {
+			PaintballSprite paintball = iterator.next();
+			if (paintball.getCollided() == false) {
+				updatePaintballXY(paintball, paintballSpeed, paintball.getQuadrant());
+			}
+			System.out.println(Arrays.toString(getPaintballVertices(paintball)));
+			paintballCollided(paintball, bunkers);
+			if (paintballInWindow(paintball)) {
+				paintball.draw(b);
+			}
+			else {
+				iterator.remove();
+				paintballCounter = paintballCounter - 1;
+			}
 		}
+		return paintballCounter;
 	}
 	/**
 	 * OPTODO: add paintball slowdown overtime
@@ -128,4 +144,37 @@ public class GunUtils {
 	    return coords;
 	}
 
+	protected float[] getPaintballVertices(PaintballSprite paintball) {
+		Rectangle rectangle = paintball.getBoundingRectangle();
+		float width = rectangle.getWidth();
+		float height = rectangle.getHeight();
+		float x = rectangle.getX();
+		float y = rectangle.getY();
+		float[] retArray = {x, y, x + width, y, x + width, y + height, x, y + height};
+		return retArray;
+	}
+	protected boolean paintballInWindow(PaintballSprite paintball) {
+		float x = paintball.getBoundingRectangle().getX();
+		float y = paintball.getBoundingRectangle().getY();
+		if (x > 1045 || x < 0) {
+			return false;
+		}
+		else if (y > 690 || y < 0) {
+			return false;
+		}
+		return true;
+	}
+	protected void paintballCollided(PaintballSprite paintball, ArrayList<BunkerSprite> bunkers) {
+		float[] paintballVertices = getPaintballVertices(paintball);
+		for (BunkerSprite bunker: bunkers) {
+			float[] bunkerVertices = bunker.getVerticesArray();
+			if (Intersector.overlapConvexPolygons(paintballVertices, bunkerVertices, null)) {
+				paintball.setCollided(true);
+				break;
+			}
+			else {
+				paintball.setCollided(false);
+			}
+		}
+	}
 }

@@ -22,11 +22,16 @@ public class Bunker
 //    private static final FileHandle DEAD_BOX = Gdx.files.internal("bunkers/deadbox.png");
     
     private ArrayList<BunkerSprite> bunkers = new ArrayList<BunkerSprite>();
+    private ArrayList<BunkerSprite> collidableBunkers = new ArrayList<BunkerSprite>();
     
     protected void createBunkerSprite(FileHandle file, float x, float y, float width, float height, float[] vertices) {
+    	FileHandle deadBox = Gdx.files.internal("misc/deadbox.png");
         BunkerSprite bunker = new BunkerSprite(new Texture(file), vertices);
         bunker.setBounds(x, y, width, height);
         bunkers.add(bunker);
+        if (!file.equals(deadBox)) {
+        	collidableBunkers.add(bunker);
+        }
     }
 
     protected void drawBunkers(Batch b) {
@@ -92,6 +97,8 @@ public class Bunker
         createBunkerSprite(deadBox, 19.125f, 303.628f, 40f, 112f, vertices1);
         createBunkerSprite(deadBox, 1020.625f, 303.628f, 40f, 112f, vertices2);
     }
-    
+    protected ArrayList<BunkerSprite> getCollidableBunkers() {
+    	return this.collidableBunkers;
+    }
     
 }

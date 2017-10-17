@@ -1,5 +1,7 @@
 package com.speedball.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
@@ -147,6 +149,21 @@ public class Utils {
 		playerY -= originY;
 		float newY = (playerX * s) + (playerY * c) + originY;
 		return newY;
-		
+	}
+	protected float[] convertArrayList(ArrayList<Float> vertices) { 
+		float[] floatArray = new float[vertices.size()];
+		int i = 0;
+
+		for (Float f : vertices) {
+		    floatArray[i++] = (f != null ? f : Float.NaN);
+		}
+		return floatArray;
+	}
+	protected ArrayList<Float> convertArray(float[] array) { 
+		ArrayList<Float> vertices = new ArrayList<Float>();
+		for (int i = 0; i < array.length; i++) {
+			vertices.add(array[i]);
+		}
+		return vertices;
 	}
 }
