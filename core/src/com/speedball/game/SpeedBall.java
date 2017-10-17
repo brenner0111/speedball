@@ -162,7 +162,7 @@ public class SpeedBall extends ApplicationAdapter {
             paintballs.add(gunUtils.createPaintballSprite(gunX, gunY, slope, quadrant));
             System.out.println("ANGLE: " + angle + " SLOPE: " + slope + " realgunX: " + coords[0] + " realgunY: " + coords[1] + 
                 " fakeGunX: "+ gunX + " fakeGunY: " + gunY + " playerX: " + playerX + " playerY:" + playerY + " Quadrant: " + quadrant +
-                " MouseXY: (" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")" + "MappedMouseXY: (" + tmpCoords.x + ", " + tmpCoords.y + ")" );
+                " MouseXY: (" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")" + "MappedMouseXY: (" + tmpCoords.x + "f, " + tmpCoords.y + "f,)" );
             paintballCounter++;
             return true;
         }
