@@ -168,7 +168,7 @@ public class GunUtils {
 		float[] paintballVertices = getPaintballVertices(paintball);
 		for (BunkerSprite bunker: bunkers) {
 			float[] bunkerVertices = bunker.getVerticesArray();
-			if (Intersector.overlapConvexPolygons(paintballVertices, bunkerVertices, null)) {
+			if (bunkerVertices.length != 0 && Intersector.overlapConvexPolygons(paintballVertices, bunkerVertices, null)) {
 				paintball.setCollided(true);
 				break;
 			}
