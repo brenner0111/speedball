@@ -1,22 +1,18 @@
 package com.speedball.game;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.Texture;
 /**
  * Wrapper class that adds a collided flag to the sprite object.
  * @author Calvin Yarboro
  *
  */
-public class PaintballSprite extends Sprite  {
+public class Paintball extends Sprite  {
 	private boolean collided;
 	private float slope;
 	private int quadrant;
-	private ArrayList<Float> vertices = new ArrayList<Float>(); //counter-clockwise list of vertices on bunker;
-	private Utils utils = new Utils();
 
-	public PaintballSprite(Texture backgroundTexture, float slope, int quadrant) {
+	public Paintball(Texture backgroundTexture, float slope, int quadrant) {
 		super(backgroundTexture);
 		this.slope = slope;
 		this.collided = false;
@@ -39,12 +35,6 @@ public class PaintballSprite extends Sprite  {
 	}
 	public void setQuadrant(int quadrant) {
 		this.quadrant = quadrant;
-	}
-	public float[] getVerticesArray() {
-		return utils.convertArrayList(vertices);
-	}
-	public void setVertices(ArrayList<Float> vertices) {
-		this.vertices = vertices;
 	}
 
 }

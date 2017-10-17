@@ -7,6 +7,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
 public class Utils {
@@ -15,8 +17,8 @@ public class Utils {
 	 * TODO: Possibly move to separate utility class
 	 */
 
-	protected Sprite createPlayerSprite() {
-		return new Sprite(new Texture(Gdx.files.internal("player/playerNewSize.png")));
+	protected Player createPlayerSprite(float initX, float initY) {
+		return new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), initX, initY);
 	}
 	protected Sprite createBackgroundSprite() {
 		return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
@@ -120,7 +122,7 @@ public class Utils {
 		}
 		return false;
 	}
-	protected float setPlayerSpeed(float sprint, float walk) {
+	protected float choosePlayerSpeed(float sprint, float walk) {
 		if (isPlayerSprinting()) {
 			return sprint;
 		}
@@ -165,5 +167,41 @@ public class Utils {
 			vertices.add(array[i]);
 		}
 		return vertices;
+	}
+	protected float[] getPlayerVertices(Player player) {
+		Rectangle rectangle = player.getBoundingRectangle();
+		float width = rectangle.getWidth() - Player.getPlayerCenterWidth();
+		float height = rectangle.getHeight() - Player.getPlayerCenterHeight();
+		float x = rectangle.getX();
+		float y = rectangle.getY();
+		float[] retArray = {x, y, x + width, y, x + width, y + height, x, y + height};
+		return retArray;
+	}
+	protected void playerCollided(Player player, ArrayList<Bunker> bunkers) {
+		float[] playerVertices = getPlayerVertices(player);
+		for (Bunker bunker: bunkers) {
+			if (bunker.isCollidable()) {
+				float[] bunkerVertices = bunker.getVerticesArray();
+				if (bunkerVertices.length != 0 && Intersector.overlapConvexPolygons(playerVertices, bunkerVertices, null)) {
+					player.setCollided(true);
+					break;
+				}
+				else {
+					player.setCollided(false);
+				}
+			}
+		}
+	}
+	protected void checkAndMovePlayer(float x, float y, float maxX, float maxY, Player player) {
+		player.setPlayerSpeed(choosePlayerSpeed(Player.getSprintSpeed(), Player.getWalkSpeed()));
+		if (playerInBounds(x, y, maxX, maxY)) {
+			float[] playerXY = movePlayer(x, y, player.getPlayerSpeed());
+			player.setPlayerX(playerXY[0]);
+			player.setPlayerY(playerXY[1]);
+		}
+		else {
+			player.setPlayerX(resetPlayerAtXBound(x, maxX));
+			player.setPlayerY(resetPlayerAtYBound(y, maxY));
+		}
 	}
 }

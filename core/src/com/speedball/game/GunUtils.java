@@ -6,20 +6,22 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 //import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 
 public class GunUtils {
     
     private static final float PBALL_DIST_CAP = 25.0f;
 
-	protected PaintballSprite createPaintballSprite(float x, float y, float slope, int quadrant) {
+	protected Paintball createPaintballSprite(float x, float y, float slope, int quadrant) {
 	    FileHandle paintBallHandle = Gdx.files.internal("paintballs/redPaintball.png");
 	    Texture backgroundTexture = new Texture(paintBallHandle);
-	    return new PaintballSprite(backgroundTexture, slope, quadrant);
+	    return new Paintball(backgroundTexture, slope, quadrant);
 	    
 	}
 	protected float getPlayerGunCoord(float coordinate, float offSet, boolean isX) {
@@ -32,11 +34,11 @@ public class GunUtils {
 	    }
 	}
 	
-	protected int drawPaintballs(SpriteBatch b, ArrayList<PaintballSprite> paintballs, float paintballSpeed, int paintballCounter, ArrayList<BunkerSprite> bunkers) {
-		for (Iterator<PaintballSprite> iterator = paintballs.iterator(); iterator.hasNext();) {
-			PaintballSprite paintball = iterator.next();
+	protected int drawPaintballs(SpriteBatch b, ArrayList<Paintball> paintballs, int paintballCounter, ArrayList<Bunker> bunkers) {
+		for (Iterator<Paintball> iterator = paintballs.iterator(); iterator.hasNext();) {
+			Paintball paintball = iterator.next();
 			if (paintball.getCollided() == false) {
-				updatePaintballXY(paintball, paintballSpeed, paintball.getQuadrant());
+				updatePaintballXY(paintball, paintball.getQuadrant());
 			}
 			System.out.println(Arrays.toString(getPaintballVertices(paintball)));
 			paintballCollided(paintball, bunkers);
@@ -55,7 +57,7 @@ public class GunUtils {
 	 * @param paintball
 	 * @param paintballSpeed
 	 */
-	protected void updatePaintballXY(PaintballSprite paintball, float paintballSpeed, int quadrant) {
+	protected void updatePaintballXY(Paintball paintball, int quadrant) {
 		float slope = Math.abs(paintball.getSlope());
 		float r = (float)Math.sqrt(1 + Math.pow(slope, 2));
 		float x = 0.0f;
@@ -144,7 +146,7 @@ public class GunUtils {
 	    return coords;
 	}
 
-	protected float[] getPaintballVertices(PaintballSprite paintball) {
+	protected float[] getPaintballVertices(Paintball paintball) {
 		Rectangle rectangle = paintball.getBoundingRectangle();
 		float width = rectangle.getWidth();
 		float height = rectangle.getHeight();
@@ -153,7 +155,7 @@ public class GunUtils {
 		float[] retArray = {x, y, x + width, y, x + width, y + height, x, y + height};
 		return retArray;
 	}
-	protected boolean paintballInWindow(PaintballSprite paintball) {
+	protected boolean paintballInWindow(Paintball paintball) {
 		float x = paintball.getBoundingRectangle().getX();
 		float y = paintball.getBoundingRectangle().getY();
 		if (x > 1045 || x < 0) {
@@ -164,17 +166,52 @@ public class GunUtils {
 		}
 		return true;
 	}
-	protected void paintballCollided(PaintballSprite paintball, ArrayList<BunkerSprite> bunkers) {
+	protected void paintballCollided(Paintball paintball, ArrayList<Bunker> bunkers) {
 		float[] paintballVertices = getPaintballVertices(paintball);
-		for (BunkerSprite bunker: bunkers) {
-			float[] bunkerVertices = bunker.getVerticesArray();
-			if (bunkerVertices.length != 0 && Intersector.overlapConvexPolygons(paintballVertices, bunkerVertices, null)) {
-				paintball.setCollided(true);
-				break;
-			}
-			else {
-				paintball.setCollided(false);
+		for (Bunker bunker: bunkers) {
+			if (bunker.isCollidable()) {
+				float[] bunkerVertices = bunker.getVerticesArray();
+				if (bunkerVertices.length != 0 && Intersector.overlapConvexPolygons(paintballVertices, bunkerVertices, null)) {
+					paintball.setCollided(true);
+					break;
+				}
+				else {
+					paintball.setCollided(false);
+				}
 			}
 		}
 	}
+	protected boolean checkAndFireGun(float angle, Player player, Camera camera) {
+		// If screen was just touched or left click was pushed on desktop
+	    // Gdx.input.isButtonPressed(Input.Buttons.LEFT)
+		if (Gdx.input.justTouched()) {
+            //sets gun position before rotation
+            player.setGunX(getPlayerGunCoord(player.getPlayerX(), Player.getPlayerGunWidth(), true)); 
+            player.setGunY(getPlayerGunCoord(player.getPlayerY(), Player.getPlayerGunHeight(), false));
+            //Get the current center of the player
+            float centerX = player.getPlayerX() + Player.getPlayerCenterWidth();
+            float centerY = player.getPlayerY() + Player.getPlayerCenterHeight();
+            //Get the array of gun coordinates based on the angle, center, and radius
+            float[] coords = updateRealGunXY(angle, centerX, centerY, Player.getGunRadius());
+            //Get the current mouse coordinates
+            float mouseX = Gdx.input.getX();
+            Vector3 tmpCoords = new Vector3(mouseX,Gdx.input.getY(), 0);
+            camera.unproject(tmpCoords);
+            //Get the slope of between the gun coordinates and mouse coordinates 
+            float slope = (tmpCoords.y - coords[1]) / (tmpCoords.x - coords[0]);
+            //Find what quadrant our mouse is in based on the angle
+            int quadrant = checkQuadrant(angle);
+            //Add the paintball into the ArrayList with it's current state
+            paintballs.add(createPaintballSprite(player.getGunX(), player.getGunY(), slope, quadrant));
+            player.setPaintballs(player.getPaintballs().add(createPaintballSprite(player.getGunX(), player.getGunY(), slope, quadrant)));
+
+            System.out.println("ANGLE: " + angle + " SLOPE: " + slope + " realgunX: " + coords[0] + " realgunY: " + coords[1] + 
+                " fakeGunX: "+ player.getGunX() + " fakeGunY: " + player.getGunY() + " playerX: " + player.getPlayerX() + " playerY:" + player.getPlayerY() + " Quadrant: " + quadrant +
+                " MouseXY: (" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")" + "MappedMouseXY: (" + tmpCoords.x + "f, " + tmpCoords.y + "f,)" );
+            paintballCounter++;
+            return true;
+        }
+       return false;
+        
+    }
 }
