@@ -40,7 +40,7 @@ public class GunUtils {
 			if (paintball.getCollided() == false) {
 				updatePaintballXY(paintball, paintball.getQuadrant());
 			}
-			System.out.println(Arrays.toString(getPaintballVertices(paintball)));
+			//System.out.println(Arrays.toString(getPaintballVertices(paintball)));
 			paintballCollided(paintball, bunkers);
 			if (paintballInWindow(paintball)) {
 				paintball.draw(b);

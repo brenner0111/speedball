@@ -99,8 +99,8 @@ public class SpeedBall extends ApplicationAdapter {
         }
         else {
         	System.out.println("Stuck");
-        	player.setPlayerX(player.getPlayerX() - 10);
-        	player.setPlayerY(player.getPlayerY() - 10);
+        	//player.setPlayerX(player.getPlayerX() - 10);
+        	//player.setPlayerY(player.getPlayerY() - 10);
         	player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
         }
         player.setMouseAngle(utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera));
