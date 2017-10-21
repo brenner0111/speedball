@@ -202,13 +202,12 @@ public class GunUtils {
             //Find what quadrant our mouse is in based on the angle
             int quadrant = checkQuadrant(angle);
             //Add the paintball into the ArrayList with it's current state
-            paintballs.add(createPaintballSprite(player.getGunX(), player.getGunY(), slope, quadrant));
-            player.setPaintballs(player.getPaintballs().add(createPaintballSprite(player.getGunX(), player.getGunY(), slope, quadrant)));
+            player.addPaintball(createPaintballSprite(player.getGunX(), player.getGunY(), slope, quadrant));
 
             System.out.println("ANGLE: " + angle + " SLOPE: " + slope + " realgunX: " + coords[0] + " realgunY: " + coords[1] + 
                 " fakeGunX: "+ player.getGunX() + " fakeGunY: " + player.getGunY() + " playerX: " + player.getPlayerX() + " playerY:" + player.getPlayerY() + " Quadrant: " + quadrant +
                 " MouseXY: (" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")" + "MappedMouseXY: (" + tmpCoords.x + "f, " + tmpCoords.y + "f,)" );
-            paintballCounter++;
+            player.incrementPaintballCounter();
             return true;
         }
        return false;

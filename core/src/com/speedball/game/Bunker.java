@@ -32,5 +32,5 @@ public class Bunker extends Sprite  {
 		this.collidable = collidable;
 	}
 
-
+	
 }

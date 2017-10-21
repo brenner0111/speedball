@@ -1,7 +1,5 @@
 package com.speedball.game;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
@@ -36,9 +34,6 @@ public class SpeedBall extends ApplicationAdapter {
 	private Viewport viewport;
 	private SpriteBatch batch;
 	
-	private float mouseAngle;
-	
-
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -55,8 +50,7 @@ public class SpeedBall extends ApplicationAdapter {
 		viewport.apply();
 		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
 				
-		paintballCounter = -1;
-		paintballs = new ArrayList<Paintball>();
+		player.setPaintballCounter(-1);
 		player.setPlayerX(player.getInitX());
 		player.setPlayerY(player.getInitY());
 
@@ -98,7 +92,7 @@ public class SpeedBall extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
         background.draw(batch);
         bunker.drawBunkers(batch);
-        paintballCounter = gunUtils.drawPaintballs(batch, paintballs, paintballCounter, bunker.getBunkers());
+        player.setPaintballCounter(gunUtils.drawPaintballs(batch, player.getPaintballs(), player.getPaintballCounter(), bunker.getBunkers()));
         utils.playerCollided(player, bunker.getBunkers());
         if (player.getCollided() == false) {
             player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
@@ -107,24 +101,26 @@ public class SpeedBall extends ApplicationAdapter {
         	System.out.println("Stuck");
         	player.setPlayerX(player.getPlayerX() - 10);
         	player.setPlayerY(player.getPlayerY() - 10);
-  
         	player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
         }
-        mouseAngle = utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera);
-        player = (Player) utils.rotateSprite(mouseAngle, player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), player.getPlayerX(), player.getPlayerY());
+        player.setMouseAngle(utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera));
+        player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(),
+            player.getPlayerX(), player.getPlayerY());
         player.draw(batch);
         
 	}
 	private void updateGameState() {
-	    if(gunUtils.checkAndFireGun(mouseAngle, player, camera, paintballs, paintballCounter)) {
-            paintballs.get(paintballCounter).setBounds(player.getGunX(), player.getGunY(), 4, 4);
-            paintballs.set(paintballCounter, (Paintball) utils.rotateSprite(mouseAngle, paintballs.get(paintballCounter),
-            		Player.getPlayerCenterWidth() - Player.getPlayerGunWidth(), Player.getPlayerCenterHeight() - Player.getPlayerGunHeight(), player.getPlayerX(), player.getPlayerY()));
-            paintballs.get(paintballCounter).draw(batch);
+	    if(gunUtils.checkAndFireGun(player.getMouseAngle(), player, camera)) {
+            player.getPaintballs().get(player.getPaintballCounter()).setBounds(player.getGunX(), player.getGunY(), 4, 4);
+            
+            player.getPaintballs().set(player.getPaintballCounter(), (Paintball) utils.rotateSprite(player.getMouseAngle(),
+                player.getPaintballs().get(player.getPaintballCounter()), Player.getPlayerCenterWidth() - Player.getPlayerGunWidth(),
+                Player.getPlayerCenterHeight() - Player.getPlayerGunHeight(), player.getPlayerX(), player.getPlayerY()));
+            
+            player.getPaintballs().get(player.getPaintballCounter()).draw(batch);
         }
 	    //checks to make sure player is in bounds, and calls movePlayer
 	    utils.checkAndMovePlayer(player.getPlayerX(), player.getPlayerY(), MAX_X, MAX_Y, player);
 	}
-
 	
 }

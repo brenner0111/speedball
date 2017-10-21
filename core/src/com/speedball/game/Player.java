@@ -29,11 +29,13 @@ public class Player extends Sprite  {
 	private float gunX;
 	private float gunY;
 	private int paintballCounter;
+	private float mouseAngle;
 	private ArrayList<Paintball> paintballs;
 	
 
 	public Player(Texture backgroundTexture, float initX, float initY) {
 		super(backgroundTexture);
+		paintballs = new ArrayList<Paintball>();
 		this.collided = false;
 		this.initX = initX;
 		this.initY = initY;
@@ -119,11 +121,23 @@ public class Player extends Sprite  {
 	protected void setPaintballCounter(int paintballCounter) {
 		this.paintballCounter = paintballCounter;
 	}
+	protected void incrementPaintballCounter() {
+	    this.paintballCounter++;
+	}
 	protected ArrayList<Paintball> getPaintballs() {
 		return paintballs;
+	}
+	protected void addPaintball(Paintball paintball) {
+	    paintballs.add(paintball);
 	}
 	protected void setPaintballs(ArrayList<Paintball> paintballs) {
 		this.paintballs = paintballs;
 	}
+    public float getMouseAngle(){
+        return mouseAngle;
+    }
+    public void setMouseAngle(float mouseAngle){
+        this.mouseAngle = mouseAngle;
+    }
 }
 
