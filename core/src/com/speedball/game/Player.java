@@ -1,9 +1,10 @@
 package com.speedball.game;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 /**
  * Wrapper class that adds a collided flag to the sprite object.
  * @author Calvin Yarboro
@@ -17,6 +18,7 @@ public class Player extends Sprite  {
 	private static final float PLAYER_GUN_HEIGHT = PLAYER_CENTER_HEIGHT - 2;
 	private static final float PLAYER_GUN_WIDTH = 34;
 	private static final float WALK_SPEED = 150.0f;
+	//private static final float WALK_SPEED = 30.0f;
 	private static final float SPRINT_SPEED = 200.0f;
 	private static final float GUN_RADIUS = (float)Math.sqrt(Math.pow(PLAYER_GUN_WIDTH - PLAYER_CENTER_WIDTH, 2) + Math.pow(PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT, 2));
 	
@@ -31,6 +33,7 @@ public class Player extends Sprite  {
 	private int paintballCounter;
 	private float mouseAngle;
 	private ArrayList<Paintball> paintballs;
+	private Intersector.MinimumTranslationVector mtv;
 	
 
 	public Player(Texture backgroundTexture, float initX, float initY) {
@@ -39,6 +42,7 @@ public class Player extends Sprite  {
 		this.collided = false;
 		this.initX = initX;
 		this.initY = initY;
+		setMtv(new Intersector.MinimumTranslationVector());
 	}
 	public boolean getCollided() {
 		return this.collided;
@@ -138,6 +142,18 @@ public class Player extends Sprite  {
     }
     public void setMouseAngle(float mouseAngle){
         this.mouseAngle = mouseAngle;
+    }
+    public Intersector.MinimumTranslationVector getMtv(){
+        return mtv;
+    }
+    public void setMtv(Intersector.MinimumTranslationVector mtv){
+        this.mtv = mtv;
+    }
+    public Vector2 getNormalVector() {
+        return mtv.normal;
+    }
+    public float getDepth() {
+        return mtv.depth;
     }
 }
 

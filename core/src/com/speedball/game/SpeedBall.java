@@ -98,10 +98,19 @@ public class SpeedBall extends ApplicationAdapter {
             player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
         }
         else {
-        	System.out.println("Stuck");
+        	//System.out.println("Stuck");
         	//player.setPlayerX(player.getPlayerX() - 10);
         	//player.setPlayerY(player.getPlayerY() - 10);
-        	player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
+            System.out.println("Normal: " + player.getNormalVector() + " depth: " + player.getDepth());
+            float newPlayerX = player.getPlayerX() + (player.getNormalVector().x * player.getDepth());
+            float newPlayerY = player.getPlayerY() + (player.getNormalVector().y * player.getDepth());
+            
+            
+            
+        	player.setBounds(newPlayerX, newPlayerY, Player.getPlayerWidth(), Player.getPlayerHeight());
+            player.setPlayerX(newPlayerX);
+            player.setPlayerY(newPlayerY);
+        	player.setCollided(false);
         }
         player.setMouseAngle(utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera));
         player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(),

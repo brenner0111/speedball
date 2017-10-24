@@ -179,11 +179,14 @@ public class Utils {
 	}
 	protected void playerCollided(Player player, ArrayList<Bunker> bunkers) {
 		float[] playerVertices = getPlayerVertices(player);
+		Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
 		for (Bunker bunker: bunkers) {
 			if (bunker.isCollidable()) {
 				float[] bunkerVertices = bunker.getVerticesArray();
-				if (bunkerVertices.length != 0 && Intersector.overlapConvexPolygons(playerVertices, bunkerVertices, null)) {
+				if (bunkerVertices.length != 0 && Intersector.overlapConvexPolygons(playerVertices, bunkerVertices, mtv)) {
+				    //System.out.println("Normal: " + mtv.normal + " depth: " + mtv.depth);
 					player.setCollided(true);
+					player.setMtv(mtv);
 					break;
 				}
 				else {
