@@ -105,7 +105,7 @@ public class GunUtils {
              y = paintball.getY() - ((PBALL_DIST_CAP*slope)/r);
              paintball.setY(y);
         }
-        System.out.println("Paintball X: " + paintball.getX() + " Paintball Y: " + paintball.getY());
+        //System.out.println("Paintball X: " + paintball.getX() + " Paintball Y: " + paintball.getY());
     }
 
     protected int checkQuadrant(float angle) {
@@ -135,8 +135,7 @@ public class GunUtils {
         }
         else {
             return -1;
-        }
-        
+        } 
     }
     
     protected float[] updateRealGunXY(float angle, float centerX, float centerY, float gunRadius) {
@@ -191,12 +190,11 @@ public class GunUtils {
         return false; 
     }
     
-    
     protected boolean checkAndFireGun(float angle, Player player, Camera camera) {
         // If screen was just touched or left click was pushed on desktop
         // Gdx.input.isButtonPressed(Input.Buttons.LEFT)
         //Gdx.input.justTouched()
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.justTouched()) {
             //sets gun position before rotation
             player.setGunX(getPlayerGunCoord(player.getPlayerX(), Player.getPlayerGunWidth(), true)); 
             player.setGunY(getPlayerGunCoord(player.getPlayerY(), Player.getPlayerGunHeight(), false));
@@ -216,13 +214,12 @@ public class GunUtils {
             //Add the paintball into the ArrayList with it's current state
             player.addPaintball(createPaintballSprite(player.getGunX(), player.getGunY(), slope, quadrant));
 
-            /*System.out.println("ANGLE: " + angle + " SLOPE: " + slope + " realgunX: " + coords[0] + " realgunY: " + coords[1] + 
+            System.out.println("ANGLE: " + angle + " SLOPE: " + slope + " realgunX: " + coords[0] + " realgunY: " + coords[1] + 
                 " fakeGunX: "+ player.getGunX() + " fakeGunY: " + player.getGunY() + " playerX: " + player.getPlayerX() + " playerY:" + player.getPlayerY() + " Quadrant: " + quadrant +
-                " MouseXY: (" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")" + "MappedMouseXY: (" + tmpCoords.x + "f, " + tmpCoords.y + "f,)" );*/
+                " MouseXY: (" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")" + "MappedMouseXY: (" + tmpCoords.x + "f, " + tmpCoords.y + "f,)" );
             player.incrementPaintballCounter();
             return true;
         }
        return false;
-        
     }
 }

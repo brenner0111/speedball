@@ -37,29 +37,22 @@ public class SpeedBall extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		
 		player = utils.createPlayerSprite(0f, 0f);
 		player.setPosition(0, 0);
-		
 		background = utils.createBackgroundSprite();
 		background.setPosition(0, 0);
 		background.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
-		
 		camera = new OrthographicCamera();
 		viewport =  new StretchViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
 		viewport.apply();
-		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
-				
+		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);	
 		player.setPaintballCounter(-1);
 		player.setPlayerX(player.getInitX());
 		player.setPlayerY(player.getInitY());
-
-		cursor = new Texture("misc/crossHair.PNG");
-		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
-		Gdx.graphics.setCursor(customCursor);
-		
+		//cursor = new Texture("misc/crossHair.PNG");
+		//customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
+		//Gdx.graphics.setCursor(customCursor);	
 		bunker.createBunkers();
-		
 	}
 	
 	@Override
@@ -93,31 +86,13 @@ public class SpeedBall extends ApplicationAdapter {
         background.draw(batch);
         bunker.drawBunkers(batch);
         player.setPaintballCounter(gunUtils.drawPaintballs(batch, player.getPaintballs(), player.getPaintballCounter(), bunker.getBunkers()));
-        utils.playerCollided(player, bunker.getBunkers());
-        if (player.getCollided() == false) {
-            player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
-        }
-        else {
-        	//System.out.println("Stuck");
-        	//player.setPlayerX(player.getPlayerX() - 10);
-        	//player.setPlayerY(player.getPlayerY() - 10);
-            System.out.println("Normal: " + player.getNormalVector() + " depth: " + player.getDepth());
-            float newPlayerX = player.getPlayerX() + (player.getNormalVector().x * player.getDepth());
-            float newPlayerY = player.getPlayerY() + (player.getNormalVector().y * player.getDepth());
-            
-            
-            
-        	player.setBounds(newPlayerX, newPlayerY, Player.getPlayerWidth(), Player.getPlayerHeight());
-            player.setPlayerX(newPlayerX);
-            player.setPlayerY(newPlayerY);
-        	player.setCollided(false);
-        }
+        
         player.setMouseAngle(utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera));
         player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(),
             player.getPlayerX(), player.getPlayerY());
         player.draw(batch);
-        
 	}
+	
 	private void updateGameState() {
 	    if(gunUtils.checkAndFireGun(player.getMouseAngle(), player, camera)) {
             player.getPaintballs().get(player.getPaintballCounter()).setBounds(player.getGunX(), player.getGunY(), 4, 4);
@@ -129,6 +104,7 @@ public class SpeedBall extends ApplicationAdapter {
             player.getPaintballs().get(player.getPaintballCounter()).draw(batch);
         }
 	    //checks to make sure player is in bounds, and calls movePlayer
+	    utils.playerMtvLogic(player, bunker);
 	    utils.checkAndMovePlayer(player.getPlayerX(), player.getPlayerY(), MAX_X, MAX_Y, player);
 	}
 	

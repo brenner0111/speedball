@@ -18,7 +18,6 @@ public class Player extends Sprite  {
 	private static final float PLAYER_GUN_HEIGHT = PLAYER_CENTER_HEIGHT - 2;
 	private static final float PLAYER_GUN_WIDTH = 34;
 	private static final float WALK_SPEED = 150.0f;
-	//private static final float WALK_SPEED = 30.0f;
 	private static final float SPRINT_SPEED = 200.0f;
 	private static final float GUN_RADIUS = (float)Math.sqrt(Math.pow(PLAYER_GUN_WIDTH - PLAYER_CENTER_WIDTH, 2) + Math.pow(PLAYER_CENTER_HEIGHT - PLAYER_GUN_HEIGHT, 2));
 	
@@ -34,6 +33,9 @@ public class Player extends Sprite  {
 	private float mouseAngle;
 	private ArrayList<Paintball> paintballs;
 	private Intersector.MinimumTranslationVector mtv;
+	private ArrayList<Bunker> bunkersCollidedWith;
+	private ArrayList<Intersector.MinimumTranslationVector> mtvAtCollidedBunkers;
+	
 	
 
 	public Player(Texture backgroundTexture, float initX, float initY) {
@@ -43,7 +45,10 @@ public class Player extends Sprite  {
 		this.initX = initX;
 		this.initY = initY;
 		setMtv(new Intersector.MinimumTranslationVector());
+		bunkersCollidedWith = new ArrayList<Bunker>();
+		mtvAtCollidedBunkers = new ArrayList<Intersector.MinimumTranslationVector>();
 	}
+	
 	public boolean getCollided() {
 		return this.collided;
 	}
@@ -155,5 +160,23 @@ public class Player extends Sprite  {
     public float getDepth() {
         return mtv.depth;
     }
+
+	public ArrayList<Bunker> getBunkersCollidedWith() {
+		return bunkersCollidedWith;
+	}
+	public void addBunkerCollidedWith(Bunker bunker) {
+		bunkersCollidedWith.add(bunker);
+	}
+	public ArrayList<Intersector.MinimumTranslationVector> getMtvAtCollidedBunkers(){
+		return mtvAtCollidedBunkers;
+	}
+	public void addMtv(Intersector.MinimumTranslationVector vector) {
+		mtvAtCollidedBunkers.add(vector);
+	}
+	public void setMtvAtCollidedBunkers(ArrayList<Intersector.MinimumTranslationVector> vector) {
+		mtvAtCollidedBunkers = vector;
+	}
+	
+
 }
 

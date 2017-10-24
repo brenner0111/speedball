@@ -38,7 +38,7 @@ public class PaintballMap
         createPins();
         createSnake();
         createSquareBunkers();
-        createX();
+        //createX();
         createDeadBox();
         createLongRectangle();
         
@@ -111,19 +111,25 @@ public class PaintballMap
     }
     
     protected void createSnake() {
-        FileHandle snake = Gdx.files.internal("bunkers/snake.png");
+        FileHandle snake = Gdx.files.internal("bunkers/sneaky_snake.png");
         float[] vertices = {};
         createBunkerSprite(snake, 350.00006f, 70.00001f, 378.7f, 114.1f, vertices);
         
+        /*float[] leftBunkerSegment = {354.93753f, 102.65489f, 356.62503f, 89.20353f, 393.75006f, 87.787605f, 404.43756f, 72.21238f, 
+        		414.56256f, 88.49558f, 456.18756f, 89.91151f, 454.50006f, 101.23894f};*/
         float[] snakeRectangleOne = {355.46555f, 102.75157f, 354.87408f, 88.70637f, 456.60468f, 86.488716f, 454.83026f, 101.27312f};
         float[] snakeRectangleTwo = {455.42175f, 100.53389f, 463.70215f, 87.96714f, 528.17096f, 153.0185f, 520.482f, 165.58522f};
-        float[] snakeSquare = {525.8051f, 181.10884f, 526.39655f, 156.71458f, 550.64624f, 157.45381f, 552.42065f, 179.6304f};
+        //float[] snakeSquare = {525.8051f, 181.10884f, 526.39655f, 156.71458f, 550.64624f, 157.45381f, 552.42065f, 179.6304f};
         float[] snakeRectangleThree = {558.3352f, 165.58522f, 550.0548f, 153.7577f, 615.11505f, 88.70637f, 622.80396f, 100.53389f};
         float[] snakeRectangleFour = {622.2126f, 101.27312f, 621.02966f, 87.22794f, 722.7602f, 87.96714f, 722.7602f, 102.012314f};
-        float[] snakeDoritoOne = {395.68463f, 85.74949f, 404.55646f, 70.22587f, 414.61124f, 85.74949f };
-        float[] snakeDoritoTwo = {664.206f, 85.74949f, 674.26074f, 70.22587f, 683.724f, 85.01029f};
-        Bunker[] temp = {new Bunker(snakeRectangleOne), new Bunker(snakeRectangleTwo), new Bunker(snakeSquare), new Bunker(snakeRectangleThree),
-            new Bunker(snakeRectangleFour), new Bunker(snakeDoritoOne), new Bunker(snakeDoritoTwo)};
+        //float[] snakeDoritoOne = {395.68463f, 85.74949f, 404.55646f, 70.22587f, 414.61124f, 85.74949f };
+        //float[] snakeDoritoTwo = {664.206f, 85.74949f, 674.26074f, 70.22587f, 683.724f, 85.01029f};
+        Bunker[] temp = {new Bunker(snakeRectangleOne), new Bunker(snakeRectangleTwo), new Bunker(snakeRectangleThree),
+                new Bunker(snakeRectangleFour)};
+        /*Bunker[] temp = {new Bunker(snakeRectangleOne), new Bunker(snakeRectangleTwo), new Bunker(snakeSquare), new Bunker(snakeRectangleThree),
+            new Bunker(snakeRectangleFour), new Bunker(snakeDoritoOne), new Bunker(snakeDoritoTwo)};*/
+        /*Bunker[] temp = {new Bunker(leftBunkerSegment), new Bunker(snakeRectangleTwo), new Bunker(snakeSquare), new Bunker(snakeRectangleThree),
+                new Bunker(snakeRectangleFour), new Bunker(snakeDoritoTwo)};*/
         
         for (int i = 0; i < temp.length; i++) {
             bunkers.add(temp[i]);
@@ -159,10 +165,12 @@ public class PaintballMap
         
         float[] xRectangleOne = {519.89056f, 396.2218f, 506.28702f, 381.4374f, 557.15234f, 328.9528f, 572.5302f, 343.73718f};
         float[] xRectangleTwo = {505.6956f, 345.21564f, 520.482f, 328.9528f, 572.5302f, 379.95895f, 557.15234f, 395.4826f};
+        float[] xRectangleInvis = {522.00006f, 378.05313f, 524.25006f, 346.90268f, 559.12506f, 344.7788f, 556.87506f, 377.34518f};
         
+        bunkers.add(new Bunker(xRectangleInvis));
         bunkers.add(new Bunker(xRectangleOne));
         bunkers.add(new Bunker(xRectangleTwo));
-        
+             
         
     }
     protected void createLongRectangle() {
@@ -181,5 +189,4 @@ public class PaintballMap
     protected ArrayList<Bunker> getBunkers(){
         return this.bunkers;
     }
-    
 }
