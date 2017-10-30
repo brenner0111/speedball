@@ -1,10 +1,15 @@
 package com.speedball.game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
 public class Utils {
@@ -13,11 +18,13 @@ public class Utils {
 	 * TODO: Possibly move to separate utility class
 	 */
 
-	protected Sprite createPlayerSprite() {
-		return new Sprite(new Texture(Gdx.files.internal("playerNewSize.png")));
+	protected Player createPlayerSprite(float initX, float initY) {
+		return new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), initX, initY);
 	}
+	
 	protected Sprite createBackgroundSprite() {
-		return new Sprite(new Texture(Gdx.files.internal("grassBetter.png")));
+		return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
+		//return new Sprite(new Texture(Gdx.files.internal("pbfield/paintballFieldOne.png")));
 	}
 	/*
 	 * Function that determines the player's x and y position.
@@ -111,13 +118,14 @@ public class Utils {
 		
 		return (float)degrees;
 	} 
+	
 	protected boolean isPlayerSprinting() {
 		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 			return true;
 		}
 		return false;
 	}
-	protected float setPlayerSpeed(float sprint, float walk) {
+	protected float choosePlayerSpeed(float sprint, float walk) {
 		if (isPlayerSprinting()) {
 			return sprint;
 		}
@@ -139,6 +147,7 @@ public class Utils {
 		return newX;
 		
 	}
+	
 	protected float updatePlayerY(float playerX, float playerY, float angle, float originY, float radius) {
 		//return playerY + originY + (radius * (float) Math.cos(Math.toRadians(angle)));
 		float s = (float)Math.sin(Math.toRadians(angle));
@@ -146,6 +155,113 @@ public class Utils {
 		playerY -= originY;
 		float newY = (playerX * s) + (playerY * c) + originY;
 		return newY;
+	}
+	
+	protected float[] convertArrayList(ArrayList<Float> vertices) { 
+		float[] floatArray = new float[vertices.size()];
+		int i = 0;
+
+		for (Float f : vertices) {
+		    floatArray[i++] = (f != null ? f : Float.NaN);
+		}
+		return floatArray;
+	}
+	
+	protected ArrayList<Float> convertArray(float[] array) { 
+		ArrayList<Float> vertices = new ArrayList<Float>();
+		for (int i = 0; i < array.length; i++) {
+			vertices.add(array[i]);
+		}
+		return vertices;
+	}
+	
+	/*
+	 * returns the players custom hitbox
+	 */
+	protected float[] getPlayerVertices(Player player) {
+		Rectangle rectangle = player.getBoundingRectangle();
+		//float width = rectangle.getWidth() - Player.getPlayerCenterWidth();
+		//float height = rectangle.getHeight() - Player.getPlayerCenterHeight();
+		float width = 22.0f;
+		float height = 20.0f;
+		float x = rectangle.getX() + 6.75f;
+		float y = rectangle.getY() + 9.20f;
+		//float x = rectangle.getX();
+		//float y = rectangle.getY();
+		float[] retArray = {x, y, x + width, y, x + width, y + height, x, y + height};
+		/*float[] retArray = {x + 10.687501f, y + 25.654848f, x + 8.437501f, y + 21.823f, x + 6.187501f, y + 19.283175f,
+				x + 7.875001f, y + 13.619477f, x + 12.375002f, y + 12.9115f, x + 17.437502f, y + 15.74338f, x + 19.687502f, y + 19.283175f,
+				x + 18.000002f, y + 21.238924f};*/
+		return retArray;
+	}
+	
+	protected void playerCollided(Player player, ArrayList<Bunker> bunkers) {
+		float[] playerVertices = getPlayerVertices(player);
+		Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
+		for (Bunker bunker: bunkers) {
+			if (bunker.isCollidable()) {
+				float[] bunkerVertices = bunker.getVerticesArray();
+				if (bunkerVertices.length != 0 && Intersector.overlapConvexPolygons(playerVertices, bunkerVertices, mtv)) {
+				    //System.out.println("Normal: " + mtv.normal + " depth: " + mtv.depth);
+					player.setCollided(true);
+					//player.setMtv(mtv);
+					//player.addBunkerCollidedWith(bunker);
+					player.addMtv(mtv);
+					
+				}
+//				else {
+//					player.setCollided(false);
+//				}
+			}
+		}
+		//setResultantMtv(player, player.getMtvAtCollidedBunkers());
+	}
+	
+	/*protected void setResultantMtv(Player player, ArrayList<Intersector.MinimumTranslationVector> mtvAtCollidedBunkers) {
 		
+	}*/
+	
+	/*
+	 * Uses the minimum translation vector to correct the players position
+	 * if the player starts to collide with an polygon
+	 */
+	protected void playerMtvLogic(Player player, PaintballMap bunker) {
+		playerCollided(player, bunker.getBunkers());
+        if (player.getCollided() == false) {
+            player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
+        }
+        else {
+        	float newPlayerX = player.getPlayerX();
+        	float newPlayerY = player.getPlayerY();
+        	for (int i = 0; i < player.getMtvAtCollidedBunkers().size(); i++) {
+        		if (player.getMtvAtCollidedBunkers().size() > 1) {
+        			System.out.println("MTV Normal: " + player.getMtvAtCollidedBunkers().get(i).normal + " MTV Depth: " + player.getMtvAtCollidedBunkers().get(i).depth);
+        		}
+        		newPlayerX += player.getMtvAtCollidedBunkers().get(i).normal.x * player.getMtvAtCollidedBunkers().get(i).depth;
+        		newPlayerY += player.getMtvAtCollidedBunkers().get(i).normal.y * player.getMtvAtCollidedBunkers().get(i).depth;
+        		
+        	}
+        	 
+            //float newPlayerX = player.getPlayerX() + (player.getNormalVector().x * player.getDepth());
+            //float newPlayerY = player.getPlayerY() + (player.getNormalVector().y * player.getDepth());
+        	player.setMtvAtCollidedBunkers(new ArrayList<Intersector.MinimumTranslationVector>());
+        	player.setBounds(newPlayerX, newPlayerY, Player.getPlayerWidth(), Player.getPlayerHeight());
+            player.setPlayerX(newPlayerX);
+            player.setPlayerY(newPlayerY);
+        	player.setCollided(false);
+        }
+	}
+	
+	protected void checkAndMovePlayer(float x, float y, float maxX, float maxY, Player player) {
+		player.setPlayerSpeed(choosePlayerSpeed(Player.getSprintSpeed(), Player.getWalkSpeed()));
+		if (playerInBounds(x, y, maxX, maxY)) {
+			float[] playerXY = movePlayer(x, y, player.getPlayerSpeed());
+			player.setPlayerX(playerXY[0]);
+			player.setPlayerY(playerXY[1]);
+		}
+		else {
+			player.setPlayerX(resetPlayerAtXBound(x, maxX));
+			player.setPlayerY(resetPlayerAtYBound(y, maxY));
+		}
 	}
 }
