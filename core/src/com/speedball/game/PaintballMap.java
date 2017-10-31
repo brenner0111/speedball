@@ -24,7 +24,7 @@ public class PaintballMap
         bunkers.add(bunker);
     }
 
-    protected void drawBunkers(Batch b) {
+    public void drawBunkers(Batch b) {
         for (int i = 0; i < bunkers.size(); i++) {
             if (bunkers.get(i).isDrawable()) {
                 bunkers.get(i).draw(b);
@@ -32,7 +32,7 @@ public class PaintballMap
         }
     }
     
-    protected void createBunkers() {
+    public void createBunkers() {
         createDoritos();
         createRectangles();
         createPins();
@@ -186,7 +186,7 @@ public class PaintballMap
         createBunkerSprite(deadBox, 19.125f, 303.628f, 40f, 112f, leftDeadBox);
         createBunkerSprite(deadBox, 1020.625f, 303.628f, 40f, 112f, rightDeadBox);
     }
-    protected ArrayList<Bunker> getBunkers(){
+    public ArrayList<Bunker> getBunkers(){
         return this.bunkers;
     }
 }

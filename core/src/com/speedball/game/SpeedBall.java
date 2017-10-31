@@ -49,9 +49,9 @@ public class SpeedBall extends ApplicationAdapter {
 		player.setPaintballCounter(-1);
 		player.setPlayerX(player.getInitX());
 		player.setPlayerY(player.getInitY());
-		//cursor = new Texture("misc/crossHair.PNG");
-		//customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
-		//Gdx.graphics.setCursor(customCursor);	
+		cursor = new Texture("misc/crossHair.PNG");
+		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
+		Gdx.graphics.setCursor(customCursor);	
 		bunker.createBunkers();
 	}
 	

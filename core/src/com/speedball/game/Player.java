@@ -61,16 +61,16 @@ public class Player extends Sprite  {
 	protected static float getPlayerHeight() {
 		return PLAYER_HEIGHT;
 	}
-	protected static float getPlayerCenterWidth() {
+	public static float getPlayerCenterWidth() {
 		return PLAYER_CENTER_WIDTH;
 	}
-	protected static float getPlayerCenterHeight() {
+	public static float getPlayerCenterHeight() {
 		return PLAYER_CENTER_HEIGHT;
 	}
-	protected static float getPlayerGunHeight() {
+	public static float getPlayerGunHeight() {
 		return PLAYER_GUN_HEIGHT;
 	}
-	protected static float getPlayerGunWidth() {
+	public static float getPlayerGunWidth() {
 		return PLAYER_GUN_WIDTH;
 	}
 	protected static float getWalkSpeed() {
@@ -79,10 +79,10 @@ public class Player extends Sprite  {
 	protected static float getSprintSpeed() {
 		return SPRINT_SPEED;
 	}
-	protected float getInitX() {
+	public float getInitX() {
 		return initX;
 	}
-	protected float getInitY() {
+	public float getInitY() {
 		return initY;
 	}
 	public static float getGunRadius() {
@@ -94,25 +94,25 @@ public class Player extends Sprite  {
 	public void setPlayerSpeed(float playerSpeed) {
 		this.playerSpeed = playerSpeed;
 	}
-	protected float getPlayerX() {
+	public float getPlayerX() {
 		return playerX;
 	}
-	protected void setPlayerX(float playerX) {
+	public void setPlayerX(float playerX) {
 		this.playerX = playerX;
 	}
-	protected float getPlayerY() {
+	public float getPlayerY() {
 		return playerY;
 	}
-	protected void setPlayerY(float playerY) {
+	public void setPlayerY(float playerY) {
 		this.playerY = playerY;
 	}
-	protected float getGunX() {
+	public float getGunX() {
 		return gunX;
 	}
 	protected void setGunX(float gunX) {
 		this.gunX = gunX;
 	}
-	protected float getGunY() {
+	public float getGunY() {
 		return gunY;
 	}
 	protected void setGunY(float gunY) {
@@ -124,16 +124,16 @@ public class Player extends Sprite  {
 	protected void setInitY(float initY) {
 		this.initY = initY;
 	}
-	protected int getPaintballCounter() {
+	public int getPaintballCounter() {
 		return paintballCounter;
 	}
-	protected void setPaintballCounter(int paintballCounter) {
+	public void setPaintballCounter(int paintballCounter) {
 		this.paintballCounter = paintballCounter;
 	}
 	protected void incrementPaintballCounter() {
 	    this.paintballCounter++;
 	}
-	protected ArrayList<Paintball> getPaintballs() {
+	public ArrayList<Paintball> getPaintballs() {
 		return paintballs;
 	}
 	protected void addPaintball(Paintball paintball) {

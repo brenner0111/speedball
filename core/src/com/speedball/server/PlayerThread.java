@@ -16,23 +16,23 @@ public class PlayerThread extends Thread
     }
 
     public void run() {
-        InputStream inp = null;
-        BufferedReader brinp = null;
-        DataOutputStream out = null;
+        InputStream inFromClient = null;
+        BufferedReader buffer = null;
+        DataOutputStream outToClient = null;
         
         try {
-            inp = socket.getInputStream();
-            brinp = new BufferedReader(new InputStreamReader(inp));
-            out = new DataOutputStream(socket.getOutputStream());
+            inFromClient = socket.getInputStream();
+            buffer = new BufferedReader(new InputStreamReader(inFromClient));
+            outToClient = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             return;
         }
         String line;
         while (true) {
             try {
-                line = brinp.readLine();
+                line = buffer.readLine();
                 line = line.toUpperCase() + '\n';
-                out.writeBytes(line);
+                outToClient.writeBytes(line);
                 System.out.println(line);
             }
             catch (IOException e) {

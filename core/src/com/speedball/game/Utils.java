@@ -18,11 +18,11 @@ public class Utils {
 	 * TODO: Possibly move to separate utility class
 	 */
 
-	protected Player createPlayerSprite(float initX, float initY) {
+	public Player createPlayerSprite(float initX, float initY) {
 		return new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), initX, initY);
 	}
 	
-	protected Sprite createBackgroundSprite() {
+	public Sprite createBackgroundSprite() {
 		return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
 		//return new Sprite(new Texture(Gdx.files.internal("pbfield/paintballFieldOne.png")));
 	}
@@ -51,7 +51,7 @@ public class Utils {
 			playerY -= dt * halfPlayerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.W)) {
-	    		playerY += dt * playerSpeed;
+	    	playerY += dt * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
 			playerY -= dt * playerSpeed;
@@ -99,7 +99,7 @@ public class Utils {
 		return coordinate + offSet;
 	}
 	
-	protected float getMouseAngle(float playerX, float playerY, float offSetX, float offSetY, Camera camera) {
+	public float getMouseAngle(float playerX, float playerY, float offSetX, float offSetY, Camera camera) {
 		float xCenter = getPlayerCenter(playerX, offSetX);
 		float yCenter = getPlayerCenter(playerY, offSetY);
 		float xCursor = Gdx.input.getX();
@@ -132,7 +132,7 @@ public class Utils {
 		return walk;
 	}
 	
-	protected Sprite rotateSprite(float angle, Sprite sprite, float offSetX, float offSetY, float playerX, float playerY) {
+	public Sprite rotateSprite(float angle, Sprite sprite, float offSetX, float offSetY, float playerX, float playerY) {
 		sprite.setOrigin(offSetX, offSetY);
 		sprite.setRotation(angle);
 		return sprite;
@@ -225,7 +225,7 @@ public class Utils {
 	 * Uses the minimum translation vector to correct the players position
 	 * if the player starts to collide with an polygon
 	 */
-	protected void playerMtvLogic(Player player, PaintballMap bunker) {
+	public void playerMtvLogic(Player player, PaintballMap bunker) {
 		playerCollided(player, bunker.getBunkers());
         if (player.getCollided() == false) {
             player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
@@ -252,7 +252,7 @@ public class Utils {
         }
 	}
 	
-	protected void checkAndMovePlayer(float x, float y, float maxX, float maxY, Player player) {
+	public void checkAndMovePlayer(float x, float y, float maxX, float maxY, Player player) {
 		player.setPlayerSpeed(choosePlayerSpeed(Player.getSprintSpeed(), Player.getWalkSpeed()));
 		if (playerInBounds(x, y, maxX, maxY)) {
 			float[] playerXY = movePlayer(x, y, player.getPlayerSpeed());

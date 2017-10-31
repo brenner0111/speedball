@@ -35,7 +35,7 @@ public class GunUtils {
         }
     }
     
-    protected int drawPaintballs(SpriteBatch b, ArrayList<Paintball> paintballs, int paintballCounter, ArrayList<Bunker> bunkers) {
+    public int drawPaintballs(SpriteBatch b, ArrayList<Paintball> paintballs, int paintballCounter, ArrayList<Bunker> bunkers) {
         for (Iterator<Paintball> iterator = paintballs.iterator(); iterator.hasNext();) {
             Paintball paintball = iterator.next();
             
@@ -190,7 +190,7 @@ public class GunUtils {
         return false; 
     }
     
-    protected boolean checkAndFireGun(float angle, Player player, Camera camera) {
+    public boolean checkAndFireGun(float angle, Player player, Camera camera) {
         // If screen was just touched or left click was pushed on desktop
         // Gdx.input.isButtonPressed(Input.Buttons.LEFT)
         //Gdx.input.justTouched()
