@@ -13,7 +13,7 @@ public class SpeedballClient
     public static void main(String[] args) throws UnknownHostException, IOException {
         //sets the socket to the local address 
         //Socket clientSocket = new Socket(InetAddress.getLocalHost().getHostAddress(), 6789);
-        Socket clientSocket = new Socket("34.207.157.240", 6789);
+        Socket clientSocket = new Socket("54.164.13.70", 6789);
         
         String sentence;
         String modifiedSentence;

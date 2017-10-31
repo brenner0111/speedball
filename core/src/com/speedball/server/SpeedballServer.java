@@ -9,17 +9,9 @@ import java.net.Socket;
 
 public class SpeedballServer
 {
-    private boolean gameHasStarted;
     
-    public SpeedballServer() {
-        gameHasStarted = false;
-        
-    }
-    public boolean getGameHasStarted() {
-        return gameHasStarted;
-    }
     public static void main(String[] args) throws IOException {
-        SpeedballServer server = new SpeedballServer();
+        Game game = new Game();
         //String clientSentence;
         //String captializedSentence;
         ServerSocket listeningSocket = new ServerSocket(6789);
@@ -32,13 +24,14 @@ public class SpeedballServer
         Socket connectionSocket = null;
         
         
-        while (!server.getGameHasStarted()) {
+        while (game.getNumPlayers() < 2) {
             try {
                 connectionSocket = listeningSocket.accept(); 
             }catch (IOException e) {
                 System.out.println("I/O error");
             }
-            new PlayerThread(connectionSocket).start();;
+            new PlayerThread(connectionSocket).start();
+            game.addPlayer();
         }
     
         //set up streams 
