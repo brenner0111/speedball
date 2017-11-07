@@ -9,31 +9,39 @@ import java.net.Socket;
 
 public class PlayerThread extends Thread
 {
-    protected Socket socket;
+	protected Socket socket;
+    protected String data;
+    protected boolean isDone;
+    protected String outString;
+    protected volatile String temp;
 
     public PlayerThread(Socket clientSocket) {
         this.socket = clientSocket;
+        this.data = "";
+        this.isDone = false;
+        this.outString = "";
     }
 
     public void run() {
-        InputStream inFromClient = null;
-        BufferedReader buffer = null;
-        DataOutputStream outToClient = null;
+        InputStream inp = null;
+        BufferedReader brinp = null;
+        DataOutputStream out = null;
         
         try {
-            inFromClient = socket.getInputStream();
-            buffer = new BufferedReader(new InputStreamReader(inFromClient));
-            outToClient = new DataOutputStream(socket.getOutputStream());
+            inp = socket.getInputStream();
+            brinp = new BufferedReader(new InputStreamReader(inp));
+            out = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             return;
         }
-        String line;
+        //Eventually need to change while game hasn't started
         while (true) {
             try {
-                line = buffer.readLine();
-                line = line.toUpperCase() + '\n';
-                outToClient.writeBytes(line);
-                System.out.println(line);
+               data = brinp.readLine();
+               if (isDone) {
+            	  outString = temp.substring(0, temp.length());
+               }
+               out.writeBytes(outString + '\n');
             }
             catch (IOException e) {
                 e.printStackTrace();

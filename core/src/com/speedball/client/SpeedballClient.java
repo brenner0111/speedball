@@ -1,103 +1,74 @@
 package com.speedball.client;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
-import com.speedball.*;
-import com.speedball.game.GunUtils;
-import com.speedball.game.Paintball;
-import com.speedball.game.PaintballMap;
-import com.speedball.game.Player;
-import com.speedball.game.Utils;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;	
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.speedball.game.*;
 
-public class SpeedballClient extends ApplicationAdapter
-{
-	private static final float MAX_X = 1045f;
-	private static final float MAX_Y = 690f;
+
+
+public class SpeedballClient extends ApplicationAdapter{
+	
 	private final float GAME_WORLD_WIDTH = 1080;
 	private final float GAME_WORLD_HEIGHT = 720;
+
+	public volatile static float mouseAngle;
 	
-	private Utils utils = new Utils();
-	private GunUtils gunUtils = new GunUtils();
-	private PaintballMap bunker = new PaintballMap();
+	private boolean displayStartScreen;
+	private boolean displayGameScreen;
+	private boolean displayLoadingScreen;
+	private boolean displayVictoryScreen;
+	private boolean displayDefeatScreen;
+	private DisplayScreen displayScreen;
+	private float mouseX;
+	private float mouseY;
 	private Player player;
-	private Sprite background;
-	private Cursor customCursor;
-	private Texture cursor;
+	private SpriteBatch batch;
+	private ClientNetworkThread ct;
+	private Utils utils;
+	
 	private OrthographicCamera camera;
 	private Viewport viewport;
-	private SpriteBatch batch;
 	
-	private Socket clientSocket;
-	private DataOutputStream outToServer;
-    private BufferedReader inFromServer;
-    private String dataFromServer;
-    private int renderCounter;
-    
 	
 	@Override
 	public void create () {
+		utils = new Utils();
 		batch = new SpriteBatch();
-		player = utils.createPlayerSprite(0f, 0f);
-		player.setPosition(0, 0);
-		background = utils.createBackgroundSprite();
-		background.setPosition(0, 0);
-		background.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
-		camera = new OrthographicCamera();
-		viewport =  new StretchViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
-		viewport.apply();
-		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
-		player.setPaintballCounter(-1);
-		player.setPlayerX(player.getInitX());
-		player.setPlayerY(player.getInitY());
-		cursor = new Texture("misc/crossHair.PNG");
-		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
-		Gdx.graphics.setCursor(customCursor);	
-		bunker.createBunkers();
-		//might want to move connectToServer() to render method to be called after the player goes through the menus
-		connectToServer();
-		renderCounter = 0;
+		displayScreen = new DisplayScreen();
+		//add methods for screen transitions
+		initMouse();
+		initViewport();
+		initScreenStates();
+		player = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
+		ct = new ClientNetworkThread();
+		ct.start();
 		
 	}
-	
+
 	@Override
 	public void resize(int width, int height) {
-	    viewport.update(width, height);
-	    camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
+		viewport.update(width, height);
+		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
 	}
 
 	@Override
 	public void render () {
-	    Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		getMouseCoords();
+		renderLogic();
 		batch.begin();
-		renderCounter++;
-		if (renderCounter == 40) {
-			sendAndRecieveFromServer();
-			renderCounter = 0;
-		}
-		
-		updateGameState();
-		updateSpriteState();
-		
+		processInputFromServer(batch);
 		batch.end();
 	}
-	
+
 	/*
 	 * Need to look into making sure we are disposing the images properly
 	 * @see com.badlogic.gdx.ApplicationAdapter#dispose()
@@ -105,85 +76,145 @@ public class SpeedballClient extends ApplicationAdapter
 	@Override
 	public void dispose () {
 		batch.dispose();
+		player.getTexture().dispose();
+		ct.interrupt();
 	}
 	
-	private void connectToServer() {
-		try {
-			clientSocket = new Socket("54.164.13.70", 6789);
-			outToServer = new DataOutputStream(clientSocket.getOutputStream());
-			inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+	private void initMouse() {
+		mouseX = 0f;
+		mouseY = 0f;
+		mouseAngle = 0f;
 	}
-	
-	private void sendAndRecieveFromServer() {
-		try {
-        	//Send to server
-			outToServer.writeBytes("data" + '\n');
-			 //receive from server
-			dataFromServer = inFromServer.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
+	private void initViewport() {
+		camera = new OrthographicCamera();
+		viewport = new StretchViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
+		viewport.apply();
+		camera.position.set(GAME_WORLD_WIDTH / 2, GAME_WORLD_HEIGHT / 2, 0);
+		
+	}
+	private void initScreenStates() {
+		displayStartScreen = true;
+		displayGameScreen = false;
+		displayVictoryScreen = false;
+		displayDefeatScreen = false;
+		displayLoadingScreen = false;
+	}
+	private void renderLogic() {
+		updateScreenFlags();
+
+		if (displayStartScreen) {
+			displayScreen.drawStartScreen(batch);
+		}
+		else if (displayLoadingScreen) {
+			displayScreen.drawLoadingScreen(batch);
+		}
+		else if (displayGameScreen) {
+			displayScreen.drawGameScreen(batch);
+		}
+		else if (displayVictoryScreen) {
+			displayScreen.drawVictoryScreen(batch);
+		}
+		else if (displayDefeatScreen) {
+			displayScreen.drawDefeatScreen(batch);
+		}
+		else {
+			System.out.println("Render Logic error");
 		}
 	}
-	
-	private void updateSpriteState() {		
-		camera.update();
-		batch.setProjectionMatrix(camera.combined);
-        background.draw(batch);
-        bunker.drawBunkers(batch);
-        player.setPaintballCounter(gunUtils.drawPaintballs(batch, player.getPaintballs(), player.getPaintballCounter(), bunker.getBunkers()));
-        
-        player.setMouseAngle(utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera));
-        player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(),
-            player.getPlayerX(), player.getPlayerY());
-        player.draw(batch);
+	private void getMouseCoords() {
+		if (Gdx.input.justTouched()) {
+			Vector3 tmpCoords = new Vector3(Gdx.input.getX(),Gdx.input.getY(), 0);
+			camera.unproject(tmpCoords);
+			System.out.println("World ClickXY: " + tmpCoords);
+			mouseX = tmpCoords.x;
+			mouseY = tmpCoords.y;
+		}
 	}
-	
-	private void updateGameState() {
-	    if(gunUtils.checkAndFireGun(player.getMouseAngle(), player, camera)) {
-            player.getPaintballs().get(player.getPaintballCounter()).setBounds(player.getGunX(), player.getGunY(), 4, 4);
-            
-            player.getPaintballs().set(player.getPaintballCounter(), (Paintball) utils.rotateSprite(player.getMouseAngle(),
-                player.getPaintballs().get(player.getPaintballCounter()), Player.getPlayerCenterWidth() - Player.getPlayerGunWidth(),
-                Player.getPlayerCenterHeight() - Player.getPlayerGunHeight(), player.getPlayerX(), player.getPlayerY()));
-            
-            player.getPaintballs().get(player.getPaintballCounter()).draw(batch);
-        }
-	    //checks to make sure player is in bounds, and calls movePlayer
-	    utils.playerMtvLogic(player, bunker);
-	    utils.checkAndMovePlayer(player.getPlayerX(), player.getPlayerY(), MAX_X, MAX_Y, player);
+	private void setMouseAngle() {
+		mouseAngle = utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), player.getPlayerCenterWidth(), player.getPlayerCenterHeight(), camera);
 	}
-	
-	
-    /*public static void main(String[] args) throws UnknownHostException, IOException {
-        //sets the socket to the local address 
-        //Socket clientSocket = new Socket(InetAddress.getLocalHost().getHostAddress(), 6789);
-        Socket clientSocket = new Socket("54.164.13.70", 6789);
-        
-        String sentence;
-        String modifiedSentence;
-        
-        //streams
-        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        
-        while (true) {
-            
-            System.out.println("Connected to server! Type something.");
-            
-            //Send to server
-            sentence = inFromUser.readLine();
-            outToServer.writeBytes(sentence + '\n');
-            
-            //receive from server
-            modifiedSentence = inFromServer.readLine();
-            System.out.println("from server: " + modifiedSentence);
-        }
-        //clientSocket.close();
-    }*/
+	private void updateScreenFlags() {
+
+		if (displayStartScreen) {
+			/*if ((mouseX > 408f && mouseX < 662f) && (mouseY > 223f && mouseY < 280f)) {
+				System.exit(0);
+			}
+			if((mouseX > 408f && mouseX < 662f) && (mouseY > 354 && mouseY < 410) ||
+					(mouseX > 408f && mouseX < 662f) && (mouseY > 286f && mouseY < 345f)) {
+
+				displayStartScreen = false;
+				displayLoadingScreen = true;
+			}*/
+		}
+		else if (displayLoadingScreen) {
+			/*if(Gdx.input.justTouched()) {
+				displayLoadingScreen = false;
+				displayGameScreen = true;
+			}*/
+			/*try {
+				TimeUnit.SECONDS.sleep(3);
+				displayLoadingScreen = false;
+				displayGameScreen = true;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+
+		}
+		else if (displayGameScreen) {
+			/*if(Gdx.input.justTouched()) {
+				displayGameScreen = true;
+				displayVictoryScreen = true;
+			}*/
+		}
+		else if (displayVictoryScreen) {
+			/*if(Gdx.input.justTouched()) {
+				displayVictoryScreen = false;
+				displayDefeatScreen = true;
+			}*/
+		/*	if ((mouseX > 320f && mouseX < 550f) && (mouseY > 37f && mouseY < 74f)) {
+				displayVictoryScreen = false;
+				displayDefeatScreen = true;
+			}
+			if ((mouseX > 608f && mouseX < 705f) && (mouseY > 30f && mouseY < 75f)) {
+				System.exit(0);
+			}*/
+		}
+		else if (displayDefeatScreen) {
+			/*if(Gdx.input.justTouched()) {
+				displayDefeatScreen = false;
+				displayGameScreen = true;
+			}*/
+			/*if ((mouseX > 355f && mouseX < 575f) && (mouseY > 52f && mouseY < 88f)) {
+				displayDefeatScreen = false;
+				displayGameScreen = true;
+			}
+			if ((mouseX > 630f && mouseX < 724f) && (mouseY > 50f && mouseY < 88f)) {
+				System.exit(0);
+			}*/
+		}
+		else {
+			System.out.println("Updateing Screen flags error");
+		}
+	}
+	private void processInputFromServer(SpriteBatch batch) {
+		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
+		System.out.println("tmp :" + tmp);
+		String[] strs = tmp.split("\\s+");
+		if (strs.length > 1) {
+			for (int i = 0; i < strs.length; i++) {
+				if (strs[i].equals("p")) {
+					processPlayerData(strs, i);
+					player = (Player) utils.rotateSprite(player.getMouseAngle(), player, player.getPlayerCenterWidth(), player.getPlayerCenterHeight(), player.getPlayerX(), player.getPlayerY());
+					batch.draw(player, player.getPlayerX(), player.getPlayerY());
+				}
+			}
+		}
+	}
+	private void processPlayerData(String[] strs, int index) {
+		player.setPlayerX(Float.parseFloat(strs[index + 1]));
+		player.setPlayerY(Float.parseFloat(strs[index + 2]));
+		player.setMouseAngle(Float.parseFloat(strs[index + 3]));
+		//TODO: Need to find solution for rotation
+	}
 }

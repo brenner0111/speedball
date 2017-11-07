@@ -40,10 +40,31 @@ public class Player extends Sprite  {
 
 	public Player(Texture backgroundTexture, float initX, float initY) {
 		super(backgroundTexture);
-		paintballs = new ArrayList<Paintball>();
 		this.collided = false;
 		this.initX = initX;
 		this.initY = initY;
+		this.playerX = this.initX;
+		this.playerY = this.initY;
+		this.gunX = PLAYER_GUN_WIDTH;
+		this.gunY = PLAYER_GUN_HEIGHT;
+		this.paintballCounter = -1;
+		this.mouseAngle = 0f;
+		paintballs = new ArrayList<Paintball>();
+		setMtv(new Intersector.MinimumTranslationVector());
+		bunkersCollidedWith = new ArrayList<Bunker>();
+		mtvAtCollidedBunkers = new ArrayList<Intersector.MinimumTranslationVector>();
+	}
+	public Player(float initX, float initY) {
+		this.collided = false;
+		this.initX = initX;
+		this.initY = initY;
+		this.playerX = this.initX;
+		this.playerY = this.initY;
+		this.gunX = PLAYER_GUN_WIDTH;
+		this.gunY = PLAYER_GUN_HEIGHT;
+		this.paintballCounter = -1;
+		this.mouseAngle = 0f;
+		paintballs = new ArrayList<Paintball>();
 		setMtv(new Intersector.MinimumTranslationVector());
 		bunkersCollidedWith = new ArrayList<Bunker>();
 		mtvAtCollidedBunkers = new ArrayList<Intersector.MinimumTranslationVector>();
