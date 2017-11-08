@@ -67,7 +67,6 @@ public class ClientNetworkThread extends Thread {
 		String ret = "";
 		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
 			ret += "W ";
-			System.out.println("Client: Pressing W");
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			ret += "A ";
@@ -78,12 +77,13 @@ public class ClientNetworkThread extends Thread {
 		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
 			ret += "D ";
 		}
+		ret += "| ";
 		if (Gdx.input.justTouched()) {
 			ret +="~ ";
 		}
 		else
 			ret += "";
-		//ret += " " + SpeedballClient.mouseAngle;
+		ret += " " + SpeedballClient.mouseAngle;
 		return ret;
 	}
 }

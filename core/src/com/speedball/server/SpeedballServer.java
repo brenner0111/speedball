@@ -53,62 +53,53 @@ public class SpeedballServer
             //game.addPlayer();
         }
         while (threads.size() > 0) {
-        	for (int i = 0; i < threads.size(); i++) {
-        		PlayerThread thread = threads.get(i);
-        		thread.isDone = false;
-        		inputs.set(i,  thread.data);
-        	}
-        	for (int i = 0; i < inputs.size(); i++) {
-        		System.out.println("Input String: " + inputs.get(i));
-        		processData(inputs.get(i), players.get(i));
-        	}
-        	deltaTime = System.currentTimeMillis() - currTime;
-        	currTime = System.currentTimeMillis();
-        	//TODO: Projectile stuff
-        	String tmp = createClientString();
-        	for (int i = 0; i < threads.size(); i++) {
-        		PlayerThread thread = threads.get(i);
-        		thread.temp = tmp;
-        		thread.isDone = true;
-        	}
-        	try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        	for (int i = 0; i < threads.size(); i++) {
+	        		PlayerThread thread = threads.get(i);
+	        		thread.isDone = false;
+	        		//System.out.println(thread.data);
+	        		inputs.set(i,  thread.data);
+	        	}
+	        	for (int i = 0; i < inputs.size(); i++) {
+	        		//System.out.println("Input String: " + inputs.get(i));
+        			//System.out.println("Before: " + players.get(i).getPlayerX());
+        			processData(inputs.get(i), players.get(i));
+        			//System.out.println("After: " + players.get(i).getPlayerX());
+	        	}
+	        	deltaTime = System.currentTimeMillis() - currTime;
+	        	currTime = System.currentTimeMillis();
+	        	//TODO: Projectile stuff
+	        	String tmp = createClientString();
+	        	for (int i = 0; i < threads.size(); i++) {
+	        		PlayerThread thread = threads.get(i);
+	        		thread.temp = tmp;
+	        		thread.isDone = true;
+	        	}
+	        	try {
+					Thread.sleep(5);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         }
-    
-        //set up streams 
-        //BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-        //DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-
-        // read from client
-        //clientSentence = inFromClient.readLine();
-
-        // prepare for client
-        //captializedSentence = clientSentence.toUpperCase() + '\n';
-        //outToClient.writeBytes(captializedSentence);
-
-        //listeningSocket.close();
     }
 
 
 	private static String createClientString() {
 		String clientString = "";
-		for (Player player: players) {
+		for (int i = 0; i < players.size(); i++) {
+			//System.out.println(players.get(i).getPlayerX() + " " + players.get(i).getPlayerY());
 			clientString += "p ";
-			if (utils.playerInBounds(player.getPlayerX(), player.getPlayerY(), MAX_X, MAX_Y)) {
-				clientString += player.getPlayerX() + " ";
-				clientString += player.getPlayerY() + " ";
+			if (utils.playerInBounds(players.get(i).getPlayerX(), players.get(i).getPlayerY(), MAX_X, MAX_Y)) {
+				clientString += players.get(i).getPlayerX() + " ";
+				clientString += players.get(i).getPlayerY() + " ";
 			}
 			else {
-				clientString += utils.resetPlayerAtXBound(player.getPlayerX(), MAX_X);
-				clientString += utils.resetPlayerAtXBound(player.getPlayerY(), MAX_Y);
+				clientString += utils.resetPlayerAtXBound(players.get(i).getPlayerX(), MAX_X) + " ";
+				clientString += utils.resetPlayerAtXBound(players.get(i).getPlayerY(), MAX_Y) + " ";
 			}
-			clientString += player.getMouseAngle();
+			clientString += players.get(i).getMouseAngle();
 		}
-		System.out.println("Client String: " + clientString);
+		//System.out.println("Client String: " + clientString);
 		return clientString;
 	}
 
@@ -118,34 +109,36 @@ public class SpeedballServer
 		int x = 0;
 		int y = 0;
 		float mouseAngle = 0f;
+		int click = 0;
 		// TODO: Projectile when clicked
-		for (String character: splitString) {
-			if (character == "W") {
+		System.out.println("String to process: " + input);
+		for (String s: splitString) {
+			System.out.println("Current Char:" + s);
+			switch (s) {
+			case "W":
 				y += 1;
 				break;
-			}
-			else if (character == "A") {
+			case "A":
 				x -= 1;
 				break;
-			}
-			else if (character == "S") {
+			case "S":
 				y -= 1;
 				break;
-			}
-			else if (character == "D") {
+			case "D":
 				x += 1;
 				break;
+			case "~":
+				click = 1;
+				break;
 			}
-			else if (character == "~") {
-				//TODO: Implement projectile stuff here
-			}
-			else if (character != "") {
-				mouseAngle = Float.parseFloat(character);
-			}
+//			else {
+//				mouseAngle = Float.parseFloat(character);
+//			}
 		}
 		if (x != 0 || y != 0) {
-			player.setPlayerX(x);
-			player.setPlayerY(y);
+			player.setPlayerX(player.getPlayerX() + x);
+			player.setPlayerY(player.getPlayerY() + y);
+//			player.move((float) Math.atan2((double)y, (double)x));
 		}
 		player.setMouseAngle(mouseAngle);
 	}

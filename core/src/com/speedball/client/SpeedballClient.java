@@ -194,19 +194,18 @@ public class SpeedballClient extends ApplicationAdapter{
 			}*/
 		}
 		else {
-			System.out.println("Updateing Screen flags error");
+			System.out.println("Updating Screen flags error");
 		}
 	}
 	private void processInputFromServer(SpriteBatch batch) {
 		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
-		System.out.println("tmp :" + tmp);
 		String[] strs = tmp.split("\\s+");
 		if (strs.length > 1) {
 			for (int i = 0; i < strs.length; i++) {
 				if (strs[i].equals("p")) {
 					processPlayerData(strs, i);
 					player = (Player) utils.rotateSprite(player.getMouseAngle(), player, player.getPlayerCenterWidth(), player.getPlayerCenterHeight(), player.getPlayerX(), player.getPlayerY());
-					batch.draw(player, player.getPlayerX(), player.getPlayerY());
+					batch.draw(player, player.getPlayerX(), player.getPlayerY(), player.getPlayerWidth(), player.getPlayerHeight());
 				}
 			}
 		}

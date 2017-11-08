@@ -39,7 +39,7 @@ public class PlayerThread extends Thread
             try {
                data = brinp.readLine();
                if (isDone) {
-            	  outString = temp.substring(0, temp.length());
+            	   		outString = temp.substring(0, temp.length());
                }
                out.writeBytes(outString + '\n');
             }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.speedball.server.SpeedballServer;
 /**
  * Wrapper class that adds a collided flag to the sprite object.
  * @author Calvin Yarboro
@@ -49,6 +50,7 @@ public class Player extends Sprite  {
 		this.gunY = PLAYER_GUN_HEIGHT;
 		this.paintballCounter = -1;
 		this.mouseAngle = 0f;
+		this.playerSpeed = WALK_SPEED;
 		paintballs = new ArrayList<Paintball>();
 		setMtv(new Intersector.MinimumTranslationVector());
 		bunkersCollidedWith = new ArrayList<Bunker>();
@@ -64,22 +66,26 @@ public class Player extends Sprite  {
 		this.gunY = PLAYER_GUN_HEIGHT;
 		this.paintballCounter = -1;
 		this.mouseAngle = 0f;
+		this.playerSpeed = WALK_SPEED;
 		paintballs = new ArrayList<Paintball>();
 		setMtv(new Intersector.MinimumTranslationVector());
 		bunkersCollidedWith = new ArrayList<Bunker>();
 		mtvAtCollidedBunkers = new ArrayList<Intersector.MinimumTranslationVector>();
 	}
-	
+	public void move(float angle) {
+		this.playerX = (float) (playerX + (Math.cos(angle) * playerSpeed * SpeedballServer.deltaTime));
+		this.playerY = (float) (playerY + (Math.sin(angle) * playerSpeed * SpeedballServer.deltaTime));
+	}
 	public boolean getCollided() {
 		return this.collided;
 	}
 	public void setCollided(boolean value) {
 		this.collided = value;
 	}
-	protected static float getPlayerWidth() {
+	public static float getPlayerWidth() {
 		return PLAYER_WIDTH;
 	}
-	protected static float getPlayerHeight() {
+	public static float getPlayerHeight() {
 		return PLAYER_HEIGHT;
 	}
 	public static float getPlayerCenterWidth() {
