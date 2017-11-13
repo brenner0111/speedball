@@ -1,5 +1,6 @@
 package com.speedball.client;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -21,7 +22,11 @@ public class SpeedballClient extends ApplicationAdapter{
 	private final float GAME_WORLD_HEIGHT = 720;
 
 	public volatile static float mouseAngle;
-	
+//	public volatile static ArrayList<Float> paintballX;
+//	public volatile static ArrayList<Float> paintballY;
+//	public volatile static ArrayList<Float> paintballSlope;
+//	public volatile static ArrayList<Integer> paintballQuadrant;
+
 	private boolean displayStartScreen;
 	private boolean displayGameScreen;
 	private boolean displayLoadingScreen;
@@ -30,7 +35,7 @@ public class SpeedballClient extends ApplicationAdapter{
 	private DisplayScreen displayScreen;
 	private float mouseX;
 	private float mouseY;
-	private Player[] players = new Player[2];
+	public volatile Player[] players = new Player[2];
 	private SpriteBatch batch;
 	private ClientNetworkThread ct;
 	private Utils utils;
@@ -48,6 +53,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		initMouse();
 		initViewport();
 		initScreenStates();
+//		initArrayLists();
 		players[0] = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
 		players[1] = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
 		ct = new ClientNetworkThread();
@@ -67,6 +73,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		renderLogic();
 		batch.begin();
 		processInputFromServer(batch);
+		System.out.println("Player1 X: " + getPlayerX());
 		batch.end();
 	}
 
@@ -82,7 +89,12 @@ public class SpeedballClient extends ApplicationAdapter{
 		}
 		ct.interrupt();
 	}
-	
+//	private void initArrayLists() {
+//		paintballX = new ArrayList<Float>();
+//		paintballY = new ArrayList<Float>();
+//		paintballSlope = new ArrayList<Float>();
+//		paintballQuadrant = new ArrayList<Integer>();
+//	}
 	private void initMouse() {
 		mouseX = 0f;
 		mouseY = 0f;
@@ -204,31 +216,25 @@ public class SpeedballClient extends ApplicationAdapter{
 	private void processInputFromServer(SpriteBatch batch) {
 		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
 		String[] strs = tmp.split("\\s+");
-		//System.out.println("Input from server: " + tmp);
 		if (strs.length > 1) {
 			for (int i = 0; i < strs.length; i++) {
 				if (strs[i].equals("p1")) {
-					//processPlayerData(strs, i);
 					players[0] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[0], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[0].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
-					//System.out.println("Player1 X: " + strs[i+1] + " Player1 Y: " + strs[i+2] + " Player1 MA: " + strs[i+3]);
+					players[0].setPlayerX(Float.parseFloat(strs[i+1]));
+					players[0].setPlayerY(Float.parseFloat(strs[i+2]));
 					setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[0].draw(batch);
 				}
 				else if (strs[i].equals("p2")) {
 					players[1] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[1], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[1].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
-					//System.out.println("Player2 X: " + strs[i+1] + " Player2 Y: " + strs[i+2] + " Player2 MA: " + strs[i+3]);
 					players[1].draw(batch);
 				}
 			}
 		}
 	}
-//	private void processPlayerData(String[] strs, int index) {
-//		player.setPlayerX(Float.parseFloat(strs[index + 1]));
-//		player.setPlayerY(Float.parseFloat(strs[index + 2]));
-//		setMouseAngle(Float.parseFloat(strs[index + 1]), Float.parseFloat(strs[index + 2]));
-//		player.setMouseAngle(Float.parseFloat(strs[index + 3]));
-//		//TODO: Need to find solution for rotation
-//	}
+	private float getPlayerX() {
+		return players[0].getPlayerX();
+	}
 }

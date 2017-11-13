@@ -18,6 +18,7 @@ public class SpeedballServer
 	
 	//private static Game game = new Game();
 	private static Utils utils = new Utils();
+	private static GunUtils gunUtils = new GunUtils();
 	protected static ArrayList<PlayerThread> threads = new ArrayList<PlayerThread>();
 	protected static ArrayList<String> inputs = new ArrayList<String>();
 	protected static ArrayList<Player> players = new ArrayList<Player>();
