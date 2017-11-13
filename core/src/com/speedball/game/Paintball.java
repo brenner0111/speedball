@@ -18,6 +18,11 @@ public class Paintball extends Sprite  {
 		this.collided = false;
 		this.setQuadrant(quadrant);
 	}
+	public Paintball(float slope, int quadrant) {
+		this.slope = slope;
+		this.collided = false;
+		this.setQuadrant(quadrant);
+	}
 	public boolean getCollided() {
 		return this.collided;
 	}

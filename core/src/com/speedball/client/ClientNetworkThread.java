@@ -81,10 +81,8 @@ public class ClientNetworkThread extends Thread {
 			ret += "- ";
 		}
 		if (Gdx.input.justTouched()) {
-			ret +="~ ";
+			ret +="~ " + SpeedballClient.paintballInfo + " ";
 		}
-		else
-			ret += "";
 		ret += " " + SpeedballClient.mouseAngle + " ";
 		return ret;
 	}

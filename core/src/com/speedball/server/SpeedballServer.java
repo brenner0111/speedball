@@ -40,7 +40,7 @@ public class SpeedballServer
         Socket connectionSocket = null;
         
         
-        while (threads.size() < 2) {
+        while (threads.size() < 1) {
             try {
                 connectionSocket = listeningSocket.accept(); 
             }catch (IOException e) {
@@ -90,7 +90,6 @@ public class SpeedballServer
 	private static String createClientString() {
 		String clientString = "";
 		for (int i = 0; i < players.size(); i++) {
-			//System.out.println(players.get(i).getPlayerX() + " " + players.get(i).getPlayerY());
 			clientString += "p" + (i + 1) + " ";
 			if (utils.playerInBounds(players.get(i).getPlayerX(), players.get(i).getPlayerY(), MAX_X, MAX_Y)) {
 				clientString += players.get(i).getPlayerX() + " ";
@@ -101,24 +100,33 @@ public class SpeedballServer
 				clientString += utils.resetPlayerAtYBound(players.get(i).getPlayerY(), MAX_Y) + " ";
 			}
 			clientString += players.get(i).getMouseAngle() + " ";
+			clientString += "pb" + " ";
+			System.out.println("Num paintballs: " + players.get(i).getPaintballs().size());
+			for (int j = 0; j < players.get(i).getPaintballs().size(); j++) {
+				//Might need to change to be x and y in the future
+				clientString += players.get(i).getPaintballs().get(j).getSlope() + " ";
+				clientString += players.get(i).getPaintballs().get(j).getQuadrant() + " ";
+			}
 		}
-		//System.out.println("Client String: " + clientString);
 		return clientString;
 	}
 
 
 	private static void processData(String input, Player player) {
 		String[] splitString = input.split("\\s+");
+		System.out.println("From client: " +  input + "Length: " + splitString.length);
 		int x = 0;
 		int y = 0;
 		String mouseAngle = "";
+		String slope = "";
+		String quadrant = "";
 		float playerSpeed = 1f;
 		int click = 0;
 		// TODO: Projectile when clicked
 		//System.out.println("String to process: " + input);
-		for (String s: splitString) {
+		for (int i = 0; i < splitString.length; i++) {
 			//System.out.println("Current Char:" + s);
-			switch (s) {
+			switch (splitString[i]) {
 			case "W":
 				y += 1;
 				break;
@@ -132,13 +140,14 @@ public class SpeedballServer
 				x += 1;
 				break;
 			case "~":
-				click = 1;
+				slope = splitString[i + 1];
+				quadrant = splitString[i + 2];
 				break;
 			case "-":
 				playerSpeed = 1.3f;
 				break;
 			default: 
-				mouseAngle = s;
+				mouseAngle = splitString[i];
 			}
 		}
 
@@ -154,6 +163,14 @@ public class SpeedballServer
 		}
 		if (mouseAngle != "") {
 			player.setMouseAngle(Float.parseFloat(mouseAngle));
+		}
+		if (slope != "" && quadrant != "") {
+			//System.out.println("Slope: " + slope + " Quadrant: " + quadrant);
+			player.addPaintball(new Paintball(Float.parseFloat(slope), Integer.parseInt(quadrant)));
+			player.incrementPaintballCounter();
+			slope = "";
+			quadrant = "";
+            //System.out.println("Paintball Counter Var: " + player.getPaintballCounter());
 		}
 	}
 }

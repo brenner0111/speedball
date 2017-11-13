@@ -136,13 +136,13 @@ public class Player extends Sprite  {
 	public float getGunX() {
 		return gunX;
 	}
-	protected void setGunX(float gunX) {
+	public void setGunX(float gunX) {
 		this.gunX = gunX;
 	}
 	public float getGunY() {
 		return gunY;
 	}
-	protected void setGunY(float gunY) {
+	public void setGunY(float gunY) {
 		this.gunY = gunY;
 	}
 	protected void setInitX(float initX) {
@@ -157,13 +157,13 @@ public class Player extends Sprite  {
 	public void setPaintballCounter(int paintballCounter) {
 		this.paintballCounter = paintballCounter;
 	}
-	protected void incrementPaintballCounter() {
+	public void incrementPaintballCounter() {
 	    this.paintballCounter++;
 	}
 	public ArrayList<Paintball> getPaintballs() {
 		return paintballs;
 	}
-	protected void addPaintball(Paintball paintball) {
+	public void addPaintball(Paintball paintball) {
 	    paintballs.add(paintball);
 	}
 	protected void setPaintballs(ArrayList<Paintball> paintballs) {

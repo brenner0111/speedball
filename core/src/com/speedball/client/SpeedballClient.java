@@ -22,10 +22,7 @@ public class SpeedballClient extends ApplicationAdapter{
 	private final float GAME_WORLD_HEIGHT = 720;
 
 	public volatile static float mouseAngle;
-//	public volatile static ArrayList<Float> paintballX;
-//	public volatile static ArrayList<Float> paintballY;
-//	public volatile static ArrayList<Float> paintballSlope;
-//	public volatile static ArrayList<Integer> paintballQuadrant;
+	public volatile static String paintballInfo;
 
 	private boolean displayStartScreen;
 	private boolean displayGameScreen;
@@ -39,6 +36,7 @@ public class SpeedballClient extends ApplicationAdapter{
 	private SpriteBatch batch;
 	private ClientNetworkThread ct;
 	private Utils utils;
+	private GunUtils gunUtils;
 	
 	private OrthographicCamera camera;
 	private Viewport viewport;
@@ -47,6 +45,7 @@ public class SpeedballClient extends ApplicationAdapter{
 	@Override
 	public void create () {
 		utils = new Utils();
+		gunUtils = new GunUtils();
 		batch = new SpriteBatch();
 		displayScreen = new DisplayScreen();
 		//add methods for screen transitions
@@ -73,6 +72,8 @@ public class SpeedballClient extends ApplicationAdapter{
 		batch.begin();
 		renderLogic();
 		processInputFromServer(batch);
+		//System.out.println("Player1 X: " + players[0].getPlayerX() + " Player1 Y: " + players[0].getPlayerY());
+		//System.out.println("Player2 X: " + players[1].getPlayerX() + " Player2 Y: " + players[1].getPlayerY());
 		batch.end();
 	}
 
@@ -139,11 +140,29 @@ public class SpeedballClient extends ApplicationAdapter{
 		if (Gdx.input.justTouched()) {
 			Vector3 tmpCoords = new Vector3(Gdx.input.getX(),Gdx.input.getY(), 0);
 			camera.unproject(tmpCoords);
-			System.out.println("World ClickXY: " + tmpCoords);
+			//System.out.println("World ClickXY: " + tmpCoords);
 			mouseX = tmpCoords.x;
 			mouseY = tmpCoords.y;
 		}
 	}
+	private float getSlopeBtnGunAndMouse(Player player) {
+		float centerX = player.getPlayerX() + Player.getPlayerCenterWidth();
+        float centerY = player.getPlayerY() + Player.getPlayerCenterHeight();
+        float[] coords = gunUtils.updateRealGunXY(mouseAngle, centerX, centerY, Player.getGunRadius());
+        float mouseX = Gdx.input.getX();
+        Vector3 tmpCoords = new Vector3(mouseX,Gdx.input.getY(), 0);
+        camera.unproject(tmpCoords);
+        float slope = (tmpCoords.y - coords[1]) / (tmpCoords.x - coords[0]);
+        return slope;
+	}
+	private int getQuadrant() {
+		return gunUtils.checkQuadrant(mouseAngle);
+	}
+	private void setPaintballString(Player player) {
+		float slope = getSlopeBtnGunAndMouse(player);
+		paintballInfo = "" + slope + " " + getQuadrant();
+	}
+		
 	private void setMouseAngle(float playerX, float playerY) {
 		//System.out.println("PlayerX: " + playerX + " PlayerY: " +  playerY);
 		mouseAngle = utils.getMouseAngle(playerX, playerY, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera);
@@ -214,12 +233,12 @@ public class SpeedballClient extends ApplicationAdapter{
 	}
 	private void processInputFromServer(SpriteBatch batch) {
 		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
-		System.out.println("From server: " + tmp);
+		//System.out.println("From server: " + tmp);
 		String[] strs = tmp.split("\\s+");
-		System.out.println("Strs[0]: " + strs[0]);
+		//System.out.println("Strs[0]: " + strs[0]);
 		int whichPlayer = -1;
 		if (strs[0] != "") {
-			whichPlayer = Integer.parseInt(strs[0]);
+			whichPlayer = Integer.parseInt(strs[0]) + 1;
 		}
 		if (strs.length > 1) {
 			for (int i = 0; i < strs.length; i++) {
@@ -228,23 +247,24 @@ public class SpeedballClient extends ApplicationAdapter{
 					players[0].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
 					players[0].setPlayerX(Float.parseFloat(strs[i+1]));
 					players[0].setPlayerY(Float.parseFloat(strs[i+2]));
-					if (whichPlayer == 0) {
+					if (whichPlayer == 1) {
 						setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+						setPaintballString(players[0]);
 					}
 					players[0].draw(batch);
 				}
 				else if (strs[i].equals("p2")) {
 					players[1] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[1], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[1].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
-					if (whichPlayer == 1) {
+					players[1].setPlayerX(Float.parseFloat(strs[i+1]));
+					players[1].setPlayerY(Float.parseFloat(strs[i+2]));
+					if (whichPlayer == 2) {
 						setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+						setPaintballString(players[1]);
 					}
 					players[1].draw(batch);
 				}
 			}
 		}
-	}
-	private float getPlayerX() {
-		return players[0].getPlayerX();
 	}
 }

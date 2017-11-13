@@ -19,13 +19,13 @@ public class GunUtils {
     
     private static final float PBALL_DIST_CAP = 1.0f;
 
-    protected Paintball createPaintballSprite(float x, float y, float slope, int quadrant) {
+    public Paintball createPaintballSprite(float x, float y, float slope, int quadrant) {
         FileHandle paintBallHandle = Gdx.files.internal("paintballs/redPaintball.png");
         Texture backgroundTexture = new Texture(paintBallHandle);
         return new Paintball(backgroundTexture, slope, quadrant);
         
     }
-    protected float getPlayerGunCoord(float coordinate, float offSet, boolean isX) {
+    public float getPlayerGunCoord(float coordinate, float offSet, boolean isX) {
         //return coordinate of the tip of the gun barrel
         if (isX) {
             return coordinate + offSet;
@@ -108,7 +108,7 @@ public class GunUtils {
         //System.out.println("Paintball X: " + paintball.getX() + " Paintball Y: " + paintball.getY());
     }
 
-    protected int checkQuadrant(float angle) {
+    public int checkQuadrant(float angle) {
         if (angle > 0.0f && angle < 90.0f) {
             return 1;
         }
@@ -138,7 +138,7 @@ public class GunUtils {
         } 
     }
     
-    protected float[] updateRealGunXY(float angle, float centerX, float centerY, float gunRadius) {
+    public float[] updateRealGunXY(float angle, float centerX, float centerY, float gunRadius) {
         float[] coords = new float[2];
         coords[0] = centerX + (float)(gunRadius * Math.cos(Math.toRadians(angle)));
         coords[1] = centerY + (float)(gunRadius * Math.sin(Math.toRadians(angle)));
