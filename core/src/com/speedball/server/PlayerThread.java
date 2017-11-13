@@ -14,12 +14,14 @@ public class PlayerThread extends Thread
     protected boolean isDone;
     protected String outString;
     protected volatile String temp;
+    protected volatile int num;
 
     public PlayerThread(Socket clientSocket) {
         this.socket = clientSocket;
         this.data = "";
         this.isDone = false;
         this.outString = "";
+        this.num = SpeedballServer.playerCounter;
     }
 
     public void run() {
@@ -41,7 +43,7 @@ public class PlayerThread extends Thread
                if (isDone) {
             	   		outString = temp.substring(0, temp.length());
                }
-               out.writeBytes(outString + '\n');
+               out.writeBytes(num + " " + outString + '\n');
             }
             catch (IOException e) {
                 e.printStackTrace();

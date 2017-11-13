@@ -22,6 +22,7 @@ public class SpeedballServer
 	protected static ArrayList<PlayerThread> threads = new ArrayList<PlayerThread>();
 	protected static ArrayList<String> inputs = new ArrayList<String>();
 	protected static ArrayList<Player> players = new ArrayList<Player>();
+	public static volatile int playerCounter = 0;
 	public static long currTime = System.currentTimeMillis();
 	public static long deltaTime = 0;
 
@@ -49,22 +50,23 @@ public class SpeedballServer
             threads.add(pt);
             inputs.add("");
             //TODO: Player's initial x y needs to be calculated for dead box
-            players.add(new Player(0f, 0f));
+            if (playerCounter == 0) {
+            		players.add(new Player(1030f, 350f));
+            }
+            else {
+            		players.add(new Player(25f, 352f));
+            }
+            playerCounter++;
             pt.start();
-            //game.addPlayer();
         }
         while (threads.size() > 0) {
 	        	for (int i = 0; i < threads.size(); i++) {
 	        		PlayerThread thread = threads.get(i);
 	        		thread.isDone = false;
-	        		//System.out.println(thread.data);
 	        		inputs.set(i,  thread.data);
 	        	}
 	        	for (int i = 0; i < inputs.size(); i++) {
-	        		//System.out.println("Input String: " + inputs.get(i));
-        			//System.out.println("Before: " + players.get(i).getPlayerX());
         			processData(inputs.get(i), players.get(i));
-        			//System.out.println("After: " + players.get(i).getPlayerX());
 	        	}
 	        	deltaTime = System.currentTimeMillis() - currTime;
 	        	currTime = System.currentTimeMillis();

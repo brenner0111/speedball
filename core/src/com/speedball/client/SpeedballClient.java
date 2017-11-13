@@ -214,7 +214,13 @@ public class SpeedballClient extends ApplicationAdapter{
 	}
 	private void processInputFromServer(SpriteBatch batch) {
 		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
+		System.out.println("From server: " + tmp);
 		String[] strs = tmp.split("\\s+");
+		System.out.println("Strs[0]: " + strs[0]);
+		int whichPlayer = -1;
+		if (strs[0] != "") {
+			whichPlayer = Integer.parseInt(strs[0]);
+		}
 		if (strs.length > 1) {
 			for (int i = 0; i < strs.length; i++) {
 				if (strs[i].equals("p1")) {
@@ -222,12 +228,17 @@ public class SpeedballClient extends ApplicationAdapter{
 					players[0].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
 					players[0].setPlayerX(Float.parseFloat(strs[i+1]));
 					players[0].setPlayerY(Float.parseFloat(strs[i+2]));
-					setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+					if (whichPlayer == 0) {
+						setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+					}
 					players[0].draw(batch);
 				}
 				else if (strs[i].equals("p2")) {
 					players[1] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[1], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[1].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
+					if (whichPlayer == 1) {
+						setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+					}
 					players[1].draw(batch);
 				}
 			}
