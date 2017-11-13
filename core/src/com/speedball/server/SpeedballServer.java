@@ -88,7 +88,7 @@ public class SpeedballServer
 		String clientString = "";
 		for (int i = 0; i < players.size(); i++) {
 			//System.out.println(players.get(i).getPlayerX() + " " + players.get(i).getPlayerY());
-			clientString += "p ";
+			clientString += "p" + (i + 1) + " ";
 			if (utils.playerInBounds(players.get(i).getPlayerX(), players.get(i).getPlayerY(), MAX_X, MAX_Y)) {
 				clientString += players.get(i).getPlayerX() + " ";
 				clientString += players.get(i).getPlayerY() + " ";

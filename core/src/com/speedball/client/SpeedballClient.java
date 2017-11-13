@@ -30,7 +30,7 @@ public class SpeedballClient extends ApplicationAdapter{
 	private DisplayScreen displayScreen;
 	private float mouseX;
 	private float mouseY;
-	private Player player;
+	private Player[] players = new Player[2];
 	private SpriteBatch batch;
 	private ClientNetworkThread ct;
 	private Utils utils;
@@ -48,7 +48,8 @@ public class SpeedballClient extends ApplicationAdapter{
 		initMouse();
 		initViewport();
 		initScreenStates();
-		player = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
+		players[0] = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
+		players[1] = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
 		ct = new ClientNetworkThread();
 		ct.start();
 		
@@ -76,7 +77,9 @@ public class SpeedballClient extends ApplicationAdapter{
 	@Override
 	public void dispose () {
 		batch.dispose();
-		player.getTexture().dispose();
+		for (Player player: players) {
+			player.getTexture().dispose();
+		}
 		ct.interrupt();
 	}
 	
@@ -130,8 +133,9 @@ public class SpeedballClient extends ApplicationAdapter{
 			mouseY = tmpCoords.y;
 		}
 	}
-	private void setMouseAngle() {
-		mouseAngle = utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera);
+	private void setMouseAngle(float playerX, float playerY) {
+		System.out.println("PlayerX: " + playerX + " PlayerY: " +  playerY);
+		mouseAngle = utils.getMouseAngle(playerX, playerY, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera);
 	}
 	private void updateScreenFlags() {
 
@@ -203,20 +207,27 @@ public class SpeedballClient extends ApplicationAdapter{
 		System.out.println("Input from server: " + tmp);
 		if (strs.length > 1) {
 			for (int i = 0; i < strs.length; i++) {
-				if (strs[i].equals("p")) {
-					processPlayerData(strs, i);
-					player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), player.getPlayerX(), player.getPlayerY());
-					player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
-					player.draw(batch);
+				if (strs[i].equals("p1")) {
+					//processPlayerData(strs, i);
+					players[0] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[0], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+					players[0].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
+					setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+					players[0].draw(batch);
+				}
+				else if (strs[i].equals("p2")) {
+					players[1] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[1], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+					players[1].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
+					setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+					players[1].draw(batch);
 				}
 			}
 		}
 	}
-	private void processPlayerData(String[] strs, int index) {
-		player.setPlayerX(Float.parseFloat(strs[index + 1]));
-		player.setPlayerY(Float.parseFloat(strs[index + 2]));
-		setMouseAngle();
-		player.setMouseAngle(Float.parseFloat(strs[index + 3]));
-		//TODO: Need to find solution for rotation
-	}
+//	private void processPlayerData(String[] strs, int index) {
+//		player.setPlayerX(Float.parseFloat(strs[index + 1]));
+//		player.setPlayerY(Float.parseFloat(strs[index + 2]));
+//		setMouseAngle(Float.parseFloat(strs[index + 1]), Float.parseFloat(strs[index + 2]));
+//		player.setMouseAngle(Float.parseFloat(strs[index + 3]));
+//		//TODO: Need to find solution for rotation
+//	}
 }
