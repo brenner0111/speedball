@@ -30,9 +30,9 @@ public class Utils {
 	 * Function that determines the player's x and y position.
 	 * Player Inputs = WASD keys
 	 */
-	protected float[] movePlayer(float playerX, float playerY, float playerSpeed) {
+	protected float[] movePlayer(float playerX, float playerY, float playerSpeed, float dt) {
 		float[] array = new float[2];
-		float dt = Gdx.graphics.getDeltaTime();
+//		float dt = Gdx.graphics.getDeltaTime();
 		float halfPlayerSpeed = (playerSpeed * 0.7f);
 		if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
 			playerX -= dt * halfPlayerSpeed;
@@ -119,14 +119,14 @@ public class Utils {
 		return (float)degrees;
 	} 
 	
-	protected boolean isPlayerSprinting() {
-		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
-			return true;
-		}
-		return false;
-	}
-	protected float choosePlayerSpeed(float sprint, float walk) {
-		if (isPlayerSprinting()) {
+//	protected boolean isPlayerSprinting() {
+//		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+//			return true;
+//		}
+//		return false;
+//	}
+	protected float choosePlayerSpeed(float sprint, float walk, boolean sprinting) {
+		if (sprinting) {
 			return sprint;
 		}
 		return walk;
@@ -252,10 +252,10 @@ public class Utils {
         }
 	}
 	
-	public void checkAndMovePlayer(float x, float y, float maxX, float maxY, Player player) {
-		player.setPlayerSpeed(choosePlayerSpeed(Player.getSprintSpeed(), Player.getWalkSpeed()));
+	public void checkAndMovePlayer(float x, float y, float maxX, float maxY, Player player, boolean sprinting, float dt) {
+		player.setPlayerSpeed(choosePlayerSpeed(Player.getSprintSpeed(), Player.getWalkSpeed(), sprinting));
 		if (playerInBounds(x, y, maxX, maxY)) {
-			float[] playerXY = movePlayer(x, y, player.getPlayerSpeed());
+			float[] playerXY = movePlayer(x, y, player.getPlayerSpeed(), dt);
 			player.setPlayerX(playerXY[0]);
 			player.setPlayerY(playerXY[1]);
 		}

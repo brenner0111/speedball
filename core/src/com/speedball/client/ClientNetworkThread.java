@@ -77,13 +77,15 @@ public class ClientNetworkThread extends Thread {
 		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
 			ret += "D ";
 		}
-		ret += "| ";
+		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+			ret += "- ";
+		}
 		if (Gdx.input.justTouched()) {
 			ret +="~ ";
 		}
 		else
 			ret += "";
-		ret += " " + SpeedballClient.mouseAngle;
+		ret += " " + SpeedballClient.mouseAngle + " ";
 		return ret;
 	}
 }

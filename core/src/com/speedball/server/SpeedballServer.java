@@ -38,7 +38,7 @@ public class SpeedballServer
         Socket connectionSocket = null;
         
         
-        while (threads.size() < 1) {
+        while (threads.size() < 2) {
             try {
                 connectionSocket = listeningSocket.accept(); 
             }catch (IOException e) {
@@ -95,11 +95,11 @@ public class SpeedballServer
 			}
 			else {
 				clientString += utils.resetPlayerAtXBound(players.get(i).getPlayerX(), MAX_X) + " ";
-				clientString += utils.resetPlayerAtXBound(players.get(i).getPlayerY(), MAX_Y) + " ";
+				clientString += utils.resetPlayerAtYBound(players.get(i).getPlayerY(), MAX_Y) + " ";
 			}
-			clientString += players.get(i).getMouseAngle();
+			clientString += players.get(i).getMouseAngle() + " ";
 		}
-		//System.out.println("Client String: " + clientString);
+		System.out.println("Client String: " + clientString);
 		return clientString;
 	}
 
@@ -108,12 +108,13 @@ public class SpeedballServer
 		String[] splitString = input.split("\\s+");
 		int x = 0;
 		int y = 0;
-		float mouseAngle = 0f;
+		String mouseAngle = "";
+		float playerSpeed = 1f;
 		int click = 0;
 		// TODO: Projectile when clicked
-		System.out.println("String to process: " + input);
+		//System.out.println("String to process: " + input);
 		for (String s: splitString) {
-			System.out.println("Current Char:" + s);
+			//System.out.println("Current Char:" + s);
 			switch (s) {
 			case "W":
 				y += 1;
@@ -130,16 +131,26 @@ public class SpeedballServer
 			case "~":
 				click = 1;
 				break;
+			case "-":
+				playerSpeed = 1.3f;
+				break;
+			default: 
+				mouseAngle = s;
 			}
-//			else {
-//				mouseAngle = Float.parseFloat(character);
-//			}
 		}
-		if (x != 0 || y != 0) {
-			player.setPlayerX(player.getPlayerX() + x);
-			player.setPlayerY(player.getPlayerY() + y);
-//			player.move((float) Math.atan2((double)y, (double)x));
+
+		if (x != 0 && y != 0) {
+			player.setPlayerX(player.getPlayerX() + (float)(x * 0.7 * playerSpeed));
+			player.setPlayerY(player.getPlayerY() + (float)(y * 0.7 * playerSpeed));
 		}
-		player.setMouseAngle(mouseAngle);
+		else {
+			if (x != 0 || y != 0) {
+				player.setPlayerX(player.getPlayerX() + x * playerSpeed);
+				player.setPlayerY(player.getPlayerY() + y * playerSpeed);
+			}
+		}
+		if (mouseAngle != "") {
+			player.setMouseAngle(Float.parseFloat(mouseAngle));
+		}
 	}
 }

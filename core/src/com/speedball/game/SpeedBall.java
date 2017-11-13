@@ -105,7 +105,7 @@ public class SpeedBall extends ApplicationAdapter {
         }
 	    //checks to make sure player is in bounds, and calls movePlayer
 	    utils.playerMtvLogic(player, bunker);
-	    utils.checkAndMovePlayer(player.getPlayerX(), player.getPlayerY(), MAX_X, MAX_Y, player);
+	    utils.checkAndMovePlayer(player.getPlayerX(), player.getPlayerY(), MAX_X, MAX_Y, player, false, 0.0f);
 	}
 	
 }

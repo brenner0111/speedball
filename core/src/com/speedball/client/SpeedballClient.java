@@ -204,8 +204,9 @@ public class SpeedballClient extends ApplicationAdapter{
 			for (int i = 0; i < strs.length; i++) {
 				if (strs[i].equals("p")) {
 					processPlayerData(strs, i);
-					player = (Player) utils.rotateSprite(player.getMouseAngle(), player, player.getPlayerCenterWidth(), player.getPlayerCenterHeight(), player.getPlayerX(), player.getPlayerY());
-					batch.draw(player, player.getPlayerX(), player.getPlayerY(), player.getPlayerWidth(), player.getPlayerHeight());
+					System.out.println("Mouse Angle: " + player.getMouseAngle());
+					player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), player.getPlayerX(), player.getPlayerY());
+					batch.draw(player, player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
 				}
 			}
 		}
@@ -213,7 +214,8 @@ public class SpeedballClient extends ApplicationAdapter{
 	private void processPlayerData(String[] strs, int index) {
 		player.setPlayerX(Float.parseFloat(strs[index + 1]));
 		player.setPlayerY(Float.parseFloat(strs[index + 2]));
-		player.setMouseAngle(Float.parseFloat(strs[index + 3]));
+		setMouseAngle();
+		player.setMouseAngle(mouseAngle);
 		//TODO: Need to find solution for rotation
 	}
 }
