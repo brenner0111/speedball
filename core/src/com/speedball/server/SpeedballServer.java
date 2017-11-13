@@ -38,7 +38,7 @@ public class SpeedballServer
         Socket connectionSocket = null;
         
         
-        while (threads.size() < 1) {
+        while (threads.size() < 2) {
             try {
                 connectionSocket = listeningSocket.accept(); 
             }catch (IOException e) {

@@ -200,6 +200,7 @@ public class SpeedballClient extends ApplicationAdapter{
 	private void processInputFromServer(SpriteBatch batch) {
 		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
 		String[] strs = tmp.split("\\s+");
+		System.out.println("Input from server: " + tmp);
 		if (strs.length > 1) {
 			for (int i = 0; i < strs.length; i++) {
 				if (strs[i].equals("p")) {
@@ -215,7 +216,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		player.setPlayerX(Float.parseFloat(strs[index + 1]));
 		player.setPlayerY(Float.parseFloat(strs[index + 2]));
 		setMouseAngle();
-		player.setMouseAngle(mouseAngle);
+		player.setMouseAngle(Float.parseFloat(strs[index + 3]));
 		//TODO: Need to find solution for rotation
 	}
 }
