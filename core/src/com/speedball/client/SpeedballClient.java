@@ -70,10 +70,9 @@ public class SpeedballClient extends ApplicationAdapter{
 	@Override
 	public void render () {
 		getMouseCoords();
-		renderLogic();
 		batch.begin();
+		renderLogic();
 		processInputFromServer(batch);
-		System.out.println("Player1 X: " + getPlayerX());
 		batch.end();
 	}
 
