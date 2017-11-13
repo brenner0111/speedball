@@ -134,7 +134,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		}
 	}
 	private void setMouseAngle(float playerX, float playerY) {
-		System.out.println("PlayerX: " + playerX + " PlayerY: " +  playerY);
+		//System.out.println("PlayerX: " + playerX + " PlayerY: " +  playerY);
 		mouseAngle = utils.getMouseAngle(playerX, playerY, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera);
 	}
 	private void updateScreenFlags() {
@@ -204,20 +204,21 @@ public class SpeedballClient extends ApplicationAdapter{
 	private void processInputFromServer(SpriteBatch batch) {
 		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
 		String[] strs = tmp.split("\\s+");
-		System.out.println("Input from server: " + tmp);
+		//System.out.println("Input from server: " + tmp);
 		if (strs.length > 1) {
 			for (int i = 0; i < strs.length; i++) {
 				if (strs[i].equals("p1")) {
 					//processPlayerData(strs, i);
 					players[0] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[0], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[0].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
+					//System.out.println("Player1 X: " + strs[i+1] + " Player1 Y: " + strs[i+2] + " Player1 MA: " + strs[i+3]);
 					setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[0].draw(batch);
 				}
 				else if (strs[i].equals("p2")) {
 					players[1] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[1], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[1].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
-					setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
+					//System.out.println("Player2 X: " + strs[i+1] + " Player2 Y: " + strs[i+2] + " Player2 MA: " + strs[i+3]);
 					players[1].draw(batch);
 				}
 			}
