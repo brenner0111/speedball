@@ -131,7 +131,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		}
 	}
 	private void setMouseAngle() {
-		mouseAngle = utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), player.getPlayerCenterWidth(), player.getPlayerCenterHeight(), camera);
+		mouseAngle = utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera);
 	}
 	private void updateScreenFlags() {
 
@@ -204,9 +204,9 @@ public class SpeedballClient extends ApplicationAdapter{
 			for (int i = 0; i < strs.length; i++) {
 				if (strs[i].equals("p")) {
 					processPlayerData(strs, i);
-					System.out.println("Mouse Angle: " + player.getMouseAngle());
 					player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), player.getPlayerX(), player.getPlayerY());
-					batch.draw(player, player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
+					player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
+					player.draw(batch);
 				}
 			}
 		}

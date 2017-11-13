@@ -38,7 +38,7 @@ public class SpeedballServer
         Socket connectionSocket = null;
         
         
-        while (threads.size() < 2) {
+        while (threads.size() < 1) {
             try {
                 connectionSocket = listeningSocket.accept(); 
             }catch (IOException e) {
@@ -99,7 +99,7 @@ public class SpeedballServer
 			}
 			clientString += players.get(i).getMouseAngle() + " ";
 		}
-		System.out.println("Client String: " + clientString);
+		//System.out.println("Client String: " + clientString);
 		return clientString;
 	}
 
