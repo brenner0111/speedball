@@ -15,6 +15,7 @@ public class PlayerThread extends Thread
     protected String outString;
     protected volatile String temp;
     protected volatile int num;
+    protected volatile int hitPlayer;
 
     public PlayerThread(Socket clientSocket) {
         this.socket = clientSocket;
@@ -22,6 +23,7 @@ public class PlayerThread extends Thread
         this.isDone = false;
         this.outString = "";
         this.num = SpeedballServer.playerCounter;
+        this.hitPlayer = SpeedballServer.hitPlayer;
     }
 
     public void run() {
@@ -43,7 +45,7 @@ public class PlayerThread extends Thread
                if (isDone) {
             	   		outString = temp.substring(0, temp.length());
                }
-               out.writeBytes(num + " " + outString + '\n');
+               out.writeBytes(num + " " + hitPlayer + " " + outString + '\n');
             }
             catch (IOException e) {
                 e.printStackTrace();

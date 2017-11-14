@@ -17,7 +17,7 @@ import com.speedball.game.*;
 
 
 public class SpeedballClient extends ApplicationAdapter{
-	
+
 	private final float GAME_WORLD_WIDTH = 1080;
 	private final float GAME_WORLD_HEIGHT = 720;
 
@@ -39,11 +39,11 @@ public class SpeedballClient extends ApplicationAdapter{
 	private ClientNetworkThread ct;
 	private Utils utils;
 	private GunUtils gunUtils;
-	
+
 	private OrthographicCamera camera;
 	private Viewport viewport;
-	
-	
+
+
 	@Override
 	public void create () {
 		utils = new Utils();
@@ -54,12 +54,12 @@ public class SpeedballClient extends ApplicationAdapter{
 		initMouse();
 		initViewport();
 		initScreenStates();
-//		initArrayLists();
+		//		initArrayLists();
 		players[0] = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
 		players[1] = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
 		ct = new ClientNetworkThread();
 		ct.start();
-		
+
 	}
 
 	@Override
@@ -91,12 +91,12 @@ public class SpeedballClient extends ApplicationAdapter{
 		}
 		ct.interrupt();
 	}
-//	private void initArrayLists() {
-//		paintballX = new ArrayList<Float>();
-//		paintballY = new ArrayList<Float>();
-//		paintballSlope = new ArrayList<Float>();
-//		paintballQuadrant = new ArrayList<Integer>();
-//	}
+	//	private void initArrayLists() {
+	//		paintballX = new ArrayList<Float>();
+	//		paintballY = new ArrayList<Float>();
+	//		paintballSlope = new ArrayList<Float>();
+	//		paintballQuadrant = new ArrayList<Integer>();
+	//	}
 	private void initMouse() {
 		mouseX = 0f;
 		mouseY = 0f;
@@ -107,7 +107,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		viewport = new StretchViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
 		viewport.apply();
 		camera.position.set(GAME_WORLD_WIDTH / 2, GAME_WORLD_HEIGHT / 2, 0);
-		
+
 	}
 	private void initScreenStates() {
 		displayStartScreen = true;
@@ -149,19 +149,19 @@ public class SpeedballClient extends ApplicationAdapter{
 	}
 	private float getSlopeBtnGunAndMouse(Player player) {
 		float centerX = player.getPlayerX() + Player.getPlayerCenterWidth();
-        float centerY = player.getPlayerY() + Player.getPlayerCenterHeight();
-        float[] coords = gunUtils.updateRealGunXY(mouseAngle, centerX, centerY, Player.getGunRadius());
-        float mouseX = Gdx.input.getX();
-        Vector3 tmpCoords = new Vector3(mouseX,Gdx.input.getY(), 0);
-        camera.unproject(tmpCoords);
-        float slope = (tmpCoords.y - coords[1]) / (tmpCoords.x - coords[0]);
-        return slope;
+		float centerY = player.getPlayerY() + Player.getPlayerCenterHeight();
+		float[] coords = gunUtils.updateRealGunXY(mouseAngle, centerX, centerY, Player.getGunRadius());
+		float mouseX = Gdx.input.getX();
+		Vector3 tmpCoords = new Vector3(mouseX,Gdx.input.getY(), 0);
+		camera.unproject(tmpCoords);
+		float slope = (tmpCoords.y - coords[1]) / (tmpCoords.x - coords[0]);
+		return slope;
 	}
 	private float[] getGunXY(Player player) {
 		float centerX = player.getPlayerX() + Player.getPlayerCenterWidth();
-        float centerY = player.getPlayerY() + Player.getPlayerCenterHeight();
-        float[] coords = gunUtils.updateRealGunXY(mouseAngle, centerX, centerY, Player.getGunRadius());
-        return coords;
+		float centerY = player.getPlayerY() + Player.getPlayerCenterHeight();
+		float[] coords = gunUtils.updateRealGunXY(mouseAngle, centerX, centerY, Player.getGunRadius());
+		return coords;
 	}
 	private int getQuadrant() {
 		return gunUtils.checkQuadrant(mouseAngle);
@@ -171,7 +171,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		float[] gunXY = getGunXY(player);
 		paintballInfo = "" + slope + " " + getQuadrant() + " " + gunXY[0] + " " + gunXY[1];
 	}
-		
+
 	private void setMouseAngle(float playerX, float playerY) {
 		//System.out.println("PlayerX: " + playerX + " PlayerY: " +  playerY);
 		mouseAngle = utils.getMouseAngle(playerX, playerY, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera);
@@ -215,7 +215,7 @@ public class SpeedballClient extends ApplicationAdapter{
 				displayVictoryScreen = false;
 				displayDefeatScreen = true;
 			}*/
-		/*	if ((mouseX > 320f && mouseX < 550f) && (mouseY > 37f && mouseY < 74f)) {
+			/*	if ((mouseX > 320f && mouseX < 550f) && (mouseY > 37f && mouseY < 74f)) {
 				displayVictoryScreen = false;
 				displayDefeatScreen = true;
 			}
@@ -247,17 +247,29 @@ public class SpeedballClient extends ApplicationAdapter{
 		String[] strs = tmp.split("\\s+");
 		//System.out.println("Strs[0]: " + strs[0]);
 		int whichPlayer = -1;
-		if (strs[0] != "") {
-			whichPlayer = Integer.parseInt(strs[0]) + 1;
-		}
+		int hitPlayer = -1;
 		if (strs.length > 1) {
+			if (strs[0] != "") {
+				whichPlayer = Integer.parseInt(strs[0]);
+			}
+			if (strs[1] != "") {
+				hitPlayer = Integer.parseInt(strs[1]);
+			}
+			//TODO: put this back in when we fix screens
+			/*if ((whichPlayer != -1 && hitPlayer != -1) && whichPlayer == hitPlayer) {
+			//displayDefeatScreen = true;
+		}
+		else if ((whichPlayer != -1 && hitPlayer != -1) && whichPlayer != hitPlayer) {
+			//displayVictoryScreen = true;
+		}*/
+
 			for (int i = 0; i < strs.length; i++) {
 				if (strs[i].equals("p1")) {
 					players[0] = (Player) utils.rotateSprite(Float.parseFloat(strs[i + 3]), players[0], Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 					players[0].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
 					players[0].setPlayerX(Float.parseFloat(strs[i+1]));
 					players[0].setPlayerY(Float.parseFloat(strs[i+2]));
-					if (whichPlayer == 1) {
+					if (whichPlayer == 0) {
 						setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 						setPaintballString(players[0]);
 					}
@@ -268,7 +280,7 @@ public class SpeedballClient extends ApplicationAdapter{
 					players[1].setBounds(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]), Player.getPlayerWidth(), Player.getPlayerHeight());
 					players[1].setPlayerX(Float.parseFloat(strs[i+1]));
 					players[1].setPlayerY(Float.parseFloat(strs[i+2]));
-					if (whichPlayer == 2) {
+					if (whichPlayer == 1) {
 						setMouseAngle(Float.parseFloat(strs[i + 1]), Float.parseFloat(strs[i + 2]));
 						setPaintballString(players[1]);
 					}

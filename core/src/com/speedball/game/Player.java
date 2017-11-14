@@ -25,6 +25,7 @@ public class Player extends Sprite  {
 	private float initX = 0.0f;
 	private float initY = 0.0f;
 	private boolean collided;
+	private boolean isHit;
 	private float playerSpeed;
 	private float playerX;
 	private float playerY;
@@ -42,6 +43,7 @@ public class Player extends Sprite  {
 	public Player(Texture backgroundTexture, float initX, float initY) {
 		super(backgroundTexture);
 		this.collided = false;
+		this.isHit = false;
 		this.initX = initX;
 		this.initY = initY;
 		this.playerX = this.initX;
@@ -58,6 +60,7 @@ public class Player extends Sprite  {
 	}
 	public Player(float initX, float initY) {
 		this.collided = false;
+		this.isHit = false;
 		this.initX = initX;
 		this.initY = initY;
 		this.playerX = this.initX;
@@ -72,15 +75,17 @@ public class Player extends Sprite  {
 		bunkersCollidedWith = new ArrayList<Bunker>();
 		mtvAtCollidedBunkers = new ArrayList<Intersector.MinimumTranslationVector>();
 	}
-	public void move(float angle) {
-		this.playerX = (float) (playerX + (Math.cos(angle) * playerSpeed * SpeedballServer.deltaTime));
-		this.playerY = (float) (playerY + (Math.sin(angle) * playerSpeed * SpeedballServer.deltaTime));
-	}
 	public boolean getCollided() {
 		return this.collided;
 	}
 	public void setCollided(boolean value) {
 		this.collided = value;
+	}
+	public boolean isHit() {
+		return isHit;
+	}
+	protected void setHit(boolean isHit) {
+		this.isHit = isHit;
 	}
 	public static float getPlayerWidth() {
 		return PLAYER_WIDTH;

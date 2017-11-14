@@ -179,13 +179,12 @@ public class Utils {
 	 * returns the players custom hitbox
 	 */
 	protected float[] getPlayerVertices(Player player) {
-		Rectangle rectangle = player.getBoundingRectangle();
 		//float width = rectangle.getWidth() - Player.getPlayerCenterWidth();
 		//float height = rectangle.getHeight() - Player.getPlayerCenterHeight();
 		float width = 22.0f;
 		float height = 20.0f;
-		float x = rectangle.getX() + 6.75f;
-		float y = rectangle.getY() + 9.20f;
+		float x = player.getPlayerX() + 6.75f;
+		float y = player.getPlayerY() + 9.20f;
 		//float x = rectangle.getX();
 		//float y = rectangle.getY();
 		float[] retArray = {x, y, x + width, y, x + width, y + height, x, y + height};
@@ -225,8 +224,8 @@ public class Utils {
 	 * Uses the minimum translation vector to correct the players position
 	 * if the player starts to collide with an polygon
 	 */
-	public void playerMtvLogic(Player player, PaintballMap bunker) {
-		playerCollided(player, bunker.getBunkers());
+	public void playerMtvLogic(Player player, PaintballMap pbMap) {
+		playerCollided(player, pbMap.getBunkers());
         if (player.getCollided() == false) {
             player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
         }
@@ -234,9 +233,9 @@ public class Utils {
         	float newPlayerX = player.getPlayerX();
         	float newPlayerY = player.getPlayerY();
         	for (int i = 0; i < player.getMtvAtCollidedBunkers().size(); i++) {
-        		if (player.getMtvAtCollidedBunkers().size() > 1) {
-        			System.out.println("MTV Normal: " + player.getMtvAtCollidedBunkers().get(i).normal + " MTV Depth: " + player.getMtvAtCollidedBunkers().get(i).depth);
-        		}
+//        		if (player.getMtvAtCollidedBunkers().size() > 1) {
+//        			//System.out.println("MTV Normal: " + player.getMtvAtCollidedBunkers().get(i).normal + " MTV Depth: " + player.getMtvAtCollidedBunkers().get(i).depth);
+//        		}
         		newPlayerX += player.getMtvAtCollidedBunkers().get(i).normal.x * player.getMtvAtCollidedBunkers().get(i).depth;
         		newPlayerY += player.getMtvAtCollidedBunkers().get(i).normal.y * player.getMtvAtCollidedBunkers().get(i).depth;
         		

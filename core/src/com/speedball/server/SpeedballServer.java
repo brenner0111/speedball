@@ -26,8 +26,9 @@ public class SpeedballServer
 	public static long currTime = System.currentTimeMillis();
 	public static long deltaTime = 0;
 	private static PaintballMap pbMap = new PaintballMap(true);
-	private static boolean shotOnce = false;
+	//private static boolean shotOnce = false;
 	private static int counter = 0;
+	public static volatile int hitPlayer = -1;
 
 
 
@@ -45,7 +46,7 @@ public class SpeedballServer
 		Socket connectionSocket = null;
 
 
-		while (threads.size() < 1) {
+		while (threads.size() < 2) {
 			try {
 				connectionSocket = listeningSocket.accept(); 
 			}catch (IOException e) {
@@ -98,6 +99,7 @@ public class SpeedballServer
 		for (int i = 0; i < players.size(); i++) {
 			clientString += "p" + (i + 1) + " ";
 			if (utils.playerInBounds(players.get(i).getPlayerX(), players.get(i).getPlayerY(), MAX_X, MAX_Y)) {
+				utils.playerMtvLogic(players.get(i), pbMap);
 				clientString += players.get(i).getPlayerX() + " ";
 				clientString += players.get(i).getPlayerY() + " ";
 			}
@@ -106,21 +108,11 @@ public class SpeedballServer
 				clientString += utils.resetPlayerAtYBound(players.get(i).getPlayerY(), MAX_Y) + " ";
 			}
 			clientString += players.get(i).getMouseAngle() + " ";
-			System.out.println("Num paintballs: " + players.get(i).getPaintballs().size());
-			/*for (int j = 0; j < players.get(i).getPaintballs().size(); j++) {
-				if ((players.get(i).getPaintballs().get(j).getX() > 0 && players.get(i).getPaintballs().get(j).getX() < 1045)
-						&& (players.get(i).getPaintballs().get(j).getY() > 0 && players.get(i).getPaintballs().get(j).getY() < 690)) {
-					float[] pbVertices = gunUtils.getPaintballVertices(players.get(i).getPaintballs().get(j));
-
-					clientString += "pb" + (i + 1) + " ";
-					clientString += players.get(i).getPaintballs().get(j).getSlope() + " ";
-					clientString += players.get(i).getPaintballs().get(j).getQuadrant() + " ";
-					clientString += players.get(i).getPaintballs().get(j).getX() + " ";
-					clientString += players.get(i).getPaintballs().get(j).getY() + " ";
-					gunUtils.updatePaintballXY(players.get(i).getPaintballs().get(j), players.get(i).getPaintballs().get(j).getQuadrant());
-				}
- 			}*/
-			clientString += gunUtils.addPlayerPaintballs(players.get(i).getPaintballs(), pbMap.getBunkers(), clientString, i);
+			//System.out.println("Num paintballs: " + players.get(i).getPaintballs().size());
+			clientString = gunUtils.addPlayerPaintballs(players.get(i).getPaintballs(), pbMap.getBunkers(), players, clientString, i);
+			if (players.get(i).isHit()) {
+				hitPlayer = i;
+			}
 		}
 		return clientString;
 	}
@@ -155,14 +147,11 @@ public class SpeedballServer
 				x += 1;
 				break;
 			case "~":
-				if(!shotOnce) {
-					shotOnce = true;
-					slope = splitString[i + 1];
-					quadrant = splitString[i + 2];
-					gunX = splitString[i+3];
-					gunY = splitString[i+4];
-					break;
-				}
+				slope = splitString[i + 1];
+				quadrant = splitString[i + 2];
+				gunX = splitString[i + 3];
+				gunY = splitString[i + 4];
+				break;
 			case "-":
 				playerSpeed = 1.3f;
 				break;
@@ -197,6 +186,5 @@ public class SpeedballServer
 			//shotOnce = true;
 			//System.out.println("Paintball Counter Var: " + player.getPaintballCounter());
 		}
-		shotOnce = false;
 	}
 }

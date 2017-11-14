@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector3;
 public class GunUtils {
 
 	private static final float PBALL_DIST_CAP = 1.0f;
+	Utils utils = new Utils();
 
 	public Paintball createPaintballSprite(float x, float y, float slope, int quadrant) {
 		FileHandle paintBallHandle = Gdx.files.internal("paintballs/redPaintball.png");
@@ -33,12 +34,12 @@ public class GunUtils {
 		}
 	}
 
-	public int drawPaintballs(SpriteBatch b, ArrayList<Paintball> paintballs, int paintballCounter, ArrayList<Bunker> bunkers) {
+	public int drawPaintballs(SpriteBatch b, ArrayList<Paintball> paintballs, int paintballCounter, ArrayList<Bunker> bunkers, ArrayList<Player> players) {
 		for (Iterator<Paintball> iterator = paintballs.iterator(); iterator.hasNext();) {
 			Paintball paintball = iterator.next();
 
 			if (!paintball.getCollided()) {
-				paintballCollided(paintball, bunkers, paintball.getQuadrant());
+				paintballCollided(paintball, bunkers, paintball.getQuadrant(), players);
 			}
 
 			if (paintballInWindow(paintball)) {
@@ -52,11 +53,11 @@ public class GunUtils {
 		return paintballCounter;
 	}
 
-	public String addPlayerPaintballs(ArrayList<Paintball> paintballs, ArrayList<Bunker> bunkers, String clientString, int i) {
+	public String addPlayerPaintballs(ArrayList<Paintball> paintballs, ArrayList<Bunker> bunkers, ArrayList<Player> players, String clientString, int i) {
 		for (int j = 0; j < paintballs.size(); j++) {
 			if ((paintballs.get(j).getX() > 0 && paintballs.get(j).getX() < 1045)
 					&& (paintballs.get(j).getY() > 0 && paintballs.get(j).getY() < 690)) {
-				if (!paintballCollided(paintballs.get(j), bunkers, paintballs.get(j).getQuadrant())) {
+				if (!paintballCollided(paintballs.get(j), bunkers, paintballs.get(j).getQuadrant(), players)) {
 					clientString += "pb" + (i + 1) + " ";
 					clientString += paintballs.get(j).getSlope() + " ";
 					clientString += paintballs.get(j).getQuadrant() + " ";
@@ -198,12 +199,12 @@ public class GunUtils {
 		return true;
 	}
 
-	public boolean paintballCollided(Paintball paintball, ArrayList<Bunker> bunkers, int quadrant) {
+	public boolean paintballCollided(Paintball paintball, ArrayList<Bunker> bunkers, int quadrant, ArrayList<Player> players) {
 		float[] paintballVertices = getPaintballVertices(paintball);
 
 		for (int i = 0; i < 25; i++) {
 
-			for (Bunker bunker: bunkers) {
+			for (Bunker bunker : bunkers) {
 				if (bunker.isCollidable()) {
 					float[] bunkerVertices = bunker.getVerticesArray();
 					if (bunkerVertices.length != 0 && Intersector.overlapConvexPolygons(paintballVertices, bunkerVertices, null)) {
@@ -213,6 +214,21 @@ public class GunUtils {
 					else {
 						paintball.setCollided(false);
 					}
+				}
+			}
+			
+			for (Player player : players) {
+				float[] playerVert = utils.getPlayerVertices(player);
+				//System.out.println("Player Vert: " + playerVert[0] + " " + playerVert[1] + " " + playerVert[2] + " " + playerVert[3]);
+				if (playerVert.length != 0 && Intersector.overlapConvexPolygons(paintballVertices, playerVert, null)) {
+					paintball.setCollided(true);
+					//System.out.println("HIT");
+					player.setHit(true);
+					return true;
+				}
+				else {
+					paintball.setCollided(false);
+					player.setHit(false);
 				}
 			}
 			updatePaintballXY(paintball, quadrant);

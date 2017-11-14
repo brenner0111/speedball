@@ -131,7 +131,7 @@ public class SpeedballClientOld extends ApplicationAdapter
 		batch.setProjectionMatrix(camera.combined);
 		background.draw(batch);
 		bunker.drawBunkers(batch);
-		player.setPaintballCounter(gunUtils.drawPaintballs(batch, player.getPaintballs(), player.getPaintballCounter(), bunker.getBunkers()));
+		//player.setPaintballCounter(gunUtils.drawPaintballs(batch, player.getPaintballs(), player.getPaintballCounter(), bunker.getBunkers()));
 
 		player.setMouseAngle(utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera));
 		player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(),
