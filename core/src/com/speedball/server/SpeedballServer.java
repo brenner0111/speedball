@@ -15,77 +15,83 @@ public class SpeedballServer
 {
 	private static final float MAX_X = 1045f;
 	private static final float MAX_Y = 690f;
-	
+
 	//private static Game game = new Game();
 	private static Utils utils = new Utils();
 	private static GunUtils gunUtils = new GunUtils();
-	protected static ArrayList<PlayerThread> threads = new ArrayList<PlayerThread>();
-	protected static ArrayList<String> inputs = new ArrayList<String>();
-	protected static ArrayList<Player> players = new ArrayList<Player>();
+	private static ArrayList<PlayerThread> threads = new ArrayList<PlayerThread>();
+	private static ArrayList<String> inputs = new ArrayList<String>();
+	private static ArrayList<Player> players = new ArrayList<Player>();
 	public static volatile int playerCounter = 0;
 	public static long currTime = System.currentTimeMillis();
 	public static long deltaTime = 0;
+	private static PaintballMap pbMap = new PaintballMap(true);
+	private static boolean shotOnce = false;
+	private static int counter = 0;
 
-    
-    public static void main(String[] args) throws IOException {
-        //String clientSentence;
-        //String captializedSentence;
-        ServerSocket listeningSocket = new ServerSocket(6789);
-        
-        //ArrayList<Socket> connectionSockets = new ArrayList<Socket>();
-        
-        //listen and connect
-        System.out.println("Server Started!");
-        //Socket connectionSocket = listeningSocket.accept();
-        Socket connectionSocket = null;
-        
-        
-        while (threads.size() < 1) {
-            try {
-                connectionSocket = listeningSocket.accept(); 
-            }catch (IOException e) {
-                System.out.println("I/O error");
-            }
-            PlayerThread pt = new PlayerThread(connectionSocket);
-            threads.add(pt);
-            inputs.add("");
-            //TODO: Player's initial x y needs to be calculated for dead box
-            if (playerCounter == 0) {
-            		players.add(new Player(1030f, 350f));
-            }
-            else {
-            		players.add(new Player(25f, 352f));
-            }
-            playerCounter++;
-            pt.start();
-        }
-        while (threads.size() > 0) {
-	        	for (int i = 0; i < threads.size(); i++) {
-	        		PlayerThread thread = threads.get(i);
-	        		thread.isDone = false;
-	        		inputs.set(i,  thread.data);
-	        	}
-	        	for (int i = 0; i < inputs.size(); i++) {
-        			processData(inputs.get(i), players.get(i));
-	        	}
-	        	deltaTime = System.currentTimeMillis() - currTime;
-	        	currTime = System.currentTimeMillis();
-	        	//TODO: Projectile stuff
-	        	String tmp = createClientString();
-	        	for (int i = 0; i < threads.size(); i++) {
-	        		PlayerThread thread = threads.get(i);
-	        		thread.temp = tmp;
-	        		thread.isDone = true;
-	        	}
-	        	try {
-					Thread.sleep(5);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        }
-    }
 
+
+	public static void main(String[] args) throws IOException {
+		//String clientSentence;
+		//String captializedSentence;
+		pbMap.createBunkers();
+		ServerSocket listeningSocket = new ServerSocket(6789);
+
+		//ArrayList<Socket> connectionSockets = new ArrayList<Socket>();
+
+		//listen and connect
+		System.out.println("Server Started!");
+		//Socket connectionSocket = listeningSocket.accept();
+		Socket connectionSocket = null;
+
+
+		while (threads.size() < 1) {
+			try {
+				connectionSocket = listeningSocket.accept(); 
+			}catch (IOException e) {
+				System.out.println("I/O error");
+			}
+			PlayerThread pt = new PlayerThread(connectionSocket);
+			threads.add(pt);
+			inputs.add("");
+			//TODO: Player's initial x y needs to be calculated for dead box
+			if (playerCounter == 0) {
+				players.add(new Player(1030f, 350f));
+			}
+			else {
+				players.add(new Player(25f, 352f));
+			}
+			playerCounter++;
+			pt.start();
+		}
+		while (threads.size() > 0) {
+			for (int i = 0; i < threads.size(); i++) {
+				PlayerThread thread = threads.get(i);
+				thread.isDone = false;
+				inputs.set(i,  thread.data);
+			}
+
+			for (int i = 0; i < inputs.size(); i++) {
+				processData(inputs.get(i), players.get(i));
+			}
+
+			deltaTime = System.currentTimeMillis() - currTime;
+			currTime = System.currentTimeMillis();
+			//TODO: Projectile stuff
+			String tmp = createClientString();
+			for (int i = 0; i < threads.size(); i++) {
+				PlayerThread thread = threads.get(i);
+				thread.temp = tmp;
+				thread.isDone = true;
+			}
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	private static String createClientString() {
 		String clientString = "";
@@ -100,10 +106,12 @@ public class SpeedballServer
 				clientString += utils.resetPlayerAtYBound(players.get(i).getPlayerY(), MAX_Y) + " ";
 			}
 			clientString += players.get(i).getMouseAngle() + " ";
-			//System.out.println("Num paintballs: " + players.get(i).getPaintballs().size());
-			for (int j = 0; j < players.get(i).getPaintballs().size(); j++) {
+			System.out.println("Num paintballs: " + players.get(i).getPaintballs().size());
+			/*for (int j = 0; j < players.get(i).getPaintballs().size(); j++) {
 				if ((players.get(i).getPaintballs().get(j).getX() > 0 && players.get(i).getPaintballs().get(j).getX() < 1045)
 						&& (players.get(i).getPaintballs().get(j).getY() > 0 && players.get(i).getPaintballs().get(j).getY() < 690)) {
+					float[] pbVertices = gunUtils.getPaintballVertices(players.get(i).getPaintballs().get(j));
+
 					clientString += "pb" + (i + 1) + " ";
 					clientString += players.get(i).getPaintballs().get(j).getSlope() + " ";
 					clientString += players.get(i).getPaintballs().get(j).getQuadrant() + " ";
@@ -111,11 +119,11 @@ public class SpeedballServer
 					clientString += players.get(i).getPaintballs().get(j).getY() + " ";
 					gunUtils.updatePaintballXY(players.get(i).getPaintballs().get(j), players.get(i).getPaintballs().get(j).getQuadrant());
 				}
- 			}
+ 			}*/
+			clientString += gunUtils.addPlayerPaintballs(players.get(i).getPaintballs(), pbMap.getBunkers(), clientString, i);
 		}
 		return clientString;
 	}
-
 
 	private static void processData(String input, Player player) {
 		String[] splitString = input.split("\\s+");
@@ -147,11 +155,14 @@ public class SpeedballServer
 				x += 1;
 				break;
 			case "~":
-				slope = splitString[i + 1];
-				quadrant = splitString[i + 2];
-				gunX = splitString[i+3];
-				gunY = splitString[i+4];
-				break;
+				if(!shotOnce) {
+					shotOnce = true;
+					slope = splitString[i + 1];
+					quadrant = splitString[i + 2];
+					gunX = splitString[i+3];
+					gunY = splitString[i+4];
+					break;
+				}
 			case "-":
 				playerSpeed = 1.3f;
 				break;
@@ -159,6 +170,7 @@ public class SpeedballServer
 				mouseAngle = splitString[i];
 			}
 		}
+		//System.out.println("Counter: " + counter);
 
 		if (x != 0 && y != 0) {
 			player.setPlayerX(player.getPlayerX() + (float)(x * 0.7 * playerSpeed));
@@ -182,7 +194,9 @@ public class SpeedballServer
 			player.setGunY(Float.parseFloat(gunY));
 			slope = "";
 			quadrant = "";
-            //System.out.println("Paintball Counter Var: " + player.getPaintballCounter());
+			//shotOnce = true;
+			//System.out.println("Paintball Counter Var: " + player.getPaintballCounter());
 		}
+		shotOnce = false;
 	}
 }

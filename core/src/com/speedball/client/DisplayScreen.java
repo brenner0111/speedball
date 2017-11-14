@@ -23,7 +23,7 @@ public class DisplayScreen{
 		gameScreen = new Texture("pbfield/grassBetter.PNG");
 		victoryScreen = new Texture("pbfield/grassBetter.PNG");
 		defeatScreen = new Texture("pbfield/grassBetter.PNG");
-		pbMap = new PaintballMap();
+		pbMap = new PaintballMap(false);
 		pbMap.createBunkers();
 	}
 

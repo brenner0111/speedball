@@ -243,7 +243,7 @@ public class SpeedballClient extends ApplicationAdapter{
 	private void processInputFromServer(SpriteBatch batch) {
 		paintballs = new ArrayList<Paintball>();
 		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
-		System.out.println("From server: " + tmp);
+		//System.out.println("From server: " + tmp);
 		String[] strs = tmp.split("\\s+");
 		//System.out.println("Strs[0]: " + strs[0]);
 		int whichPlayer = -1;
@@ -275,6 +275,7 @@ public class SpeedballClient extends ApplicationAdapter{
 					players[1].draw(batch);
 				}
 				else if (strs[i].equals("pb1")) {
+					//slope and quadrant are no longer used in pbClient...TODO: if have time
 					Paintball paintball = new Paintball(new Texture(Gdx.files.internal("paintballs/redPaintball.png")), Float.parseFloat(strs[i+1]), Integer.parseInt(strs[i+2]));
 					paintball.setBounds(Float.parseFloat(strs[i+3]), Float.parseFloat(strs[i+4]), 4, 4);
 					paintballs.add(paintball);

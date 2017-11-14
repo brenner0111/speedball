@@ -25,7 +25,7 @@ public class SpeedBall extends ApplicationAdapter {
 	
 	private Utils utils = new Utils();
 	private GunUtils gunUtils = new GunUtils();
-	private PaintballMap bunker = new PaintballMap();
+	private PaintballMap bunker = new PaintballMap(false);
 	private Player player;
 	private Sprite background;
 	private Cursor customCursor;
