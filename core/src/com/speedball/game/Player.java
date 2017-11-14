@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.speedball.server.SpeedballServer;
 /**
  * Wrapper class that adds a collided flag to the sprite object.
  * @author Calvin Yarboro
@@ -24,6 +25,7 @@ public class Player extends Sprite  {
 	private float initX = 0.0f;
 	private float initY = 0.0f;
 	private boolean collided;
+	private boolean isHit;
 	private float playerSpeed;
 	private float playerX;
 	private float playerY;
@@ -40,37 +42,67 @@ public class Player extends Sprite  {
 
 	public Player(Texture backgroundTexture, float initX, float initY) {
 		super(backgroundTexture);
-		paintballs = new ArrayList<Paintball>();
 		this.collided = false;
+		this.isHit = false;
 		this.initX = initX;
 		this.initY = initY;
+		this.playerX = this.initX;
+		this.playerY = this.initY;
+		this.gunX = PLAYER_GUN_WIDTH;
+		this.gunY = PLAYER_GUN_HEIGHT;
+		this.paintballCounter = -1;
+		this.mouseAngle = 0f;
+		this.playerSpeed = WALK_SPEED;
+		paintballs = new ArrayList<Paintball>();
 		setMtv(new Intersector.MinimumTranslationVector());
 		bunkersCollidedWith = new ArrayList<Bunker>();
 		mtvAtCollidedBunkers = new ArrayList<Intersector.MinimumTranslationVector>();
 	}
-	
+	public Player(float initX, float initY) {
+		this.collided = false;
+		this.isHit = false;
+		this.initX = initX;
+		this.initY = initY;
+		this.playerX = this.initX;
+		this.playerY = this.initY;
+		this.gunX = PLAYER_GUN_WIDTH;
+		this.gunY = PLAYER_GUN_HEIGHT;
+		this.paintballCounter = -1;
+		this.mouseAngle = 0f;
+		this.playerSpeed = WALK_SPEED;
+		paintballs = new ArrayList<Paintball>();
+		setMtv(new Intersector.MinimumTranslationVector());
+		bunkersCollidedWith = new ArrayList<Bunker>();
+		mtvAtCollidedBunkers = new ArrayList<Intersector.MinimumTranslationVector>();
+	}
 	public boolean getCollided() {
 		return this.collided;
 	}
 	public void setCollided(boolean value) {
 		this.collided = value;
 	}
-	protected static float getPlayerWidth() {
+	public boolean isHit() {
+		return isHit;
+	}
+	protected void setHit(boolean isHit) {
+		this.isHit = isHit;
+	}
+	public static float getPlayerWidth() {
 		return PLAYER_WIDTH;
 	}
-	protected static float getPlayerHeight() {
+	public static float getPlayerHeight() {
 		return PLAYER_HEIGHT;
 	}
-	protected static float getPlayerCenterWidth() {
+	public static float getPlayerCenterWidth() {
 		return PLAYER_CENTER_WIDTH;
 	}
-	protected static float getPlayerCenterHeight() {
+	public static float getPlayerCenterHeight() {
 		return PLAYER_CENTER_HEIGHT;
 	}
-	protected static float getPlayerGunHeight() {
+	public static float getPlayerGunHeight() {
 		return PLAYER_GUN_HEIGHT;
 	}
-	protected static float getPlayerGunWidth() {
+	public static float getPlayerGunWidth() {
 		return PLAYER_GUN_WIDTH;
 	}
 	protected static float getWalkSpeed() {
@@ -79,10 +111,10 @@ public class Player extends Sprite  {
 	protected static float getSprintSpeed() {
 		return SPRINT_SPEED;
 	}
-	protected float getInitX() {
+	public float getInitX() {
 		return initX;
 	}
-	protected float getInitY() {
+	public float getInitY() {
 		return initY;
 	}
 	public static float getGunRadius() {
@@ -94,28 +126,28 @@ public class Player extends Sprite  {
 	public void setPlayerSpeed(float playerSpeed) {
 		this.playerSpeed = playerSpeed;
 	}
-	protected float getPlayerX() {
+	public float getPlayerX() {
 		return playerX;
 	}
-	protected void setPlayerX(float playerX) {
+	public void setPlayerX(float playerX) {
 		this.playerX = playerX;
 	}
-	protected float getPlayerY() {
+	public float getPlayerY() {
 		return playerY;
 	}
-	protected void setPlayerY(float playerY) {
+	public void setPlayerY(float playerY) {
 		this.playerY = playerY;
 	}
-	protected float getGunX() {
+	public float getGunX() {
 		return gunX;
 	}
-	protected void setGunX(float gunX) {
+	public void setGunX(float gunX) {
 		this.gunX = gunX;
 	}
-	protected float getGunY() {
+	public float getGunY() {
 		return gunY;
 	}
-	protected void setGunY(float gunY) {
+	public void setGunY(float gunY) {
 		this.gunY = gunY;
 	}
 	protected void setInitX(float initX) {
@@ -124,19 +156,19 @@ public class Player extends Sprite  {
 	protected void setInitY(float initY) {
 		this.initY = initY;
 	}
-	protected int getPaintballCounter() {
+	public int getPaintballCounter() {
 		return paintballCounter;
 	}
-	protected void setPaintballCounter(int paintballCounter) {
+	public void setPaintballCounter(int paintballCounter) {
 		this.paintballCounter = paintballCounter;
 	}
-	protected void incrementPaintballCounter() {
+	public void incrementPaintballCounter() {
 	    this.paintballCounter++;
 	}
-	protected ArrayList<Paintball> getPaintballs() {
+	public ArrayList<Paintball> getPaintballs() {
 		return paintballs;
 	}
-	protected void addPaintball(Paintball paintball) {
+	public void addPaintball(Paintball paintball) {
 	    paintballs.add(paintball);
 	}
 	protected void setPaintballs(ArrayList<Paintball> paintballs) {

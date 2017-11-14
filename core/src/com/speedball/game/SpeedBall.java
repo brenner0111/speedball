@@ -25,7 +25,7 @@ public class SpeedBall extends ApplicationAdapter {
 	
 	private Utils utils = new Utils();
 	private GunUtils gunUtils = new GunUtils();
-	private PaintballMap bunker = new PaintballMap();
+	private PaintballMap bunker = new PaintballMap(false);
 	private Player player;
 	private Sprite background;
 	private Cursor customCursor;
@@ -49,9 +49,9 @@ public class SpeedBall extends ApplicationAdapter {
 		player.setPaintballCounter(-1);
 		player.setPlayerX(player.getInitX());
 		player.setPlayerY(player.getInitY());
-		//cursor = new Texture("misc/crossHair.PNG");
-		//customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
-		//Gdx.graphics.setCursor(customCursor);	
+		cursor = new Texture("misc/crossHair.PNG");
+		customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("misc/crossHair.PNG")), cursor.getWidth()/2, cursor.getHeight()/2);
+		Gdx.graphics.setCursor(customCursor);	
 		bunker.createBunkers();
 	}
 	
@@ -85,7 +85,7 @@ public class SpeedBall extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
         background.draw(batch);
         bunker.drawBunkers(batch);
-        player.setPaintballCounter(gunUtils.drawPaintballs(batch, player.getPaintballs(), player.getPaintballCounter(), bunker.getBunkers()));
+        //player.setPaintballCounter(gunUtils.drawPaintballs(batch, player.getPaintballs(), player.getPaintballCounter(), bunker.getBunkers()));
         
         player.setMouseAngle(utils.getMouseAngle(player.getPlayerX(), player.getPlayerY(), Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(), camera));
         player = (Player) utils.rotateSprite(player.getMouseAngle(), player, Player.getPlayerCenterWidth(), Player.getPlayerCenterHeight(),
@@ -105,7 +105,7 @@ public class SpeedBall extends ApplicationAdapter {
         }
 	    //checks to make sure player is in bounds, and calls movePlayer
 	    utils.playerMtvLogic(player, bunker);
-	    utils.checkAndMovePlayer(player.getPlayerX(), player.getPlayerY(), MAX_X, MAX_Y, player);
+	    utils.checkAndMovePlayer(player.getPlayerX(), player.getPlayerY(), MAX_X, MAX_Y, player, false, 0.0f);
 	}
 	
 }

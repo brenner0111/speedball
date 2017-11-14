@@ -18,11 +18,11 @@ public class Utils {
 	 * TODO: Possibly move to separate utility class
 	 */
 
-	protected Player createPlayerSprite(float initX, float initY) {
+	public Player createPlayerSprite(float initX, float initY) {
 		return new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), initX, initY);
 	}
 	
-	protected Sprite createBackgroundSprite() {
+	public Sprite createBackgroundSprite() {
 		return new Sprite(new Texture(Gdx.files.internal("pbfield/grassBetter.png")));
 		//return new Sprite(new Texture(Gdx.files.internal("pbfield/paintballFieldOne.png")));
 	}
@@ -30,9 +30,9 @@ public class Utils {
 	 * Function that determines the player's x and y position.
 	 * Player Inputs = WASD keys
 	 */
-	protected float[] movePlayer(float playerX, float playerY, float playerSpeed) {
+	protected float[] movePlayer(float playerX, float playerY, float playerSpeed, float dt) {
 		float[] array = new float[2];
-		float dt = Gdx.graphics.getDeltaTime();
+//		float dt = Gdx.graphics.getDeltaTime();
 		float halfPlayerSpeed = (playerSpeed * 0.7f);
 		if (Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.W)) {
 			playerX -= dt * halfPlayerSpeed;
@@ -51,7 +51,7 @@ public class Utils {
 			playerY -= dt * halfPlayerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.W)) {
-	    		playerY += dt * playerSpeed;
+	    	playerY += dt * playerSpeed;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
 			playerY -= dt * playerSpeed;
@@ -67,7 +67,7 @@ public class Utils {
 		return array;
 	}
 	
-	protected boolean playerInBounds(float x, float y, float MAX_X, float MAX_Y) {
+	public boolean playerInBounds(float x, float y, float MAX_X, float MAX_Y) {
 		if (x >= 0 && x <= MAX_X && y >= 0 && y <= MAX_Y) {
 			return true;
 		}
@@ -75,7 +75,7 @@ public class Utils {
 	}
 	
 	// Function used to reposition player if out of bounds
-	protected float resetPlayerAtXBound(float x, float MAX_X) {
+	public float resetPlayerAtXBound(float x, float MAX_X) {
 		if (x - MAX_X > 0) {
 			return MAX_X;
 		}
@@ -85,7 +85,7 @@ public class Utils {
 		return x;
 	}
   
-	protected float resetPlayerAtYBound(float y, float MAX_Y) {
+	public float resetPlayerAtYBound(float y, float MAX_Y) {
 		if (y - MAX_Y > 0) {
 			return MAX_Y;
 		}
@@ -99,7 +99,7 @@ public class Utils {
 		return coordinate + offSet;
 	}
 	
-	protected float getMouseAngle(float playerX, float playerY, float offSetX, float offSetY, Camera camera) {
+	public float getMouseAngle(float playerX, float playerY, float offSetX, float offSetY, Camera camera) {
 		float xCenter = getPlayerCenter(playerX, offSetX);
 		float yCenter = getPlayerCenter(playerY, offSetY);
 		float xCursor = Gdx.input.getX();
@@ -119,20 +119,20 @@ public class Utils {
 		return (float)degrees;
 	} 
 	
-	protected boolean isPlayerSprinting() {
-		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
-			return true;
-		}
-		return false;
-	}
-	protected float choosePlayerSpeed(float sprint, float walk) {
-		if (isPlayerSprinting()) {
+//	protected boolean isPlayerSprinting() {
+//		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+//			return true;
+//		}
+//		return false;
+//	}
+	protected float choosePlayerSpeed(float sprint, float walk, boolean sprinting) {
+		if (sprinting) {
 			return sprint;
 		}
 		return walk;
 	}
 	
-	protected Sprite rotateSprite(float angle, Sprite sprite, float offSetX, float offSetY, float playerX, float playerY) {
+	public Sprite rotateSprite(float angle, Sprite sprite, float offSetX, float offSetY, float playerX, float playerY) {
 		sprite.setOrigin(offSetX, offSetY);
 		sprite.setRotation(angle);
 		return sprite;
@@ -179,13 +179,12 @@ public class Utils {
 	 * returns the players custom hitbox
 	 */
 	protected float[] getPlayerVertices(Player player) {
-		Rectangle rectangle = player.getBoundingRectangle();
 		//float width = rectangle.getWidth() - Player.getPlayerCenterWidth();
 		//float height = rectangle.getHeight() - Player.getPlayerCenterHeight();
 		float width = 22.0f;
 		float height = 20.0f;
-		float x = rectangle.getX() + 6.75f;
-		float y = rectangle.getY() + 9.20f;
+		float x = player.getPlayerX() + 6.75f;
+		float y = player.getPlayerY() + 9.20f;
 		//float x = rectangle.getX();
 		//float y = rectangle.getY();
 		float[] retArray = {x, y, x + width, y, x + width, y + height, x, y + height};
@@ -225,8 +224,8 @@ public class Utils {
 	 * Uses the minimum translation vector to correct the players position
 	 * if the player starts to collide with an polygon
 	 */
-	protected void playerMtvLogic(Player player, PaintballMap bunker) {
-		playerCollided(player, bunker.getBunkers());
+	public void playerMtvLogic(Player player, PaintballMap pbMap) {
+		playerCollided(player, pbMap.getBunkers());
         if (player.getCollided() == false) {
             player.setBounds(player.getPlayerX(), player.getPlayerY(), Player.getPlayerWidth(), Player.getPlayerHeight());
         }
@@ -234,9 +233,9 @@ public class Utils {
         	float newPlayerX = player.getPlayerX();
         	float newPlayerY = player.getPlayerY();
         	for (int i = 0; i < player.getMtvAtCollidedBunkers().size(); i++) {
-        		if (player.getMtvAtCollidedBunkers().size() > 1) {
-        			System.out.println("MTV Normal: " + player.getMtvAtCollidedBunkers().get(i).normal + " MTV Depth: " + player.getMtvAtCollidedBunkers().get(i).depth);
-        		}
+//        		if (player.getMtvAtCollidedBunkers().size() > 1) {
+//        			//System.out.println("MTV Normal: " + player.getMtvAtCollidedBunkers().get(i).normal + " MTV Depth: " + player.getMtvAtCollidedBunkers().get(i).depth);
+//        		}
         		newPlayerX += player.getMtvAtCollidedBunkers().get(i).normal.x * player.getMtvAtCollidedBunkers().get(i).depth;
         		newPlayerY += player.getMtvAtCollidedBunkers().get(i).normal.y * player.getMtvAtCollidedBunkers().get(i).depth;
         		
@@ -252,10 +251,10 @@ public class Utils {
         }
 	}
 	
-	protected void checkAndMovePlayer(float x, float y, float maxX, float maxY, Player player) {
-		player.setPlayerSpeed(choosePlayerSpeed(Player.getSprintSpeed(), Player.getWalkSpeed()));
+	public void checkAndMovePlayer(float x, float y, float maxX, float maxY, Player player, boolean sprinting, float dt) {
+		player.setPlayerSpeed(choosePlayerSpeed(Player.getSprintSpeed(), Player.getWalkSpeed(), sprinting));
 		if (playerInBounds(x, y, maxX, maxY)) {
-			float[] playerXY = movePlayer(x, y, player.getPlayerSpeed());
+			float[] playerXY = movePlayer(x, y, player.getPlayerSpeed(), dt);
 			player.setPlayerX(playerXY[0]);
 			player.setPlayerY(playerXY[1]);
 		}
