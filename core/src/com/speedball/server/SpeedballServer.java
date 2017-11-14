@@ -100,13 +100,18 @@ public class SpeedballServer
 				clientString += utils.resetPlayerAtYBound(players.get(i).getPlayerY(), MAX_Y) + " ";
 			}
 			clientString += players.get(i).getMouseAngle() + " ";
-			clientString += "pb" + " ";
-			System.out.println("Num paintballs: " + players.get(i).getPaintballs().size());
+			//System.out.println("Num paintballs: " + players.get(i).getPaintballs().size());
 			for (int j = 0; j < players.get(i).getPaintballs().size(); j++) {
-				//Might need to change to be x and y in the future
-				clientString += players.get(i).getPaintballs().get(j).getSlope() + " ";
-				clientString += players.get(i).getPaintballs().get(j).getQuadrant() + " ";
-			}
+				if ((players.get(i).getPaintballs().get(j).getX() > 0 && players.get(i).getPaintballs().get(j).getX() < 1045)
+						&& (players.get(i).getPaintballs().get(j).getY() > 0 && players.get(i).getPaintballs().get(j).getY() < 690)) {
+					clientString += "pb" + (i + 1) + " ";
+					clientString += players.get(i).getPaintballs().get(j).getSlope() + " ";
+					clientString += players.get(i).getPaintballs().get(j).getQuadrant() + " ";
+					clientString += players.get(i).getPaintballs().get(j).getX() + " ";
+					clientString += players.get(i).getPaintballs().get(j).getY() + " ";
+					gunUtils.updatePaintballXY(players.get(i).getPaintballs().get(j), players.get(i).getPaintballs().get(j).getQuadrant());
+				}
+ 			}
 		}
 		return clientString;
 	}
@@ -114,10 +119,12 @@ public class SpeedballServer
 
 	private static void processData(String input, Player player) {
 		String[] splitString = input.split("\\s+");
-		System.out.println("From client: " +  input + "Length: " + splitString.length);
+		//System.out.println("From client: " +  input + "Length: " + splitString.length);
 		int x = 0;
 		int y = 0;
 		String mouseAngle = "";
+		String gunX = "";
+		String gunY = "";
 		String slope = "";
 		String quadrant = "";
 		float playerSpeed = 1f;
@@ -142,6 +149,8 @@ public class SpeedballServer
 			case "~":
 				slope = splitString[i + 1];
 				quadrant = splitString[i + 2];
+				gunX = splitString[i+3];
+				gunY = splitString[i+4];
 				break;
 			case "-":
 				playerSpeed = 1.3f;
@@ -168,6 +177,9 @@ public class SpeedballServer
 			//System.out.println("Slope: " + slope + " Quadrant: " + quadrant);
 			player.addPaintball(new Paintball(Float.parseFloat(slope), Integer.parseInt(quadrant)));
 			player.incrementPaintballCounter();
+			player.getPaintballs().get(player.getPaintballCounter()).setBounds(Float.parseFloat(gunX), Float.parseFloat(gunY), 4, 4);
+			player.setGunX(Float.parseFloat(gunX));
+			player.setGunY(Float.parseFloat(gunY));
 			slope = "";
 			quadrant = "";
             //System.out.println("Paintball Counter Var: " + player.getPaintballCounter());

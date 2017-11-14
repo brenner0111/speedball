@@ -17,7 +17,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class GunUtils {
     
-    private static final float PBALL_DIST_CAP = 1.0f;
+    private static final float PBALL_DIST_CAP = 5.0f;
 
     public Paintball createPaintballSprite(float x, float y, float slope, int quadrant) {
         FileHandle paintBallHandle = Gdx.files.internal("paintballs/redPaintball.png");
@@ -53,13 +53,20 @@ public class GunUtils {
         }
         return paintballCounter;
     }
+    public int drawPaintballsClient(SpriteBatch b, ArrayList<Paintball> paintballs, int paintballCounter) {
+        for (Iterator<Paintball> iterator = paintballs.iterator(); iterator.hasNext();) {
+            Paintball paintball = iterator.next();         
+            paintball.draw(b);
+        }
+        return paintballCounter;
+    }
 
     /**
      * OPTODO: add paintball slowdown overtime
      * @param paintball
      * @param paintballSpeed
      */
-    protected void updatePaintballXY(Paintball paintball, int quadrant) {
+    public void updatePaintballXY(Paintball paintball, int quadrant) {
         float slope = Math.abs(paintball.getSlope());
         float r = (float)Math.sqrt(1 + Math.pow(slope, 2));
         float x = 0.0f;
@@ -155,7 +162,7 @@ public class GunUtils {
         return retArray;
     }
     
-    protected boolean paintballInWindow(Paintball paintball) {
+    public boolean paintballInWindow(Paintball paintball) {
         float x = paintball.getBoundingRectangle().getX();
         float y = paintball.getBoundingRectangle().getY();
         if (x > 1045 || x < 0) {
