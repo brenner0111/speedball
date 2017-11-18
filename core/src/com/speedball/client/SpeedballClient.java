@@ -57,8 +57,8 @@ public class SpeedballClient extends ApplicationAdapter{
 		//		initArrayLists();
 		players[0] = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
 		players[1] = new Player(new Texture(Gdx.files.internal("player/playerNewSize.png")), 0f, 0f);
-		ct = new ClientNetworkThread();
-		ct.start();
+		//ct = new ClientNetworkThread();
+        //ct.start();
 
 	}
 
@@ -73,7 +73,13 @@ public class SpeedballClient extends ApplicationAdapter{
 		getMouseCoords();
 		batch.begin();
 		renderLogic();
-		processInputFromServer(batch);
+		 if (ct == null && displayLoadingScreen) {
+             ct = new ClientNetworkThread();
+             ct.start();
+         }
+		 if (ct != null && ct.isAlive()) {
+		     processInputFromServer(batch);
+		 }
 		//System.out.println("Player1 X: " + players[0].getPlayerX() + " Player1 Y: " + players[0].getPlayerY());
 		//System.out.println("Player2 X: " + players[1].getPlayerX() + " Player2 Y: " + players[1].getPlayerY());
 		batch.end();
@@ -91,12 +97,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		}
 		ct.interrupt();
 	}
-	//	private void initArrayLists() {
-	//		paintballX = new ArrayList<Float>();
-	//		paintballY = new ArrayList<Float>();
-	//		paintballSlope = new ArrayList<Float>();
-	//		paintballQuadrant = new ArrayList<Integer>();
-	//	}
+
 	private void initMouse() {
 		mouseX = 0f;
 		mouseY = 0f;
@@ -123,6 +124,7 @@ public class SpeedballClient extends ApplicationAdapter{
 			displayScreen.drawStartScreen(batch);
 		}
 		else if (displayLoadingScreen) {
+		   
 			displayScreen.drawLoadingScreen(batch);
 		}
 		else if (displayGameScreen) {
@@ -142,7 +144,7 @@ public class SpeedballClient extends ApplicationAdapter{
 		if (Gdx.input.justTouched()) {
 			Vector3 tmpCoords = new Vector3(Gdx.input.getX(),Gdx.input.getY(), 0);
 			camera.unproject(tmpCoords);
-			//System.out.println("World ClickXY: " + tmpCoords);
+			System.out.println("World ClickXY: " + tmpCoords);
 			mouseX = tmpCoords.x;
 			mouseY = tmpCoords.y;
 		}
@@ -179,15 +181,15 @@ public class SpeedballClient extends ApplicationAdapter{
 	private void updateScreenFlags() {
 
 		if (displayStartScreen) {
-			/*if ((mouseX > 408f && mouseX < 662f) && (mouseY > 223f && mouseY < 280f)) {
+			if ((mouseX > 425f && mouseX < 648f) && (mouseY > 191f && mouseY < 238f)) {
 				System.exit(0);
+			    //System.out.println("Clicking exit");
 			}
-			if((mouseX > 408f && mouseX < 662f) && (mouseY > 354 && mouseY < 410) ||
-					(mouseX > 408f && mouseX < 662f) && (mouseY > 286f && mouseY < 345f)) {
-
+			if((mouseX > 425f && mouseX < 653f) && (mouseY > 278f && mouseY < 328f)) {
+			    //System.out.println("Clicking Play");
 				displayStartScreen = false;
 				displayLoadingScreen = true;
-			}*/
+			}
 		}
 		else if (displayLoadingScreen) {
 			/*if(Gdx.input.justTouched()) {
@@ -202,6 +204,10 @@ public class SpeedballClient extends ApplicationAdapter{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
+		    if (ct.fromServer.length() > 5) {
+		        displayLoadingScreen = false;
+		        displayGameScreen = true;
+		    }
 
 		}
 		else if (displayGameScreen) {
@@ -209,32 +215,43 @@ public class SpeedballClient extends ApplicationAdapter{
 				displayGameScreen = true;
 				displayVictoryScreen = true;
 			}*/
+		    String tmp = ct.fromServer.substring(0, ct.fromServer.length());
+            System.out.println("From server: " + tmp);
+		    if (ct.fromServer.split("\\s+")[0] == ct.fromServer.split("\\s+")[1]) {
+		        displayGameScreen = false;
+		        displayDefeatScreen = true;
+		    }
+		    else if ((ct.fromServer.split("\\s+")[0] != ct.fromServer.split("\\s+")[1]) && !(ct.fromServer.split("\\s+")[1].equals("-1"))) {
+		        
+		        displayGameScreen = false;
+		        displayVictoryScreen = true;
+		    }
 		}
 		else if (displayVictoryScreen) {
 			/*if(Gdx.input.justTouched()) {
 				displayVictoryScreen = false;
 				displayDefeatScreen = true;
 			}*/
-			/*	if ((mouseX > 320f && mouseX < 550f) && (mouseY > 37f && mouseY < 74f)) {
+			if ((mouseX > 286f && mouseX < 510f) && (mouseY > 91f && mouseY < 138f)) {
 				displayVictoryScreen = false;
 				displayDefeatScreen = true;
 			}
-			if ((mouseX > 608f && mouseX < 705f) && (mouseY > 30f && mouseY < 75f)) {
+			if ((mouseX > 546f && mouseX < 767f) && (mouseY > 92f && mouseY < 137f)) {
 				System.exit(0);
-			}*/
+			}
 		}
 		else if (displayDefeatScreen) {
 			/*if(Gdx.input.justTouched()) {
 				displayDefeatScreen = false;
 				displayGameScreen = true;
 			}*/
-			/*if ((mouseX > 355f && mouseX < 575f) && (mouseY > 52f && mouseY < 88f)) {
+			if ((mouseX > 286f && mouseX < 510f) && (mouseY > 91f && mouseY < 138f)) {
 				displayDefeatScreen = false;
 				displayGameScreen = true;
 			}
-			if ((mouseX > 630f && mouseX < 724f) && (mouseY > 50f && mouseY < 88f)) {
+			if ((mouseX > 546f && mouseX < 767f) && (mouseY > 92f && mouseY < 137f)) {
 				System.exit(0);
-			}*/
+			}
 		}
 		else {
 			System.out.println("Updating Screen flags error");
@@ -243,7 +260,7 @@ public class SpeedballClient extends ApplicationAdapter{
 	private void processInputFromServer(SpriteBatch batch) {
 		paintballs = new ArrayList<Paintball>();
 		String tmp = ct.fromServer.substring(0, ct.fromServer.length());
-		System.out.println("From server: " + tmp);
+		//System.out.println("From server: " + tmp);
 		String[] strs = tmp.split("\\s+");
 		//System.out.println("Strs[0]: " + strs[0]);
 		int whichPlayer = -1;

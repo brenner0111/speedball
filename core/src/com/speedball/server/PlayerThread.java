@@ -40,6 +40,7 @@ public class PlayerThread extends Thread
         }
         //Eventually need to change while game hasn't started
         while (true) {
+            hitPlayer = SpeedballServer.hitPlayer;
             try {
                data = brinp.readLine();
                if (isDone) {

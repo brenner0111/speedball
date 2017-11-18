@@ -18,11 +18,11 @@ public class DisplayScreen{
 
 	public DisplayScreen() {
 		//TODO:add new screens
-		startScreen = new Texture("pbfield/grassBetter.PNG");
-		loadingScreen = new Texture("pbfield/grassBetter.PNG");
+		startScreen = new Texture("menus/startScreen.PNG");
+		loadingScreen = new Texture("menus/loadingOne.PNG");
 		gameScreen = new Texture("pbfield/grassBetter.PNG");
-		victoryScreen = new Texture("pbfield/grassBetter.PNG");
-		defeatScreen = new Texture("pbfield/grassBetter.PNG");
+		victoryScreen = new Texture("menus/winningScreen.PNG");
+		defeatScreen = new Texture("menus/defeatedScreen.PNG");
 		pbMap = new PaintballMap(false);
 		pbMap.createBunkers();
 	}
@@ -31,7 +31,6 @@ public class DisplayScreen{
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.draw(startScreen, 0, 0);
-		pbMap.drawBunkers(batch);
 	}
 
 	public void drawLoadingScreen(SpriteBatch batch) {
