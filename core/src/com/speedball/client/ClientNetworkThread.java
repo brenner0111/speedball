@@ -17,6 +17,7 @@ public class ClientNetworkThread extends Thread {
     private BufferedReader inFromServer;
     public volatile String fromServer = "";
     private boolean connectedToServer = false;
+    public volatile boolean newGameStarted = false;
     
 
 	public void run() {
@@ -53,12 +54,12 @@ public class ClientNetworkThread extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			try {
+			/*try {
 				Thread.sleep(5);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 
 		}
 	}
@@ -82,6 +83,10 @@ public class ClientNetworkThread extends Thread {
 		}
 		if (Gdx.input.justTouched()) {
 			ret +="~ " + SpeedballClient.paintballInfo + " ";
+		}
+		if (newGameStarted) {
+		    ret += "` ";
+		    newGameStarted = false;
 		}
 		ret += " " + SpeedballClient.mouseAngle + " ";
 		return ret;

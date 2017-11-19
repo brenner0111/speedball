@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class PlayerThread extends Thread
 {
-	protected Socket socket;
+    protected Socket socket;
     protected String data;
     protected boolean isDone;
     protected String outString;
@@ -30,7 +30,7 @@ public class PlayerThread extends Thread
         InputStream inp = null;
         BufferedReader brinp = null;
         DataOutputStream out = null;
-        
+
         try {
             inp = socket.getInputStream();
             brinp = new BufferedReader(new InputStreamReader(inp));
@@ -42,11 +42,11 @@ public class PlayerThread extends Thread
         while (true) {
             hitPlayer = SpeedballServer.hitPlayer;
             try {
-               data = brinp.readLine();
-               if (isDone) {
-            	   		outString = temp.substring(0, temp.length());
-               }
-               out.writeBytes(num + " " + hitPlayer + " " + outString + '\n');
+                data = brinp.readLine();
+                if (isDone) {
+                    outString = temp.substring(0, temp.length());
+                }
+                out.writeBytes(num + " " + hitPlayer + " " + outString + '\n');
             }
             catch (IOException e) {
                 e.printStackTrace();
