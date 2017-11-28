@@ -3,8 +3,6 @@ package com.speedball.game.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.speedball.client.SpeedballClient;
-import com.speedball.client.SpeedballClientOld;
-import com.speedball.game.SpeedBall;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

@@ -1,18 +1,20 @@
 package com.speedball.client;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.speedball.game.*;
+import com.speedball.game.GameSound;
+import com.speedball.game.GunUtils;
+import com.speedball.game.Paintball;
+import com.speedball.game.Player;
+import com.speedball.game.Utils;
 
 
 
@@ -39,6 +41,7 @@ public class SpeedballClient extends ApplicationAdapter{
     private ClientNetworkThread ct;
     private Utils utils;
     private GunUtils gunUtils;
+    private GameSound sound;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -51,6 +54,7 @@ public class SpeedballClient extends ApplicationAdapter{
         gunUtils = new GunUtils();
         batch = new SpriteBatch();
         displayScreen = new DisplayScreen();
+        sound = new GameSound();
         //add methods for screen transitions
         initMouse();
         initViewport();
@@ -102,6 +106,9 @@ public class SpeedballClient extends ApplicationAdapter{
         for (Player player: players) {
             player.getTexture().dispose();
         }
+        for (int i = 0; i < sound.getSounds().size(); i++) {
+            sound.getSounds().get(i).dispose();
+        }
         ct.interrupt();
     }
 
@@ -150,6 +157,10 @@ public class SpeedballClient extends ApplicationAdapter{
     private void getMouseCoords() {
         if (Gdx.input.justTouched()) {
             Vector3 tmpCoords = new Vector3(Gdx.input.getX(),Gdx.input.getY(), 0);
+            if (displayGameScreen) {
+                sound.getPaintballSound().play(0.10f);
+            }
+            
             camera.unproject(tmpCoords);
             //System.out.println("World ClickXY: " + tmpCoords);
             mouseX = tmpCoords.x;
@@ -214,6 +225,7 @@ public class SpeedballClient extends ApplicationAdapter{
             if (ct.fromServer.length() > 5) {
                 displayLoadingScreen = false;
                 displayGameScreen = true;
+                sound.getGameStartedSound().play();
             }
 
         }
@@ -281,10 +293,12 @@ public class SpeedballClient extends ApplicationAdapter{
             }
             //TODO: put this back in when we fix screens
             if ((whichPlayer != -1 && hitPlayer != -1) && whichPlayer == hitPlayer) {
+                sound.getLosingSound().play();
                 displayDefeatScreen = true;
                 displayGameScreen = false;
             }
             else if ((whichPlayer != -1 && hitPlayer != -1) && whichPlayer != hitPlayer) {
+                sound.getwinningSound().play(1.0f);
                 displayVictoryScreen = true;
                 displayGameScreen = false;
             }
