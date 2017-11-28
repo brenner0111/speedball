@@ -84,7 +84,7 @@ public class Player extends Sprite  {
 	public boolean isHit() {
 		return isHit;
 	}
-	protected void setHit(boolean isHit) {
+	public void setHit(boolean isHit) {
 		this.isHit = isHit;
 	}
 	public static float getPlayerWidth() {
@@ -105,10 +105,10 @@ public class Player extends Sprite  {
 	public static float getPlayerGunWidth() {
 		return PLAYER_GUN_WIDTH;
 	}
-	protected static float getWalkSpeed() {
+	public static float getWalkSpeed() {
 		return WALK_SPEED;
 	}
-	protected static float getSprintSpeed() {
+	public static float getSprintSpeed() {
 		return SPRINT_SPEED;
 	}
 	public float getInitX() {
@@ -150,10 +150,10 @@ public class Player extends Sprite  {
 	public void setGunY(float gunY) {
 		this.gunY = gunY;
 	}
-	protected void setInitX(float initX) {
+	public void setInitX(float initX) {
 		this.initX = initX;
 	}
-	protected void setInitY(float initY) {
+	public void setInitY(float initY) {
 		this.initY = initY;
 	}
 	public int getPaintballCounter() {
@@ -171,7 +171,7 @@ public class Player extends Sprite  {
 	public void addPaintball(Paintball paintball) {
 	    paintballs.add(paintball);
 	}
-	protected void setPaintballs(ArrayList<Paintball> paintballs) {
+	public void setPaintballs(ArrayList<Paintball> paintballs) {
 		this.paintballs = paintballs;
 	}
     public float getMouseAngle(){
